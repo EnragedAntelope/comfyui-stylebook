@@ -1,4 +1,4 @@
-"""Artist records - ~800 hand-curated entries with descriptors.
+﻿"""Artist records - ~800 hand-curated entries with descriptors.
 
 Every artist carries a descriptor that steers the model independently
 of whether it knows the name. Name + description = works on all lineages.
@@ -427,7 +427,7 @@ ARTISTS: dict[str, dict] = {
         "descriptor": "harsh morning light slicing through windows into empty rooms, solitary figures in quiet urban stillness, sharp shadows and saturated colour blocks, the weight of isolation in every composition",
     },
     "magritte": {
-        "label": "René Magritte",
+        "label": "RenÃ© Magritte",
         "category": "fine-art",
         "aliases": ["surrealist", "Belgian"],
         "descriptor": "deadpan realism rendering impossible juxtapositions, ordinary objects in extraordinary contexts, clear blue skies behind bowler-hatted figures, the unsettling precision of a dream transcribed in oil",
@@ -951,7 +951,7 @@ ARTISTS: dict[str, dict] = {
     "moebius": {
         "label": "Moebius (Jean Giraud)",
         "category": "illustration",
-        "aliases": ["Jean Giraud", "bande dessinée"],
+        "aliases": ["Jean Giraud", "bande dessinÃ©e"],
         "descriptor": "fine clear linework over luminous watercolour washes, alien landscapes rendered with the precision of observation, soft atmospheric colour transitions, every panel a self-contained world",
     },
     "much_cover": {
@@ -1211,7 +1211,7 @@ ARTISTS: dict[str, dict] = {
         "descriptor": "pale washed-out oil paintings from photographic sources, muted desaturated colour and soft blurred edges, historical trauma in the flat tone of faded film stills",
     },
     "michael_borremans": {
-        "label": "Michaël Borremans",
+        "label": "MichaÃ«l Borremans",
         "category": "fine-art",
         "aliases": ["belgian painter", "uncanny realism"],
         "descriptor": "small-scale oil paintings with smooth enamel-like surfaces, figures in ambiguous rituals under flat even lighting, muted earth tones and eerie stillness refusing explanation",
@@ -2680,7 +2680,7 @@ ARTISTS: dict[str, dict] = {
         "label": "David B.",
         "category": "comics",
         "aliases": ["Epileptic", "French autobiographical"],
-        "descriptor": "surreal detailed ink rendering with symbolic imagery, autobiographical family trauma, French bande dessinée at its most psychologically intense",
+        "descriptor": "surreal detailed ink rendering with symbolic imagery, autobiographical family trauma, French bande dessinÃ©e at its most psychologically intense",
     },
     "joann_sfar": {
         "label": "Joann Sfar",
@@ -2698,7 +2698,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Enki Bilal",
         "category": "comics",
         "aliases": ["Nikopol", "European sci-fi"],
-        "descriptor": "painterly colour rendering with atmospheric perspective, dystopian science fiction narrative, European bande dessinée merged with fine-art painting technique",
+        "descriptor": "painterly colour rendering with atmospheric perspective, dystopian science fiction narrative, European bande dessinÃ©e merged with fine-art painting technique",
     },
     "milo_manara": {
         "label": "Milo Manara",
@@ -2993,5 +2993,440 @@ ARTISTS: dict[str, dict] = {
         "category": "digital",
         "aliases": ["folkloric fantasy", "monumental machines"],
         "descriptor": "folkloric fantasy illustration with monumental mechanical walkers, rural landscapes, muted colour palette and Slavic mythology atmosphere",
+    },
+
+    # --- Photography: Industrial and Fashion ---
+    "edward_burtynsky": {
+        "label": "Edward Burtynsky",
+        "category": "photography",
+        "aliases": ["industrial landscape", "large-format colour"],
+        "descriptor": "large-format colour photographs of industrial extraction and manufacturing, vast quarries and oil refineries rendered in sublime pictorial beauty, environmental scale dwarfing the human figure",
+    },
+    "bruce_weber": {
+        "label": "Bruce Weber",
+        "category": "photography",
+        "aliases": ["all-American male", "intimate fashion"],
+        "descriptor": "sun-drenched black-and-white and colour photographs of all-American masculinity, athletes and models in intimate domestic settings, warm natural light and nostalgic small-town sensibility",
+    },
+    "herb_ritts": {
+        "label": "Herb Ritts",
+        "category": "photography",
+        "aliases": ["sculptural nude", "celebrity portrait"],
+        "descriptor": "classical black-and-white celebrity portraits and nudes in natural light, sculptural muscle and skin rendered with clean graphic clarity, Californian sun on idealised form",
+    },
+    "horst_p_horst": {
+        "label": "Horst P. Horst",
+        "category": "photography",
+        "aliases": ["Vogue fashion", "studio glamour"],
+        "descriptor": "elegant black-and-white fashion photographs with dramatic studio lighting, sculptural poses against seamless backdrops, surrealist-influenced composition and sophisticated Art Deco glamour",
+    },
+    "george_hurrell": {
+        "label": "George Hurrell",
+        "category": "photography",
+        "aliases": ["Hollywood glamour", "studio portrait"],
+        "descriptor": "glamorous black-and-white Hollywood portraits with dramatic chiaroscuro lighting, movie stars rendered in soft focus and gleaming highlight, the golden-age studio system captured in silver gelatin",
+    },
+    "edward_steichen": {
+        "label": "Edward Steichen",
+        "category": "photography",
+        "aliases": ["pictorialist modernist", "Vogue director"],
+        "descriptor": "sumptuous early pictorialist photographs in gum bichromate and later crisp fashion portraits, atmospheric landscapes and glamorous studio work bridging Pictorialism and modernist clarity",
+    },
+    "alfred_stieglitz": {
+        "label": "Alfred Stieglitz",
+        "category": "photography",
+        "aliases": ["photo-secession", "equivalents"],
+        "descriptor": "pioneering photographs from Pictorialist soft focus to straight modernism, cloud studies and New York skyscrapers, photography as fine art through formal equivalence and emotional resonance",
+    },
+    "tina_modotti": {
+        "label": "Tina Modotti",
+        "category": "photography",
+        "aliases": ["Mexican modernist", "political photographer"],
+        "descriptor": "precise black-and-white photographs of Mexican flowers and workers, modernist close-ups of petals and revolutionary banners, political commitment merged with formal geometric clarity",
+    },
+    "guy_bourdin": {
+        "label": "Guy Bourdin",
+        "category": "photography",
+        "aliases": ["provocative fashion", "Vogue France"],
+        "descriptor": "saturated colour fashion photographs with provocative narrative and dark humour, models in violent or erotic tableaux, vivid reds and yellows in meticulously staged cinematic compositions",
+    },
+    "sarah_moon": {
+        "label": "Sarah Moon",
+        "category": "photography",
+        "aliases": ["ethereal fashion", "painterly photography"],
+        "descriptor": "dreamlike soft-focus fashion photographs in muted desaturated tones, blurred figures and veiled light, the image dissolving into painterly abstraction and memory-like atmospheric haze",
+    },
+    "ralph_gibson": {
+        "label": "Ralph Gibson",
+        "category": "photography",
+        "aliases": ["surrealist detail", "high contrast"],
+        "descriptor": "high-contrast black-and-white close-ups of fragments and shadows, surrealist juxtaposition of body parts and architectural detail, crisp graphic composition in deep silver gelatin tone",
+    },
+    "larry_fink": {
+        "label": "Larry Fink",
+        "category": "photography",
+        "aliases": ["social documentary", "intimate portrait"],
+        "descriptor": "raw black-and-white photographs of jazz musicians and high-society parties, harsh flash revealing sweat and social tension, intimacy and class observation in grainy silver gelatin",
+    },
+    "joel_peter_witkin": {
+        "label": "Joel-Peter Witkin",
+        "category": "photography",
+        "aliases": ["macabre tableau", "religious grotesque"],
+        "descriptor": "staged black-and-white tableaux of freaks and religious iconography, hand-coloured prints of grotesque beauty, classical composition applied to transgressive subject matter in darkly sacred light",
+    },
+    "yousuf_karsh": {
+        "label": "Yousuf Karsh",
+        "category": "photography",
+        "aliases": ["celebrity portrait", "dramatic lighting"],
+        "descriptor": "dramatic studio portraits of world leaders and cultural icons, strong directional light carving character from deep shadow, monumental face rendered in rich silver gelatin gravitas",
+    },
+    "arnold_newman": {
+        "label": "Arnold Newman",
+        "category": "photography",
+        "aliases": ["environmental portrait", "modernist composition"],
+        "descriptor": "environmental portraits of artists and writers in their studios, subjects framed by their own work and tools, modernist geometric composition merging person and creative space",
+    },
+    "julia_margaret_cameron": {
+        "label": "Julia Margaret Cameron",
+        "category": "photography",
+        "aliases": ["Victorian portrait", "soft focus pioneer"],
+        "descriptor": "soft-focus Victorian portraits of literary and scientific figures, haloed heads in dreamy diffused light, intentional blur and chemical imperfection elevating photography to Pre-Raphaelite painting",
+    },
+    "robert_adams": {
+        "label": "Robert Adams",
+        "category": "photography",
+        "aliases": ["New West", "suburban landscape"],
+        "descriptor": "precise black-and-white photographs of Denver suburban sprawl and deforested hillsides, tract houses and construction sites in flat daylight, quiet elegy for landscape consumed by development",
+    },
+    "lewis_baltz": {
+        "label": "Lewis Baltz",
+        "category": "photography",
+        "aliases": ["New Topographics", "industrial landscape"],
+        "descriptor": "deadpan black-and-white photographs of warehouses and subdivisions, flat even light on tract architecture, the New Topographics of human alteration rendered in austere graphic clarity",
+    },
+    "bernd_and_hilla_becher": {
+        "label": "Bernd and Hilla Becher",
+        "category": "photography",
+        "aliases": ["typological photography", "industrial archaeology"],
+        "descriptor": "systematic black-and-white typologies of water towers and gas tanks, frontal views against grey sky, industrial structures documented with conceptual rigour and serial comparison",
+    },
+    "gabriele_basilico": {
+        "label": "Gabriele Basilico",
+        "category": "photography",
+        "aliases": ["urban landscape", "Italian photographer"],
+        "descriptor": "precise black-and-white and colour photographs of cities and industrial sites, architectural form in flat overcast light, geometry of urban landscape rendered with detached documentary clarity",
+    },
+
+    # --- Fine Art: Feminist and Post-Minimalist ---
+    "eva_hesse": {
+        "label": "Eva Hesse",
+        "category": "fine-art",
+        "aliases": ["post-minimalist", "latex sculpture"],
+        "descriptor": "organic sculptural forms in latex and fibreglass, hanging chains and sagging vessels, industrial materials given bodily vulnerability, post-minimalist rigour meeting fragile entropy",
+    },
+    "ana_mendieta": {
+        "label": "Ana Mendieta",
+        "category": "fine-art",
+        "aliases": ["earth body", "performance sculpture"],
+        "descriptor": "earth-body sculptures pressing female silhouette into soil and stone, flower petals and blood on rock, land art fused with feminist ritual and Cuban spiritual memory",
+    },
+    "judy_chicago": {
+        "label": "Judy Chicago",
+        "category": "fine-art",
+        "aliases": ["feminist art", "installation"],
+        "descriptor": "monumental feminist installations celebrating women history, vulvar porcelain and embroidered banners, vivid colour and decorative craft elevated to political statement at architectural scale",
+    },
+    "miriam_schapiro": {
+        "label": "Miriam Schapiro",
+        "category": "fine-art",
+        "aliases": ["pattern and decoration", "feminist collage"],
+        "descriptor": "vibrant collage paintings combining fabric and painted form, female artists honoured in decorative pattern, quilt-like surfaces merging craft tradition with feminist art history",
+    },
+    "hannah_hoch": {
+        "label": "Hannah Hoch",
+        "category": "fine-art",
+        "aliases": ["Dada photomontage", "Weimar collagist"],
+        "descriptor": "radical Dada photomontages of Weimar-era gender and politics, female heads spliced onto male bodies, mass-media imagery cut and reassembled to critique identity construction",
+    },
+    "claude_cahun": {
+        "label": "Claude Cahun",
+        "category": "fine-art",
+        "aliases": ["surrealist self-portrait", "gender fluid"],
+        "descriptor": "surrealist self-portraits in elaborate costume and shaved head, gender ambiguity and theatrical disguise, the self performed through photographic mask and surrealist text-image collage",
+    },
+    "sonia_delaunay": {
+        "label": "Sonia Delaunay",
+        "category": "fine-art",
+        "aliases": ["Orphism", "simultaneous colour"],
+        "descriptor": "vibrant geometric paintings and textiles in simultaneous colour contrasts, concentric circles and bold pattern, Orphist rhythm applied across fashion fabric and painting",
+    },
+    "sophie_taeuber_arp": {
+        "label": "Sophie Taeuber-Arp",
+        "category": "fine-art",
+        "aliases": ["Dada textile", "geometric abstraction"],
+        "descriptor": "precise geometric abstraction in textile and painting, Dada-influenced composition with rhythmic colour, craft and fine art merged in balanced decorative pattern",
+    },
+
+    # --- Fine Art: Minimalist and Land Art ---
+    "richard_serra": {
+        "label": "Richard Serra",
+        "category": "fine-art",
+        "aliases": ["minimalist sculptor", "weathering steel"],
+        "descriptor": "monumental weathering-steel plates curving through landscape, massive industrial forms altering viewer perception, weight and balance of raw metal defining space through sheer physical presence",
+    },
+    "robert_morris": {
+        "label": "Robert Morris",
+        "category": "fine-art",
+        "aliases": ["minimalist sculptor", "felt pieces"],
+        "descriptor": "minimalist geometric sculptures in felt and plywood, anti-form sagging materials defying rigid geometry, the body scale of industrial material exploring gravity and perception",
+    },
+    "dan_flavin": {
+        "label": "Dan Flavin",
+        "category": "fine-art",
+        "aliases": ["fluorescent light", "minimalist installation"],
+        "descriptor": "fluorescent light tubes arranged in precise geometric configurations, colour and illumination as sculptural medium, commercial fixtures transforming architectural space into pure chromatic environment",
+    },
+    "donald_judd": {
+        "label": "Donald Judd",
+        "category": "fine-art",
+        "aliases": ["specific objects", "minimalist"],
+        "descriptor": "precise aluminium and plexiglass boxes stacked in serial progression, industrial fabrication of specific objects, colour and material presented without illusion or reference",
+    },
+    "sol_lewitt": {
+        "label": "Sol LeWitt",
+        "category": "fine-art",
+        "aliases": ["conceptual art", "wall drawing"],
+        "descriptor": "geometric wall drawings and modular cube structures executed from written instructions, serial permutation of line and colour, the idea as machine making the art",
+    },
+    "robert_smithson": {
+        "label": "Robert Smithson",
+        "category": "fine-art",
+        "aliases": ["land art", "entropy"],
+        "descriptor": "monumental earthworks spiralling into lake and desert, entropy as aesthetic principle, industrial machinery and geological time merged in site-specific sculptural intervention",
+    },
+    "michael_heizer": {
+        "label": "Michael Heizer",
+        "category": "fine-art",
+        "aliases": ["land art", "negative sculpture"],
+        "descriptor": "vast excavated trenches and pits in the Nevada desert, negative sculpture defined by removal rather than addition, monumental scale of earth moved as sculptural gesture",
+    },
+    "nancy_holt": {
+        "label": "Nancy Holt",
+        "category": "fine-art",
+        "aliases": ["land art", "sky frame"],
+        "descriptor": "land art sculptures framing sky and horizon, concrete tubes aligning with solstice sun, cosmic alignment and geological time rendered in monumental site-specific structure",
+    },
+    "james_turrell": {
+        "label": "James Turrell",
+        "category": "fine-art",
+        "aliases": ["light artist", "skyspace"],
+        "descriptor": "immersive light installations and skyspaces framing the sky, perceptual environments of pure colour and luminance, light itself as material and architectural experience",
+    },
+    "walter_de_maria": {
+        "label": "Walter De Maria",
+        "category": "fine-art",
+        "aliases": ["land art", "Lightning Field"],
+        "descriptor": "minimalist earthworks and stainless-steel rod fields in vast desert, lightning attracting cosmic energy, geometric order imposed on landscape at sublime scale",
+    },
+
+    # --- Fine Art: Arte Povera ---
+    "michelangelo_pistoletto": {
+        "label": "Michelangelo Pistoletto",
+        "category": "fine-art",
+        "aliases": ["Arte Povera", "mirror painting"],
+        "descriptor": "life-size screen-printed figures on mirrored steel surfaces, viewer reflected alongside painted persona, Arte Povera merging everyday material with conceptual self-portraiture",
+    },
+    "jannis_kounellis": {
+        "label": "Jannis Kounellis",
+        "category": "fine-art",
+        "aliases": ["Arte Povera", "live animals"],
+        "descriptor": "raw industrial materials and live animals installed in gallery space, horses and fire and burlap sacks, Arte Povera merging primal material with poetic theatrical installation",
+    },
+
+    "harry_clarke": {
+        "label": "Harry Clarke",
+        "category": "illustration",
+        "aliases": ["stained glass illustrator", "macabre line"],
+        "descriptor": "intricate stained-glass inspired ink drawings with jewelled colour, macabre fairy tale imagery, sinuous Art Nouveau line work and decorative density",
+    },
+    "aubrey_beardsley": {
+        "label": "Aubrey Beardsley",
+        "category": "illustration",
+        "aliases": ["black and white master", "decadent illustrator"],
+        "descriptor": "high contrast black and white ink drawings with grotesque erotic figures, Japanese influenced line work, decadent Art Nouveau elegance and satirical edge",
+    },
+    "jessie_willcox_smith": {
+        "label": "Jessie Willcox Smith",
+        "category": "illustration",
+        "aliases": ["golden age illustrator", "mother and child"],
+        "descriptor": "soft watercolour illustrations of mothers and children in warm domestic light, gentle pastel palette, tender narrative moments rendered with lyrical grace",
+    },
+    "howard_pyle": {
+        "label": "Howard Pyle",
+        "category": "illustration",
+        "aliases": ["American illustrator", "pirate painter"],
+        "descriptor": "bold brushwork in warm earth tones, heroic adventure scenes with pirates and knights, dramatic chiaroscuro and romantic historical narrative",
+    },
+    "jc_leyendecker": {
+        "label": "J.C. Leyendecker",
+        "category": "illustration",
+        "aliases": ["Saturday Evening Post", "Arrow collar man"],
+        "descriptor": "polished oil rendering of idealized American figures, crisp brushwork and elegant composition, Saturday Evening Post covers with cinematic lighting",
+    },
+    "al_hirschfeld": {
+        "label": "Al Hirschfeld",
+        "category": "illustration",
+        "aliases": ["New Yorker illustrator", "celebrity caricature"],
+        "descriptor": "loose expressive ink lines capturing celebrity likenesses with minimal strokes, fluid gestural drawing, witty caricature with elegant economy of line",
+    },
+    "ronald_searle": {
+        "label": "Ronald Searle",
+        "category": "illustration",
+        "aliases": ["British cartoonist", "satirical line"],
+        "descriptor": "scratchy expressive ink lines with satirical edge, grotesque figures and architectural fantasy, British humor rendered in nervous energetic line work",
+    },
+    "ralph_steadman": {
+        "label": "Ralph Steadman",
+        "category": "illustration",
+        "aliases": ["Gonzo illustrator", "splatter ink"],
+        "descriptor": "chaotic splattered ink drawings with grotesque caricature, Hunter Thompson collaborations, manic line work and visceral satirical energy",
+    },
+    "gerald_scarfe": {
+        "label": "Gerald Scarfe",
+        "category": "illustration",
+        "aliases": ["British satirical", "Pink Floyd designer"],
+        "descriptor": "grotesque caricature with fluid ink lines, political satire and album cover design, elongated distorted figures in expressive monochrome",
+    },
+    "raymond_briggs": {
+        "label": "Raymond Briggs",
+        "category": "illustration",
+        "aliases": ["British cartoonist", "The Snowman"],
+        "descriptor": "warm watercolour illustrations of everyday British life, gentle humour and emotional directness, comic strip narrative with tender character design",
+    },
+    "john_burningham": {
+        "label": "John Burningham",
+        "category": "illustration",
+        "aliases": ["British children's book", "watercolour storyteller"],
+        "descriptor": "loose watercolour illustrations with childlike energy, whimsical character design, warm palette and spontaneous brushwork in picture book narrative",
+    },
+    "helen_oxenbury": {
+        "label": "Helen Oxenbury",
+        "category": "illustration",
+        "aliases": ["British children's book", "gentle watercolour"],
+        "descriptor": "delicate watercolour illustrations of children and animals, soft pastel palette, gentle domestic scenes rendered with quiet warmth and observation",
+    },
+    "shirley_hughes": {
+        "label": "Shirley Hughes",
+        "category": "illustration",
+        "aliases": ["British children's book", "family scenes"],
+        "descriptor": "warm ink and watercolour illustrations of British family life, detailed domestic scenes, expressive children rendered with affectionate observation",
+    },
+    "jan_pienkowski": {
+        "label": "Jan Pienkowski",
+        "category": "illustration",
+        "aliases": ["Polish British illustrator", "decorative collage"],
+        "descriptor": "bold decorative illustrations with paper collage elements, vibrant colour and pattern, Eastern European folk art influence in playful composition",
+    },
+    "eric_carle": {
+        "label": "Eric Carle",
+        "category": "illustration",
+        "aliases": ["collage illustrator", "The Very Hungry Caterpillar"],
+        "descriptor": "bold hand-painted paper collage with vibrant primary colour, simple organic shapes, picture book narrative with decorative pattern and rhythm",
+    },
+    "leo_lionni": {
+        "label": "Leo Lionni",
+        "category": "illustration",
+        "aliases": ["collage picture book", "Swiss Italian"],
+        "descriptor": "torn paper collage illustrations in bold primary colour, simple geometric shapes, minimalist picture book design with emotional directness",
+    },
+    "tomie_depola": {
+        "label": "Tomie dePaola",
+        "category": "illustration",
+        "aliases": ["American children's book", "folk art style"],
+        "descriptor": "warm watercolour and gouache illustrations with folk art simplicity, religious and family narrative, muted earth palette with gentle humour",
+    },
+    "richard_scarry": {
+        "label": "Richard Scarry",
+        "category": "illustration",
+        "aliases": ["Busy Town illustrator", "animal characters"],
+        "descriptor": "busy detailed illustrations of anthropomorphic animals in busy towns, warm colour palette, intricate visual narrative packed with activity and charm",
+    },
+    "gyo_fujikawa": {
+        "label": "Gyo Fujikawa",
+        "category": "illustration",
+        "aliases": ["Japanese American illustrator", "diverse children"],
+        "descriptor": "soft watercolour illustrations of diverse children in gentle settings, warm pastel palette, inclusive picture book representation with tender observation",
+    },
+    "taro_gomi": {
+        "label": "Taro Gomi",
+        "category": "illustration",
+        "aliases": ["Japanese picture book", "playful simplicity"],
+        "descriptor": "bold simple illustrations with playful wit, bright flat colour, Japanese picture book design with childlike directness and visual humour",
+    },
+    "mitsumasa_anno": {
+        "label": "Mitsumasa Anno",
+        "category": "illustration",
+        "aliases": ["Japanese watercolourist", "mathematical illustration"],
+        "descriptor": "delicate watercolour illustrations with mathematical precision, intricate architectural fantasy, warm earth palette and meticulous detail in every scene",
+    },
+    "david_macaulay": {
+        "label": "David Macaulay",
+        "category": "illustration",
+        "aliases": ["architectural illustrator", "How things work"],
+        "descriptor": "detailed pen and ink illustrations of architecture and engineering, cutaway drawings revealing internal structure, educational narrative with precise technical rendering",
+    },
+    "peter_spier": {
+        "label": "Peter Spier",
+        "category": "illustration",
+        "aliases": ["Dutch American illustrator", "People"],
+        "descriptor": "detailed ink illustrations celebrating human diversity, intricate crowd scenes, warm observational humour and meticulous cross-cultural detail",
+    },
+    "barbara_cooney": {
+        "label": "Barbara Cooney",
+        "category": "illustration",
+        "aliases": ["American children's book", "Miss Rumphius"],
+        "descriptor": "delicate scratchboard and watercolour illustrations of New England landscapes, muted palette, quiet narrative with historical accuracy and gentle beauty",
+    },
+    "william_joyce": {
+        "label": "William Joyce",
+        "category": "illustration",
+        "aliases": ["American children's book", "Guardians of Childhood"],
+        "descriptor": "bold colourful illustrations with cinematic composition, whimsical character design, vibrant palette and dynamic storytelling in picture book format",
+    },
+    "mark_teague": {
+        "label": "Mark Teague",
+        "category": "illustration",
+        "aliases": ["American children's book", "dinosaur illustrator"],
+        "descriptor": "bold colourful illustrations of dinosaurs and children, playful character design, vibrant palette and humorous narrative in picture book format",
+    },
+    "sophie_blackall": {
+        "label": "Sophie Blackall",
+        "category": "illustration",
+        "aliases": ["Caldecott winner", "watercolour portrait"],
+        "descriptor": "delicate watercolour illustrations with intimate portrait quality, warm palette, tender character moments rendered with quiet observation and grace",
+    },
+    "isabelle_arsenault": {
+        "label": "Isabelle Arsenault",
+        "category": "illustration",
+        "aliases": ["Canadian illustrator", "mixed media"],
+        "descriptor": "mixed media illustrations combining pencil and collage, muted vintage palette, atmospheric narrative with textural depth and emotional resonance",
+    },
+    "sydney_smith": {
+        "label": "Sydney Smith",
+        "category": "illustration",
+        "aliases": ["Canadian illustrator", "watercolour narrative"],
+        "descriptor": "expressive watercolour illustrations with cinematic composition, dynamic brushwork, emotional narrative rendered in fluid colour and light",
+    },
+    "rebecca_dautremer": {
+        "label": "Rebecca Dautremer",
+        "category": "illustration",
+        "aliases": ["French illustrator", "fairy tale"],
+        "descriptor": "ethereal watercolour illustrations of fairy tale subjects, dreamlike atmosphere, muted palette with luminous light and romantic narrative",
+    },
+    "benjamin_lacombe": {
+        "label": "Benjamin Lacombe",
+        "category": "illustration",
+        "aliases": ["French illustrator", "dark fairy tale"],
+        "descriptor": "detailed gouache illustrations of dark fairy tale subjects, rich jewel tone palette, ornate decorative work with gothic romantic atmosphere",
     },
 }
