@@ -171,7 +171,7 @@ if _COMFY_AVAILABLE:
         @classmethod
         def define_schema(cls) -> io.Schema:
             categories = _category_options()
-            style_names = sorted(
+            style_names = [_STYLE_RANDOM] + sorted(
                 rec["label"] for rec in STYLES.values()
             )
 
