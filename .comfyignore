@@ -1,0 +1,11 @@
+# Exclude development-only files from the published registry archive.
+# .comfyignore layers on top of .gitignore — files already gitignored
+# are excluded automatically. This drops files we KEEP in git but
+# don't want in the registry package.
+
+tests/
+scripts/
+docs/
+examples/
+.user_styles.example.json
+previews/
