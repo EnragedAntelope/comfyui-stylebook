@@ -15,6 +15,12 @@ import json
 import random
 from typing import Any
 
+# Dual import for data access — package-relative inside ComfyUI, absolute for tests.
+try:
+    from ..data.styles import STYLES, get_style_ids  # type: ignore[import-not-found]
+except ImportError:  # pragma: no cover
+    from data.styles import STYLES, get_style_ids  # noqa: E402
+
 
 # ---------------------------------------------------------------------------
 # Chain protocol
@@ -343,8 +349,6 @@ def random_style_id(
 
     Falls back to the global STYLES if *style_ids*/*style_map* are not given.
     """
-    from data.styles import STYLES, get_style_ids  # noqa: E402 — guarded import for test safety
-
     smap = style_map or STYLES
     if style_ids is None:
         ids = get_style_ids(category=category, tag_filter=tag_filter)
@@ -368,8 +372,7 @@ def cycle_style_id(
     style_map: dict[str, dict] | None = None,
 ) -> str | None:
     """Return the style id at deterministic *index* within the filter pool."""
-    from data.styles import STYLES, get_style_ids  # noqa: E402
-
+    smap = style_map or STYLES
     smap = style_map or STYLES
     ids = get_style_ids(category=category, tag_filter=tag_filter)
     ids = [i for i in ids if i in smap]

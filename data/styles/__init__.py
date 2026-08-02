@@ -7,10 +7,10 @@ and exports a single STYLES dict + helper accessors.
 
 from __future__ import annotations
 
-from data.styles.photography import PHOTOGRAPHY_STYLES
-from data.styles.illustration import ILLUSTRATION_STYLES
-from data.styles.comics import COMICS_STYLES
-
+# Relative imports — works both inside ComfyUI and standalone with sys.path set.
+from .photography import PHOTOGRAPHY_STYLES
+from .illustration import ILLUSTRATION_STYLES
+from .comics import COMICS_STYLES
 # Future categories will be added here:
 # from data.styles.film_cinema import FILM_CINEMA_STYLES
 # from data.styles.painting import PAINTING_STYLES
@@ -29,7 +29,7 @@ STYLES.update(ILLUSTRATION_STYLES)
 STYLES.update(COMICS_STYLES)
 
 # Merge user styles (survives git pull).
-from data.user_data import apply_user_styles  # noqa: E402
+from ..user_data import apply_user_styles  # noqa: E402
 apply_user_styles(STYLES)
 
 #: Ordered list of category names.
