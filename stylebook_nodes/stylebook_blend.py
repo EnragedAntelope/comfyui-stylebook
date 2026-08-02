@@ -1,4 +1,4 @@
-"""StylebookBlend node — blend two styles at a ratio.
+﻿"""StylebookBlend node — blend two styles at a ratio.
 
 Wire a second style into the ``style_b`` input to blend it with
 the current chain's style. The ``ratio`` widget (0.0–1.0) controls
@@ -13,7 +13,7 @@ import json
 try:
     from .stylebook_core import parse_chain, dump_chain, resolve_meta, render_prompt, render_negative
 except ImportError:  # pragma: no cover
-    from nodes.stylebook_core import parse_chain, dump_chain, resolve_meta, render_prompt, render_negative
+    from stylebook_nodes.stylebook_core import parse_chain, dump_chain, resolve_meta, render_prompt, render_negative
 
 try:
     from comfy_api.latest import io  # type: ignore[import-not-found]

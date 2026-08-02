@@ -70,9 +70,11 @@ def check_file(target: Path) -> tuple[bool, str]:
         return False, f"File {target} does not exist."
     actual = target.read_text(encoding="utf-8")
 
-    # Extract the generated block from the actual file.
+    # Extract the generated block from the actual file. The opening marker
+    # line includes a descriptive suffix ("— do not edit by hand. Regenerate:
+    # ..."), so match on the stable prefix only.
     import re
-    match = re.search(r"// >>> GENERATED DATA >>>.*?// <<< GENERATED DATA <<<", actual, re.DOTALL)
+    match = re.search(r"// >>> GENERATED DATA.*?// <<< GENERATED DATA <<<", actual, re.DOTALL)
     if not match:
         # Fallback: compare whole file (for standalone generated-data files).
         if actual.strip() != expected.strip():

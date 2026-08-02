@@ -1,4 +1,4 @@
-"""comfyui-stylebook — V3 custom node pack entrypoint.
+﻿"""comfyui-stylebook — V3 custom node pack entrypoint.
 
 Exposes four nodes:
 
@@ -18,15 +18,15 @@ from comfy_api.latest import ComfyExtension, io
 
 # Package-relative inside ComfyUI; absolute fallback for tests.
 try:
-    from .nodes.stylebook_style import StylebookStyle
-    from .nodes.stylebook_artist import StylebookArtist
-    from .nodes.stylebook_modifier import StylebookModifier
-    from .nodes.stylebook_blend import StylebookBlend
+    from .stylebook_nodes.stylebook_style import StylebookStyle
+    from .stylebook_nodes.stylebook_artist import StylebookArtist
+    from .stylebook_nodes.stylebook_modifier import StylebookModifier
+    from .stylebook_nodes.stylebook_blend import StylebookBlend
 except ImportError:  # pragma: no cover
-    from nodes.stylebook_style import StylebookStyle
-    from nodes.stylebook_artist import StylebookArtist
-    from nodes.stylebook_modifier import StylebookModifier
-    from nodes.stylebook_blend import StylebookBlend
+    from stylebook_nodes.stylebook_style import StylebookStyle
+    from stylebook_nodes.stylebook_artist import StylebookArtist
+    from stylebook_nodes.stylebook_modifier import StylebookModifier
+    from stylebook_nodes.stylebook_blend import StylebookBlend
 
 #: Tells ComfyUI where to find this pack's frontend JavaScript.
 WEB_DIRECTORY = "./js"

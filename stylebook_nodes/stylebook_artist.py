@@ -1,4 +1,4 @@
-"""StylebookArtist node — additive, chainable artist selection.
+﻿"""StylebookArtist node — additive, chainable artist selection.
 
 Each Artist node adds one artist to the chain. Chain multiple
 to stack artists (Rembrandt × Picasso). Capped at 5, warns above 3.
@@ -11,7 +11,7 @@ try:
     from .stylebook_core import parse_chain, dump_chain, merge_chain, resolve_meta, render_prompt, render_negative
 except ImportError:  # pragma: no cover
     from data.artists import ARTISTS
-    from nodes.stylebook_core import parse_chain, dump_chain, merge_chain, resolve_meta, render_prompt, render_negative
+    from stylebook_nodes.stylebook_core import parse_chain, dump_chain, merge_chain, resolve_meta, render_prompt, render_negative
 
 try:
     from comfy_api.latest import io  # type: ignore[import-not-found]

@@ -1,4 +1,4 @@
-"""Unit tests for the Stylebook chain engine.
+﻿"""Unit tests for the Stylebook chain engine.
 
 Pure-stdlib ``unittest`` so it runs without ComfyUI installed:
 
@@ -16,12 +16,12 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from nodes.stylebook_core import (
+from stylebook_nodes.stylebook_core import (
     parse_chain, dump_chain, merge_chain, resolve_meta,
     render_prompt, render_negative, get_blocked_axes,
     filter_modifiers, EMPTY_CHAIN, seeded_rng,
 )
-from nodes.stylebook_style import build_style_chain
+from stylebook_nodes.stylebook_style import build_style_chain
 from tests.validate_data import validate
 
 

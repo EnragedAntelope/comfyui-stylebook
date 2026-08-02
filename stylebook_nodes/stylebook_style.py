@@ -1,4 +1,4 @@
-"""StylebookStyle node — the exclusive medium axis.
+﻿"""StylebookStyle node — the exclusive medium axis.
 
 Pick a style, randomize within a filtered pool, cycle
 deterministically through a pool, or batch-emit a style sheet.
@@ -21,7 +21,7 @@ try:
 except ImportError:  # pragma: no cover — standalone/test context
     from data.styles import STYLES, get_style_ids, get_style
     from data.modifiers import MODIFIERS
-    from nodes.stylebook_core import (
+    from stylebook_nodes.stylebook_core import (
         parse_chain, dump_chain, merge_chain, resolve_meta,
         render_prompt, render_negative, get_blocked_axes,
         filter_modifiers, seeded_rng, random_style_id,

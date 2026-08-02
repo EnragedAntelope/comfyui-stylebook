@@ -1,4 +1,4 @@
-"""StylebookModifier node — additive, one per sub-axis.
+﻿"""StylebookModifier node — additive, one per sub-axis.
 
 Add a lighting, colour grade, era, finish, or mood tilt.
 Each modifier node targets one axis; a second modifier on the
@@ -12,7 +12,7 @@ try:
     from .stylebook_core import parse_chain, dump_chain, merge_chain, resolve_meta, render_prompt, render_negative
 except ImportError:  # pragma: no cover
     from data.modifiers import MODIFIERS, AXES, MODIFIERS_BY_AXIS
-    from nodes.stylebook_core import parse_chain, dump_chain, merge_chain, resolve_meta, render_prompt, render_negative
+    from stylebook_nodes.stylebook_core import parse_chain, dump_chain, merge_chain, resolve_meta, render_prompt, render_negative
 
 try:
     from comfy_api.latest import io  # type: ignore[import-not-found]

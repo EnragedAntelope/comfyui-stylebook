@@ -117,4 +117,134 @@
     color: #666;
     font-size: 11px;
     text-align: center;
+.stylebook-gallery-footer {
+    padding: 10px 20px;
+    border-top: 1px solid #2a2a4a;
+    color: #666;
+    font-size: 11px;
+    text-align: center;
 }
+
+/* ---- focus / keyboard states ---- */
+.stylebook-gallery-search:focus {
+    outline: none;
+    border-color: #6a6aaa;
+    background: #16163a;
+}
+
+.stylebook-gallery-tab:focus-visible {
+    outline: none;
+    border-color: #6a6aaa;
+    color: #e0e0e0;
+}
+
+.stylebook-gallery-tile:focus-visible {
+    outline: none;
+    border-color: #8a8aff;
+    box-shadow: 0 0 0 2px rgba(138, 138, 255, 0.3);
+}
+
+/* ---- placeholder tile (no preview image yet) ---- */
+.stylebook-gallery-tile-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: rgba(224, 224, 224, 0.35);
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+}
+
+.stylebook-gallery-tile[data-category="photography"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #3a3a5a 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="illustration"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #3a3050 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="comics"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #3a2050 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="film_cinema"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #2a3a50 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="painting"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #4a3a2a 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="art_movements"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #4a2a3a 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="anime_manga"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #3a2a4a 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="three_d_digital"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #2a4a3a 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="print_graphic"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #3a3a2a 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="object_artifact"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #2a2a3a 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="craft_material"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #4a3a3a 0%, #1a1a2e 100%);
+}
+.stylebook-gallery-tile[data-category="collage_mixed"] .stylebook-gallery-tile-placeholder {
+    background: linear-gradient(135deg, #3a4a3a 0%, #1a1a2e 100%);
+}
+
+/* ---- empty / no-results state ---- */
+.stylebook-gallery-empty {
+    grid-column: 1 / -1;
+    padding: 40px 20px;
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+}
+
+.stylebook-gallery-count {
+    color: #888;
+    font-size: 12px;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+/* ---- open-gallery button on the node ---- */
+.stylebook-gallery-open-btn {
+    width: 100%;
+    margin-top: 4px;
+    padding: 6px 10px;
+    background: #2a2a4a;
+    color: #e0e0e0;
+    border: 1px solid #3a3a6a;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.stylebook-gallery-open-btn:hover {
+    background: #3a3a6a;
+    border-color: #5a5a8a;
+}
+
+.stylebook-gallery-open-btn:focus-visible {
+    outline: none;
+    border-color: #8a8aff;
+}
+
+/* ---- responsive: narrow viewports ---- */
+@media (max-width: 720px) {
+    .stylebook-gallery-dialog {
+        width: 100vw;
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    .stylebook-gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
+
