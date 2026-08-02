@@ -118,15 +118,8 @@ def build_style_chain(
         if ids:
             resolved_id = ids[0]  # primary output uses first style
     elif mode == _MODE_PICK:
-        if style_id == _STYLE_RANDOM:
-            resolved_id = random_style_id(
-                rng=rng,
-                category=category if category != _STYLE_NONE else None,
-                tag_filter=tag_filter,
-            )
-        elif style_id != _STYLE_NONE:
+        if style_id != _STYLE_NONE and style_id:
             resolved_id = style_id
-        # else: resolved_id stays None (no style)
 
     # Apply the style.
     if resolved_id:
@@ -178,7 +171,7 @@ if _COMFY_AVAILABLE:
         @classmethod
         def define_schema(cls) -> io.Schema:
             categories = _category_options()
-            style_names = [_STYLE_RANDOM] + sorted(
+            style_names = sorted(
                 rec["label"] for rec in STYLES.values()
             )
 
@@ -325,7 +318,7 @@ if _COMFY_AVAILABLE:
 
             # Resolve style id from label if in Pick mode.
             style_id = style
-            if mode == _MODE_PICK and style not in (_STYLE_RANDOM, _STYLE_NONE):
+            if mode == _MODE_PICK:
                 rec = get_style(style)
                 style_id = rec["id"] if rec else _STYLE_NONE
 
@@ -349,7 +342,20 @@ if _COMFY_AVAILABLE:
             for w in warnings:
                 print(f"[Stylebook] {w}")
 
+            # Sheet mode: render each style's prose and join them.
+            if mode == _MODE_SHEET and sheet_chains:
+                meta = resolve_meta(chain)
+                up = chain.get("_meta", {}).get("user_prompt", "")
+                sheet_outputs = []
+                for sc in sheet_chains:
+                    sm = resolve_meta(sc)
+                    sp = render_prompt(sc, sm, up)
+                    if sp.strip():
+                        sheet_outputs.append(sp)
+                joined = "\n\n---\n\n".join(sheet_outputs) if sheet_outputs else ""
+                return io.NodeOutput(joined, render_negative(chain), dump_chain(chain))
+
             meta = resolve_meta(chain)
-            prompt = render_prompt(chain, meta, meta.get("user_prompt", ""))
+            prompt = render_prompt(chain, meta, chain.get("_meta", {}).get("user_prompt", ""))
 
             return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))
