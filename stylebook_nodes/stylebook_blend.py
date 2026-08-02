@@ -46,7 +46,6 @@ if _COMFY_AVAILABLE:
                     io.String.Input(
                         "style_chain",
                         display_name="style_chain",
-                        force_input=True,
                         optional=True,
                         default="{}",
                         tooltip="Primary style chain (style A).",
@@ -54,7 +53,6 @@ if _COMFY_AVAILABLE:
                     io.String.Input(
                         "style_b",
                         display_name="style B",
-                        force_input=True,
                         optional=True,
                         default="{}",
                         tooltip="Second style chain to blend with (style B). "

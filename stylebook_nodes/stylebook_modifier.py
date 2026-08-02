@@ -55,7 +55,6 @@ if _COMFY_AVAILABLE:
                     io.String.Input(
                         "style_chain",
                         display_name="style_chain",
-                        force_input=True,
                         optional=True,
                         default="{}",
                         tooltip="Connect an upstream Stylebook node's style_chain output.",

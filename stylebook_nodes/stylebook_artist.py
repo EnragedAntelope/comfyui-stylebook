@@ -25,7 +25,6 @@ _NAME_HANDLING_FULL = "Name + descriptor"
 _NAME_HANDLING_NAMES_LEAD = "Names + lead descriptor"
 _NAME_HANDLING_NAMES_ONLY = "Names only"
 _NAME_HANDLING_DESCRIPTOR_ONLY = "Descriptor only"
-_NAME_HANDLING_AUTO = "Auto (model family)"
 
 #: Map UI labels to chain meta values.
 _NAME_HANDLING_MAP = {
@@ -61,8 +60,8 @@ if _COMFY_AVAILABLE:
         """Add an artist to the rendering chain.
 
         Each Artist node stacks one artist. Chain multiple to blend
-        influences (e.g. Rembrandt × Picasso). Every artist carries a
-        hand-written descriptor so the style reads on any model —
+        influences (e.g. Rembrandt x Picasso). Every artist carries a
+        hand-written descriptor so the style reads on any model,
         even ones that don't know the name.
         """
 
@@ -79,7 +78,6 @@ if _COMFY_AVAILABLE:
                     io.String.Input(
                         "style_chain",
                         display_name="style_chain",
-                        force_input=True,
                         optional=True,
                         default="{}",
                         tooltip="Connect an upstream Stylebook node's style_chain output.",
@@ -93,26 +91,23 @@ if _COMFY_AVAILABLE:
                     io.Combo.Input(
                         "name_handling",
                         options=[
-                            _NAME_HANDLING_AUTO,
                             _NAME_HANDLING_FULL,
                             _NAME_HANDLING_NAMES_LEAD,
                             _NAME_HANDLING_NAMES_ONLY,
                             _NAME_HANDLING_DESCRIPTOR_ONLY,
                         ],
-                        default=_NAME_HANDLING_AUTO,
-                        tooltip="How to render the artist. 'Auto' picks based on the "
-                                "model family: full name+descriptor on booru-lineage models "
-                                "(SDXL, Pony, Illustrious), descriptor-only on recaption models "
-                                "(Flux, Z-Image, Krea).",
+                        default=_NAME_HANDLING_FULL,
+                        tooltip="How to render this artist. 'Name + descriptor' works on "
+                                "all models. 'Descriptor only' is best for recaption models "
+                                "(Flux, Z-Image, Krea) where artist names are stripped from "
+                                "training data and have no effect.",
                     ),
                     io.Combo.Input(
                         "artist_detail",
                         options=["inherit", _NAME_HANDLING_FULL, _NAME_HANDLING_NAMES_LEAD, _NAME_HANDLING_NAMES_ONLY, _NAME_HANDLING_DESCRIPTOR_ONLY],
                         default="inherit",
                         tooltip="Override how ALL stacked artists are rendered. "
-                                "'inherit' uses the upstream setting. 'Names + lead descriptor' "
-                                "keeps the first sentence from each artist's descriptor "
-                                "when stacking 3+.",
+                                "'inherit' uses the upstream setting.",
                     ),
                 ],
                 outputs=[
@@ -137,19 +132,15 @@ if _COMFY_AVAILABLE:
             chain = parse_chain(style_chain)
             warnings: list[str] = []
 
-            # Determine name_handling mode.
-            mode = artist_detail
-            if name_handling == _NAME_HANDLING_AUTO and mode == "inherit":
-                mode = "full"  # default without model path context
-            elif name_handling != _NAME_HANDLING_AUTO:
-                mode = _NAME_HANDLING_MAP.get(name_handling, "full")
+            # Determine effective name_handling mode.
+            # artist_detail overrides name_handling when not "inherit".
+            mode_key = artist_detail if artist_detail != "inherit" else name_handling
+            mode = _NAME_HANDLING_MAP.get(mode_key, "full")
 
             # Apply artist_detail override to meta.
             meta_overrides: dict[str, str] = {}
             if artist_detail != "inherit":
                 meta_overrides["artist_detail"] = _NAME_HANDLING_MAP.get(artist_detail, "full")
-            elif name_handling == _NAME_HANDLING_AUTO:
-                meta_overrides["artist_detail"] = "full"
 
             # Find and add the artist.
             if artist and artist not in (_ARTIST_NONE, _ARTIST_RANDOM):
