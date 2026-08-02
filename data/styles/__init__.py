@@ -11,23 +11,30 @@ from __future__ import annotations
 from .photography import PHOTOGRAPHY_STYLES
 from .illustration import ILLUSTRATION_STYLES
 from .comics import COMICS_STYLES
-# Future categories will be added here:
-# from data.styles.film_cinema import FILM_CINEMA_STYLES
-# from data.styles.painting import PAINTING_STYLES
-# from data.styles.art_movements import ART_MOVEMENTS_STYLES
-# from data.styles.anime_manga import ANIME_MANGA_STYLES
-# from data.styles.three_d_digital import THREE_D_DIGITAL_STYLES
-# from data.styles.print_graphic import PRINT_GRAPHIC_STYLES
-# from data.styles.craft_material import CRAFT_MATERIAL_STYLES
-# from data.styles.object_artifact import OBJECT_ARTIFACT_STYLES
-# from data.styles.collage_mixed import COLLAGE_MIXED_STYLES
+from .film_cinema import FILM_CINEMA_STYLES
+from .painting import PAINTING_STYLES
+from .art_movements import ART_MOVEMENTS_STYLES
+from .anime_manga import ANIME_MANGA_STYLES
+from .three_d_digital import THREE_D_DIGITAL_STYLES
+from .print_graphic import PRINT_GRAPHIC_STYLES
+from .craft_material import CRAFT_MATERIAL_STYLES
+from .object_artifact import OBJECT_ARTIFACT_STYLES
+from .collage_mixed import COLLAGE_MIXED_STYLES
 
 #: All shipped styles, keyed by id.
 STYLES: dict[str, dict] = {}
 STYLES.update(PHOTOGRAPHY_STYLES)
 STYLES.update(ILLUSTRATION_STYLES)
 STYLES.update(COMICS_STYLES)
-
+STYLES.update(FILM_CINEMA_STYLES)
+STYLES.update(PAINTING_STYLES)
+STYLES.update(ART_MOVEMENTS_STYLES)
+STYLES.update(ANIME_MANGA_STYLES)
+STYLES.update(THREE_D_DIGITAL_STYLES)
+STYLES.update(PRINT_GRAPHIC_STYLES)
+STYLES.update(OBJECT_ARTIFACT_STYLES)
+STYLES.update(CRAFT_MATERIAL_STYLES)
+STYLES.update(COLLAGE_MIXED_STYLES)
 # Merge user styles (survives git pull).
 from ..user_data import apply_user_styles  # noqa: E402
 apply_user_styles(STYLES)
@@ -35,11 +42,10 @@ apply_user_styles(STYLES)
 #: Ordered list of category names.
 CATEGORIES: tuple[str, ...] = (
     "photography", "illustration", "comics",
-    # "film_cinema", "painting", "art_movements",
-    # "anime_manga", "three_d_digital", "print_graphic",
-    # "craft_material", "object_artifact", "collage_mixed",
+    "film_cinema", "painting", "art_movements",
+    "anime_manga", "three_d_digital", "print_graphic", "object_artifact",
+    "craft_material", "collage_mixed",
 )
-
 #: Per-category ordered style id lists.
 STYLES_BY_CATEGORY: dict[str, list[str]] = {}
 for _sid, _rec in STYLES.items():
