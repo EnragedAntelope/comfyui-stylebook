@@ -291,17 +291,17 @@ def render_prompt(
     # Apply template or default wrapping.
     if template and "{style}" in template and "{prompt}" in template:
         result = template.replace("{style}", style_text).replace("{prompt}", user_prompt.strip())
-    if template and "{style}" in template and "{prompt}" in template:
-        result = template.replace("{style}", style_text).replace("{prompt}", user_prompt.strip())
     elif placement == "append":
         if user_prompt.strip() and style_text:
-            result = f"{user_prompt.strip()}, {style_text}"
+            sep = ", " if fmt == "tags" else " "
+            result = f"{user_prompt.strip()}{sep}{style_text}"
         else:
             result = user_prompt.strip() or style_text
     else:
         # prepend
         if style_text and user_prompt.strip():
-            result = f"{style_text}, {user_prompt.strip()}"
+            sep = ", " if fmt == "tags" else " "
+            result = f"{style_text}{sep}{user_prompt.strip()}"
         else:
             result = style_text or user_prompt.strip()
 

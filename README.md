@@ -34,8 +34,24 @@ The `prompt` output contains ready-to-encode style text. The `style_chain` outpu
 | **Modifier** | Tilt one rendering axis: lighting, color grade, era, finish, or mood. One modifier per axis - adding a second on the same axis replaces the first. Defaults to Off on every axis. |
 | **Blend** | Mix two styles at a ratio from 0.0 (pure style A) to 1.0 (pure style B). Connect a second style chain into the `style B` input. |
 
-## Filtering, cycling, and style sheets
+## Best practices
 
+Chain order matters. The recommended sequence is:
+
+1. **Style** first — defines the medium and carries your subject prompt
+2. **Artist** second — adds individual influence on top of the style
+3. **Modifier** last — tilts the rendering axis (lighting, era, etc.)
+4. Connect the final `prompt` output to CLIPTextEncode
+
+Why this order: Style is exclusive (a second Style replaces the first).
+Artists stack (append). Modifiers are per-axis. Putting Style first
+ensures your subject prompt flows through all downstream nodes.
+
+Prose format uses a space between style and prompt; tags format uses
+a comma. Pick `tags` for keyword-heavy chains or `prose` for natural
+language output.
+
+## Filtering, cycling, and style sheets
 Set `mode` to `Random`, pick a `category`, and optionally type a `tag_filter` like `bw, high-contrast`. Every run with the same seed gives the same result.
 
 `Cycle` advances through the filtered pool deterministically - index 0 is the first match, index 1 is the second, wrapping around.
