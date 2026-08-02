@@ -1,0 +1,17 @@
+{
+    "styles": {
+        "my_custom_style": {
+            "id": "my_custom_style",
+            "label": "My Custom Style",
+            "category": "illustration",
+            "aliases": ["custom"],
+            "tags": "your custom, comma separated, style keywords",
+            "prose": "A custom style description in prose form. At least 15 words describing the rendering across multiple primitive facets: colour, line, texture, lighting, and composition.",
+            "negative": "",
+            "preview": "illustration#00",
+            "blocks": []
+        }
+    },
+    "artists": {},
+    "modifiers": {}
+}

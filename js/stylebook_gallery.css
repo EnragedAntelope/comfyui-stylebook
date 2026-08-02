@@ -1,0 +1,120 @@
+/* Stylebook gallery dialog styles — loaded via WEB_DIRECTORY. */
+
+.stylebook-gallery-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stylebook-gallery-dialog {
+    background: #1a1a2e;
+    border-radius: 12px;
+    width: 90vw;
+    max-width: 1200px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.stylebook-gallery-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #2a2a4a;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.stylebook-gallery-search {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #3a3a5a;
+    border-radius: 6px;
+    background: #12122a;
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+.stylebook-gallery-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 20px;
+    border-bottom: 1px solid #2a2a4a;
+    overflow-x: auto;
+}
+
+.stylebook-gallery-tab {
+    padding: 6px 14px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.stylebook-gallery-tab:hover {
+    background: #2a2a4a;
+}
+
+.stylebook-gallery-tab.active {
+    background: #3a3a6a;
+    color: #e0e0e0;
+    border-color: #5a5a8a;
+}
+
+.stylebook-gallery-grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.stylebook-gallery-tile {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+    position: relative;
+}
+
+.stylebook-gallery-tile:hover {
+    border-color: #6a6aaa;
+}
+
+.stylebook-gallery-tile.selected {
+    border-color: #8a8aff;
+}
+
+.stylebook-gallery-tile-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6px 8px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: #e0e0e0;
+    font-size: 11px;
+    text-align: center;
+}
+
+.stylebook-gallery-footer {
+    padding: 10px 20px;
+    border-top: 1px solid #2a2a4a;
+    color: #666;
+    font-size: 11px;
+    text-align: center;
+}

@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# User-supplied styles (keep local; survives git pull)
+user_styles.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local agent / working notes (not for distribution)
+.claude/
+.omo/
+docs/worklog/
+
+# Preview renders (published to gh-pages, not in repo)
+previews/src/

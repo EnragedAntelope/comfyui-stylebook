@@ -1,0 +1,24 @@
+[project]
+name = "comfyui-stylebook"
+version = "0.1.0"
+description = "A style-injection node pack for ComfyUI with a deep filterable taxonomy, in-node previews, dual tag/prose output, and model-agnostic style text. Pick, randomize, cycle, or batch-sheet a Style, chain Artist nodes, layer Modifiers by axis, and blend two styles at a ratio — all of it offline, dependency-free."
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["comfyui", "comfyui-nodes", "comfyui-custom-nodes", "prompt-engineering", "art-styles", "stable-diffusion", "flux", "sdxl", "text-to-image", "style", "artist", "modifier", "gallery", "preview"]
+dependencies = []
+
+[[project.authors]]
+name = "EnragedAntelope"
+
+[project.urls]
+Repository = "https://github.com/EnragedAntelope/comfyui-stylebook"
+"Bug Tracker" = "https://github.com/EnragedAntelope/comfyui-stylebook/issues"
+
+[tool.comfy]
+PublisherId = "enragedantelope"
+DisplayName = "Stylebook"
+requires-comfyui = ">=0.25.0"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["E402"]
