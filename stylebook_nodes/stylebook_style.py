@@ -1,4 +1,4 @@
-﻿"""StylebookStyle node — the exclusive medium axis.
+"""StylebookStyle node — the exclusive medium axis.
 
 Pick a style, randomize within a filtered pool, cycle
 deterministically through a pool, or batch-emit a style sheet.

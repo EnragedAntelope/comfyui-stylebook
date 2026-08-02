@@ -1,4 +1,4 @@
-﻿"""Artist records - ~800 hand-curated entries with descriptors.
+"""Artist records - ~800 hand-curated entries with descriptors.
 
 Every artist carries a descriptor that steers the model independently
 of whether it knows the name. Name + description = works on all lineages.
@@ -3433,25 +3433,25 @@ ARTISTS: dict[str, dict] = {
         "label": "Robert Adams",
         "category": "photography",
         "aliases": ["New West", "suburban landscape"],
-        "descriptor": "quiet large-format black-and-white photographs of suburban sprawl and plains, even daylight on tract houses and power lines, the unheroic American landscape rendered with austere formal clarity",
+        "descriptor": "quiet large-format black-and-white photographs of suburban sprawl, even daylight on tract houses and power lines, the unheroic American landscape in austere formal clarity",
     },
     "lewis_baltz": {
         "label": "Lewis Baltz",
         "category": "photography",
         "aliases": ["New Topographics", "industrial landscape"],
-        "descriptor": "deadpan black-and-white photographs of warehouses and subdivisions, flat even light on blank walls and gravel lots, the banal architecture of late capitalism in precise geometric framing",
+        "descriptor": "deadpan black-and-white photographs of warehouses and subdivisions, flat even light on blank walls and gravel lots, banal architecture of late capitalism in precise framing",
     },
     "john_divola": {
         "label": "John Divola",
         "category": "photography",
         "aliases": ["zuma series", "ruin photography"],
-        "descriptor": "black-and-white photographs of abandoned buildings marked with painted targets and X marks, spray paint on crumbling walls, the intersection of painting and photography in architectural decay",
+        "descriptor": "black-and-white photographs of abandoned buildings marked with painted targets and X marks, spray paint on crumbling walls, intersection of painting and photography in decay",
     },
     "larry_sultan": {
         "label": "Larry Sultan",
         "category": "photography",
         "aliases": ["domestic color", "Valley Pictures"],
-        "descriptor": "saturated colour photographs of suburban interiors and porn studio sets, mundane domestic scenes and staged desire in warm tungsten light, the American dream rendered in vivid mundane detail",
+        "descriptor": "saturated colour photographs of suburban interiors and studio sets, mundane domestic scenes in warm tungsten light, the American dream in vivid mundane detail",
     },
     "mike_mandel": {
         "label": "Mike Mandel",
@@ -3469,7 +3469,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Trevor Paglen",
         "category": "photography",
         "aliases": ["surveillance landscape", "infrastructure photography"],
-        "descriptor": "telephoto photographs of secret surveillance facilities and data cables, distant mountain observatories and undersea infrastructure, the hidden geography of mass surveillance rendered in sublime landscape scale",
+        "descriptor": "telephoto photographs of secret surveillance facilities and data cables, distant observatories and undersea infrastructure, hidden geography of surveillance in sublime landscape",
     },
     "bernd_and_hilla_becher": {
         "label": "Bernd and Hilla Becher",
@@ -3499,13 +3499,13 @@ ARTISTS: dict[str, dict] = {
         "label": "Lauren Greenfield",
         "category": "photography",
         "aliases": ["consumer culture", "girl culture"],
-        "descriptor": "vivid colour photographs of teenage girls and consumer excess, shopping malls and beauty pageants in saturated fluorescent light, the performance of femininity and wealth in late capitalist America",
+        "descriptor": "vivid colour photographs of teenage girls and consumer excess, shopping malls and beauty pageants in fluorescent light, performance of femininity and wealth in America",
     },
     "laura_letinsky": {
         "label": "Laura Letinsky",
         "category": "photography",
         "aliases": ["still life", "after the feast"],
-        "descriptor": "muted colour still-life photographs of food remnants and domestic debris, soft natural light on stained tablecloths and half-eaten fruit, the quiet aftermath of consumption rendered in painterly tones",
+        "descriptor": "muted colour still-life photographs of food remnants and domestic debris, soft light on stained tablecloths and fruit, quiet aftermath of consumption in painterly tones",
     },
     "james_welling": {
         "label": "James Welling",
@@ -3529,13 +3529,13 @@ ARTISTS: dict[str, dict] = {
         "label": "Collier Schorr",
         "category": "photography",
         "aliases": ["youth portrait", "gender identity"],
-        "descriptor": "intimate colour portraits of androgynous teenagers in natural light, soft focus on young faces and bodies, the fluid construction of gender and identity in adolescent self-presentation",
+        "descriptor": "intimate colour portraits of androgynous teenagers in natural light, soft focus on young faces, fluid construction of gender and identity in adolescent self-presentation",
     },
     "katy_grannan": {
         "label": "Katy Grannan",
         "category": "photography",
         "aliases": ["California landscape", "portrait of place"],
-        "descriptor": "atmospheric colour photographs of California suburbs and lonely figures, hazy golden light on stucco walls and empty parking lots, the myth of the West dissolving into quiet melancholy",
+        "descriptor": "atmospheric colour photographs of California suburbs and lonely figures, hazy golden light on stucco walls, the myth of the West dissolving into quiet melancholy",
     },
     "justine_kurland": {
         "label": "Justine Kurland",
@@ -3566,13 +3566,13 @@ ARTISTS: dict[str, dict] = {
         "label": "Rachel Whiteread",
         "category": "fine-art",
         "aliases": ["cast sculpture", "negative space"],
-        "descriptor": "monumental plaster casts of domestic interiors and architectural voids, smooth pale surfaces capturing the negative space of rooms and furniture, absence made solid in minimalist form",
+        "descriptor": "monumental plaster casts of domestic interiors and architectural voids, smooth pale surfaces capturing negative space, absence made solid in minimalist sculptural form",
     },
     "antony_gormley": {
         "label": "Antony Gormley",
         "category": "fine-art",
         "aliases": ["body sculpture", "field installation"],
-        "descriptor": "cast iron and lead figures of the human body in contemplative poses, rough industrial surfaces and monumental scale, the body as measure of space and time in public installation",
+        "descriptor": "cast iron and lead figures of the human body in contemplative poses, rough industrial surfaces, body as measure of space and time in public installation",
     },
     "olafur_eliasson": {
         "label": "Olafur Eliasson",
@@ -3584,13 +3584,13 @@ ARTISTS: dict[str, dict] = {
         "label": "James Turrell",
         "category": "fine-art",
         "aliases": ["light and space", "skyspace"],
-        "descriptor": "controlled light installations in darkened rooms where colour appears as solid form, open apertures framing sky and atmospheric phenomena, perception of light as tangible material substance",
+        "descriptor": "controlled light installations in darkened rooms where colour appears as solid form, open apertures framing sky, perception of light as tangible material substance",
     },
     "robert_irwin": {
         "label": "Robert Irwin",
         "category": "fine-art",
         "aliases": ["light and space", "site-conditioned"],
-        "descriptor": "subtle light installations and scrim constructions modulating perception, fluorescent tubes and painted discs in precise spatial arrangement, the act of seeing as the subject of art",
+        "descriptor": "subtle light installations and scrim constructions modulating perception, fluorescent tubes and painted discs, the act of seeing as the subject of art",
     },
     "dan_flavin": {
         "label": "Dan Flavin",
@@ -3608,13 +3608,13 @@ ARTISTS: dict[str, dict] = {
         "label": "Sol LeWitt",
         "category": "fine-art",
         "aliases": ["conceptual art", "wall drawing"],
-        "descriptor": "geometric wall drawings and modular structures following systematic instructions, lines and colour bands in serial permutation, the idea as art executed by others from written scores",
+        "descriptor": "geometric wall drawings and modular structures following systematic instructions, lines and colour bands in serial permutation, the idea as art from written scores",
     },
     "carl_andre": {
         "label": "Carl Andre",
         "category": "fine-art",
         "aliases": ["minimalist sculpture", "floor piece"],
-        "descriptor": "flat metal plates and brick arrangements laid directly on the gallery floor, industrial materials in serial grid patterns, sculpture as place to walk on rather than object to look at",
+        "descriptor": "flat metal plates and brick arrangements laid on gallery floor, industrial materials in serial grid, sculpture as place to walk on rather than look at",
     },
     "richard_serra": {
         "label": "Richard Serra",
@@ -3638,19 +3638,19 @@ ARTISTS: dict[str, dict] = {
         "label": "Paul McCarthy",
         "category": "fine-art",
         "aliases": ["provocative performance", "American grotesque"],
-        "descriptor": "chaotic video installations and performances with food and bodily fluids, ketchup and mayonnaise smeared across bodies, the grotesque underside of American consumer culture and family values",
+        "descriptor": "chaotic video installations with food and bodily fluids, ketchup and mayonnaise smeared across bodies, grotesque underside of American consumer culture and family values",
     },
     "mike_kelley": {
         "label": "Mike Kelley",
         "category": "fine-art",
         "aliases": ["patchwork sculpture", "repressed memory"],
-        "descriptor": "stained stuffed toys and crocheted blankets assembled into wall hangings, school drawings and thrift-store textiles, the abject residue of childhood and forgotten labour in textile collage",
+        "descriptor": "stained stuffed toys and crocheted blankets assembled into wall hangings, school drawings and thrift-store textiles, abject residue of childhood in textile collage",
     },
     "chris_burden": {
         "label": "Chris Burden",
         "category": "fine-art",
         "aliases": ["performance art", "dangerous art"],
-        "descriptor": "extreme performance art involving physical danger and endurance, shot in the arm and crucified on car roofs, the body as site of artistic risk and institutional critique",
+        "descriptor": "extreme performance art involving physical danger and endurance, shot in arm and crucified on car roofs, body as site of artistic risk and critique",
     },
     "vito_acconci": {
         "label": "Vito Acconci",
@@ -3668,19 +3668,19 @@ ARTISTS: dict[str, dict] = {
         "label": "Joseph Beuys",
         "category": "fine-art",
         "aliases": ["fluxus", "social sculpture"],
-        "descriptor": "performances wrapped in felt and fat with dead coyotes, chalkboards covered in dense diagrams, the shamanic artist transforming society through ritual material and expanded concept of art",
+        "descriptor": "performances wrapped in felt and fat with dead coyotes, chalkboards covered in dense diagrams, shamanic artist transforming society through ritual material and expanded art",
     },
     "bill_viola": {
         "label": "Bill Viola",
         "category": "fine-art",
         "aliases": ["video art", "slow motion"],
-        "descriptor": "large-scale video installations in extreme slow motion, figures emerging from water and flame in meditative sequence, the inner life rendered through stretched time and luminous colour",
+        "descriptor": "large-scale video installations in extreme slow motion, figures emerging from water and flame, the inner life rendered through stretched time and luminous colour",
     },
     "pipilotti_rist": {
         "label": "Pipilotti Rist",
         "category": "fine-art",
         "aliases": ["video installation", "feminine immersive"],
-        "descriptor": "saturated colour video projections filling rooms with flowing images of bodies and flowers, the viewer immersed in lush feminine interiority, pop sensibility merged with sensory environment",
+        "descriptor": "saturated colour video projections filling rooms with flowing images of bodies and flowers, viewer immersed in lush feminine interiority, pop sensibility in sensory environment",
     },
     "tony_oursler": {
         "label": "Tony Oursler",
@@ -3698,31 +3698,31 @@ ARTISTS: dict[str, dict] = {
         "label": "Philippe Parreno",
         "category": "fine-art",
         "aliases": ["exhibition medium", "time-based art"],
-        "descriptor": "installations where light sound and film operate as autonomous actors, programmed environments that evolve over time, the exhibition itself as a living medium with its own agency",
+        "descriptor": "installations where light sound and film operate as autonomous actors, programmed environments evolving over time, the exhibition as living medium with its own agency",
     },
     "rirkrit_tiravanija": {
         "label": "Rirkrit Tiravanija",
         "category": "fine-art",
         "aliases": ["relational aesthetics", "cooking art"],
-        "descriptor": "gallery installations serving free food and creating social spaces, pad thai cooked for visitors and communal dining tables, art as hospitality and the production of social encounter",
+        "descriptor": "gallery installations serving free food and creating social spaces, pad thai cooked for visitors and communal dining, art as hospitality and production of social encounter",
     },
     "felix_gonzalez_torres": {
         "label": "Felix Gonzalez-Torres",
         "category": "fine-art",
         "aliases": ["candy spill", "billboard art"],
-        "descriptor": "piles of candy and stacks of paper viewers may take, light strings and billboards in minimal form, love and loss rendered through participatory generosity and elegiac restraint",
+        "descriptor": "piles of candy and stacks of paper viewers may take, light strings and billboards, love and loss through participatory generosity and elegiac restraint",
     },
     "gabriel_orozco": {
         "label": "Gabriel Orozco",
         "category": "fine-art",
         "aliases": ["Mexican conceptual", "everyday sculpture"],
-        "descriptor": "minimal sculptures from everyday materials like chess pieces and fish bones, geometric interventions in urban space, the poetic potential of ordinary objects rearranged with conceptual precision",
+        "descriptor": "minimal sculptures from everyday materials like chess pieces and fish bones, geometric interventions in urban space, poetic potential of ordinary objects rearranged with precision",
     },
     "francis_alys": {
         "label": "Francis Alys",
         "category": "fine-art",
         "aliases": ["walking art", "Mexican Belgian"],
-        "descriptor": "performative videos of walking pushing ice blocks and drawing lines in sand, futile poetic gestures in urban landscape, the political weight of simple actions rendered as allegory",
+        "descriptor": "performative videos of walking pushing ice blocks and drawing lines in sand, futile poetic gestures in urban landscape, political weight of simple actions as allegory",
     },
     "mona_hatoum": {
         "label": "Mona Hatoum",

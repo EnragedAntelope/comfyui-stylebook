@@ -1,0 +1,197 @@
+{
+  "last_node_id": 9,
+  "last_link_id": 12,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "IdentityForge",
+      "pos": [50, 100],
+      "size": [315, 500],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {"name": "seed", "type": "INT", "widget": {"name": "seed"}, "link": null},
+        {"name": "gender", "type": "COMBO", "widget": {"name": "gender"}, "link": null},
+        {"name": "wardrobe", "type": "COMBO", "widget": {"name": "wardrobe"}, "link": null},
+        {"name": "set_all_fields", "type": "COMBO", "widget": {"name": "set_all_fields"}, "link": null},
+        {"name": "archetype_json", "type": "STRING", "link": null}
+      ],
+      "outputs": [
+        {"name": "prose", "type": "STRING", "links": [1]},
+        {"name": "character_json", "type": "STRING", "links": []}
+      ],
+      "widgets_values": [0, "randomize", "Any", "Match gender", "Off", "", "Any", "", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "None", "Random", "None", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random", "Random"]
+    },
+    {
+      "id": 2,
+      "type": "StylebookStyle",
+      "pos": [420, 100],
+      "size": [270, 242],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {"name": "style_chain", "type": "STRING", "link": null},
+        {"name": "user_prompt", "type": "STRING", "link": 1},
+        {"name": "mode", "type": "COMBO", "widget": {"name": "mode"}, "link": null},
+        {"name": "style", "type": "COMBO", "widget": {"name": "style"}, "link": null},
+        {"name": "category", "type": "COMBO", "widget": {"name": "category"}, "link": null},
+        {"name": "tag_filter", "type": "STRING", "widget": {"name": "tag_filter"}, "link": null},
+        {"name": "seed", "type": "INT", "widget": {"name": "seed"}, "link": null},
+        {"name": "cycle_index", "type": "INT", "widget": {"name": "cycle_index"}, "link": null},
+        {"name": "sheet_count", "type": "INT", "widget": {"name": "sheet_count"}, "link": null},
+        {"name": "format", "type": "COMBO", "widget": {"name": "format"}, "link": null},
+        {"name": "strength", "type": "COMBO", "widget": {"name": "strength"}, "link": null},
+        {"name": "placement", "type": "COMBO", "widget": {"name": "placement"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "prompt", "type": "STRING", "links": []},
+        {"name": "negative", "type": "STRING", "links": []},
+        {"name": "style_chain", "type": "STRING", "links": [3]}
+      ],
+      "widgets_values": ["Pick", "Portrait Photography", "None", "", 42, "fixed", 0, 4, "inherit", "inherit", "inherit"]
+    },
+    {
+      "id": 3,
+      "type": "StylebookArtist",
+      "pos": [740, 100],
+      "size": [270, 150],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {"name": "style_chain", "type": "STRING", "link": 3},
+        {"name": "artist", "type": "COMBO", "widget": {"name": "artist"}, "link": null},
+        {"name": "name_handling", "type": "COMBO", "widget": {"name": "name_handling"}, "link": null},
+        {"name": "artist_detail", "type": "COMBO", "widget": {"name": "artist_detail"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "prompt", "type": "STRING", "links": []},
+        {"name": "negative", "type": "STRING", "links": []},
+        {"name": "style_chain", "type": "STRING", "links": [4]}
+      ],
+      "widgets_values": ["Rembrandt van Rijn", "Name + descriptor", "inherit"]
+    },
+    {
+      "id": 4,
+      "type": "StylebookModifier",
+      "pos": [1060, 100],
+      "size": [270, 122],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {"name": "style_chain", "type": "STRING", "link": 4},
+        {"name": "axis", "type": "COMBO", "widget": {"name": "axis"}, "link": null},
+        {"name": "modifier", "type": "COMBO", "widget": {"name": "modifier"}, "link": null}
+      ],
+      "outputs": [
+        {"name": "prompt", "type": "STRING", "links": [7]},
+        {"name": "negative", "type": "STRING", "links": [8]},
+        {"name": "style_chain", "type": "STRING", "links": []}
+      ],
+      "widgets_values": ["lighting", "Golden Hour"]
+    },
+    {
+      "id": 5,
+      "type": "CheckpointLoaderSimple",
+      "pos": [50, 420],
+      "size": [315, 98],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [{"name": "ckpt_name", "type": "COMBO", "widget": {"name": "ckpt_name"}, "link": null}],
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [9]},
+        {"name": "CLIP", "type": "CLIP", "links": [5, 6]},
+        {"name": "VAE", "type": "VAE", "links": [10]}
+      ],
+      "widgets_values": ["Chroma\\Chroma1-HD.safetensors"]
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [50, 560],
+      "size": [400, 200],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "text", "type": "STRING", "link": 7, "widget": {"name": "text"}},
+        {"name": "clip", "type": "CLIP", "link": 5}
+      ],
+      "outputs": [{"name": "CONDITIONING", "type": "CONDITIONING", "links": [11]}]
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [470, 560],
+      "size": [400, 200],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "text", "type": "STRING", "link": 8, "widget": {"name": "text"}},
+        {"name": "clip", "type": "CLIP", "link": 6}
+      ],
+      "outputs": [{"name": "CONDITIONING", "type": "CONDITIONING", "links": [12]}]
+    },
+    {
+      "id": 8,
+      "type": "EmptyLatentImage",
+      "pos": [50, 800],
+      "size": [315, 106],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {"name": "width", "type": "INT", "widget": {"name": "width"}, "link": null},
+        {"name": "height", "type": "INT", "widget": {"name": "height"}, "link": null},
+        {"name": "batch_size", "type": "INT", "widget": {"name": "batch_size"}, "link": null}
+      ],
+      "outputs": [{"name": "LATENT", "type": "LATENT", "links": [13]}],
+      "widgets_values": [1024, 1024, 1]
+    },
+    {
+      "id": 9,
+      "type": "KSampler",
+      "pos": [370, 800],
+      "size": [315, 262],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 9},
+        {"name": "positive", "type": "CONDITIONING", "link": 11},
+        {"name": "negative", "type": "CONDITIONING", "link": 12},
+        {"name": "latent_image", "type": "LATENT", "link": 13},
+        {"name": "seed", "type": "INT", "widget": {"name": "seed"}, "link": null},
+        {"name": "steps", "type": "INT", "widget": {"name": "steps"}, "link": null},
+        {"name": "cfg", "type": "FLOAT", "widget": {"name": "cfg"}, "link": null},
+        {"name": "sampler_name", "type": "COMBO", "widget": {"name": "sampler_name"}, "link": null},
+        {"name": "scheduler", "type": "COMBO", "widget": {"name": "scheduler"}, "link": null},
+        {"name": "denoise", "type": "FLOAT", "widget": {"name": "denoise"}, "link": null}
+      ],
+      "outputs": [{"name": "LATENT", "type": "LATENT", "links": [14]}],
+      "widgets_values": [42, "fixed", 30, 4.0, "euler", "normal", 1.0]
+    }
+  ],
+  "links": [
+    [1, 1, 0, 2, 1, "STRING"],
+    [3, 2, 2, 3, 0, "STRING"],
+    [4, 3, 2, 4, 0, "STRING"],
+    [5, 5, 1, 6, 1, "CLIP"],
+    [6, 5, 1, 7, 1, "CLIP"],
+    [7, 4, 0, 6, 0, "STRING"],
+    [8, 4, 1, 7, 0, "STRING"],
+    [9, 5, 0, 9, 0, "MODEL"],
+    [10, 5, 2, 9, 0, "VAE"],
+    [11, 6, 0, 9, 1, "CONDITIONING"],
+    [12, 7, 0, 9, 2, "CONDITIONING"],
+    [13, 8, 0, 9, 3, "LATENT"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {}
+}

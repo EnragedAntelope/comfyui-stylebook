@@ -1,4 +1,4 @@
-﻿"""Modifier records - per-axis style adjustments.
+"""Modifier records - per-axis style adjustments.
 
 A modifier tilts the rendering without defining the primary style.
 Five axes: lighting, color_grade, era, finish, mood.

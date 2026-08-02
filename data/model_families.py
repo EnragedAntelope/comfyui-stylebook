@@ -1,4 +1,4 @@
-﻿"""Model family auto-detection for artist name handling.
+"""Model family auto-detection for artist name handling.
 
 Each family entry maps a model filename substring to a default
 ``name_handling`` mode. The Artist node uses this to auto-select

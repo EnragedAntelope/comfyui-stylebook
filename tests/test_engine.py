@@ -1,4 +1,4 @@
-﻿"""Unit tests for the Stylebook chain engine.
+"""Unit tests for the Stylebook chain engine.
 
 Pure-stdlib ``unittest`` so it runs without ComfyUI installed:
 

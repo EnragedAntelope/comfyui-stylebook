@@ -1,4 +1,4 @@
-﻿"""StylebookArtist node — additive, chainable artist selection.
+"""StylebookArtist node — additive, chainable artist selection.
 
 Each Artist node adds one artist to the chain. Chain multiple
 to stack artists (Rembrandt × Picasso). Capped at 5, warns above 3.

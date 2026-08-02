@@ -1,4 +1,4 @@
-﻿"""Optional user-supplied styles (survive ``git pull``).
+"""Optional user-supplied styles (survive ``git pull``).
 
 Drop a ``user_styles.json`` in the pack root to add styles, artists, or
 modifiers without editing the source - so updates won't clobber them.

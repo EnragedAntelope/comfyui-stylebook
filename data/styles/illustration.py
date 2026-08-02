@@ -1,4 +1,4 @@
-﻿"""Illustration styles - drawn, painted, and graphic techniques."""
+"""Illustration styles - drawn, painted, and graphic techniques."""
 
 ILLUSTRATION_STYLES: dict[str, dict] = {
     "line_art": {

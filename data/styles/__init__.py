@@ -1,4 +1,4 @@
-﻿"""Style data aggregator - imports all category files and merges them.
+"""Style data aggregator - imports all category files and merges them.
 
 Each category file in data/styles/ defines a CATEGORY_STYLES dict.
 This module imports them all, applies user additions from user_styles.json,

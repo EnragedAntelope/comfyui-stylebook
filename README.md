@@ -60,18 +60,29 @@ Set `mode` to `Random`, pick a `category`, and optionally type a `tag_filter` li
 
 ## Using Stylebook with Identity Forge
 
-Stylebook describes the *rendering*; Identity Forge describes the *subject*. They compose naturally, but a few axes overlap:
+Stylebook describes the *rendering*; Identity Forge describes the *subject*.
+Connect Identity Forge's `prose` output into Stylebook's `user_prompt`
+input, then chain Stylebook nodes downstream. The subject description
+flows through the chain and gets wrapped by your chosen style.
 
-| Identity Forge field | Stylebook axis | Guidance |
+See `examples/stylebook_with_identity_forge.json` for a complete
+ready-to-run workflow.
+
+To avoid conflicts, set Identity Forge's `lighting` and `mood` to
+`None` (Stylebook's Modifier owns those axes):
+
+| Identity Forge field | Stylebook axis | Fix |
 |---|---|---|
-| `lighting` | lighting modifier | Direct conflict. Set one to None/Off. |
-| `mood` | mood modifier | Direct conflict. Set one to None/Off. |
-| `shot_type` | Photography styles | Soft conflict. Styles that imply framing (macro, aerial) can fight an explicit shot_type. |
-| `location` / `setting` | Object & Artifact | Artifact styles relocate the subject into a container. Expected, not a bug. |
+| `lighting` | lighting modifier | Set Identity Forge `lighting` to `None` |
+| `mood` | mood modifier | Set Identity Forge `mood` to `None` |
+| `shot_type` | Photography styles | Soft. Styles with implicit framing may fight an explicit shot_type |
+| `location` / `setting` | Object & Artifact | Expected. Artifact styles relocate into a container |
 
-Safe default: every Stylebook modifier axis starts at Off, so a fresh chain has zero conflicts.
+## Example workflows
 
-## Extending
+Two ready-to-use workflows in `examples/`:
+- `stylebook_basic.json` — Style → Artist → Modifier → generate
+- `stylebook_with_identity_forge.json` — Identity Forge → Style → Artist → Modifier → generate (lighting + mood pre-disabled on Identity Forge)
 
 Drop a `user_styles.json` in the pack root (copy `user_styles.example.json` to start). Your styles, artists, and modifiers survive `git pull`. See the example file for the record format.
 

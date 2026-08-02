@@ -1,4 +1,4 @@
-﻿"""comfyui-stylebook — V3 custom node pack entrypoint.
+"""comfyui-stylebook — V3 custom node pack entrypoint.
 
 Exposes four nodes:
 

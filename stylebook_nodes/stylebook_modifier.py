@@ -1,4 +1,4 @@
-﻿"""StylebookModifier node — additive, one per sub-axis.
+"""StylebookModifier node — additive, one per sub-axis.
 
 Add a lighting, colour grade, era, finish, or mood tilt.
 Each modifier node targets one axis; a second modifier on the

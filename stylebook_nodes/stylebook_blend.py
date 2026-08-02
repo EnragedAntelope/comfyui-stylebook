@@ -1,4 +1,4 @@
-﻿"""StylebookBlend node — blend two styles at a ratio.
+"""StylebookBlend node — blend two styles at a ratio.
 
 Wire a second style into the ``style_b`` input to blend it with
 the current chain's style. The ``ratio`` widget (0.0–1.0) controls
