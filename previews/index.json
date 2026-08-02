@@ -1,0 +1,2880 @@
+{
+  "version": 1,
+  "model": "Chroma1-HD",
+  "seed": 42,
+  "steps": 26,
+  "cfg": 3.5,
+  "sampler": "euler",
+  "scheduler": "beta",
+  "resolution": "1024x1024",
+  "categories": {
+    "photography": {
+      "atlas": "photography.webp",
+      "tiles": {
+        "portrait": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "street": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "macro": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "cinematic": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "fashion": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "aerial": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "long_exposure": {
+          "x": 1536,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "infrared": {
+          "x": 1792,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "underwater": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "tilt_shift": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "night": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "documentary": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "candid": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "boudoir": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "architectural": {
+          "x": 1536,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "sports": {
+          "x": 1792,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "astrophotography": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "food": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "fine_art_nude": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "pinhole": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "wet_plate": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "daguerreotype": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "platinum_palladium": {
+          "x": 1536,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "gelatin_silver": {
+          "x": 1792,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "c_print": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "polaroid": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "lomography": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "cross_processed": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "double_exposure": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "light_painting": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "high_speed": {
+          "x": 1536,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "kirlian": {
+          "x": 1792,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "schlieren": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "photomicrography": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "panoramic": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "tintype_ferrotype": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "ambrotype": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "calotype_talbotype": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "salt_print": {
+          "x": 1536,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "gum_bichromate": {
+          "x": 1792,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "oil_print_bromoil": {
+          "x": 0,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "carbon_print": {
+          "x": 256,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "polaroid_transfer_emulsion_lift": {
+          "x": 512,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "chemigram": {
+          "x": 768,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "luminogram_photogram": {
+          "x": 1024,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "cliche_verre": {
+          "x": 1280,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "stereoscopic_3d_photo": {
+          "x": 1536,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "stitched_panorama": {
+          "x": 1792,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "tilted_hdr_panorama": {
+          "x": 0,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "aerial_orthophoto": {
+          "x": 256,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "illustration": {
+      "atlas": "illustration.webp",
+      "tiles": {
+        "line_art": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "watercolor": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "pen_and_wash": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "charcoal": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "gouache": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "scratchboard": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "crosshatching": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "scientific_illustration": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "concept_art": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "childrens_book": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "graphite": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "colored_pencil": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "marker_rendering": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "pastel_drawing": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "oil_pastel": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "silverpoint": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "airbrush": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "vector_line_art": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "pixel_art": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "technical_illustration": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "blind_contour_drawing": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "gesture_drawing": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "figure_drawing": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "still_life_drawing": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "architectural_sketch": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "urban_sketching": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "thumbnail_sketch": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "value_study": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "stippling": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "scribble_art": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "comics": {
+      "atlas": "comics.webp",
+      "tiles": {
+        "ligne_claire": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "silver_age": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "manga_shonen": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "noir_comic": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "european_album": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "newspaper_comic": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "underground_comix": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "webtoon": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "pulp_comic": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "graphic_novel": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "silver_age_horror": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "french_bd_noir": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "independent_comic": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "sunday_funnies": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "webcomic_infinite_canvas": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "film_cinema": {
+      "atlas": "film_cinema.webp",
+      "tiles": {
+        "film_noir": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "german_expressionism": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "french_new_wave": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "technicolor": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "dogme_95": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "wes_anderson": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "spike_lee": {
+          "x": 1536,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "hitchcockian": {
+          "x": 1792,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "kubrick": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "tarantino": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "wong_kar_wai": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "nolan_imax": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "fincher": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "gaspar_noe": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "terrence_malick": {
+          "x": 1536,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "studio_ghibli": {
+          "x": 1792,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "kurosawa": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "tarkovsky": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "bergman": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "fellini": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "handheld_shaky_cam": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "dutch_angle": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "match_cut": {
+          "x": 1536,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "pov_first_person": {
+          "x": 1792,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "split_screen": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "slow_motion": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "time_lapse": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "deep_focus": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "rack_focus": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "overhead_gods_eye": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "tracking_shot": {
+          "x": 1536,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "crash_zoom": {
+          "x": 1792,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "lens_flare": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "chiaroscuro": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "negative_space": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "dolly_zoom": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "iris_shot": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "whip_pan": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "freeze_frame": {
+          "x": 1536,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "bullet_time": {
+          "x": 1792,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "montage_soviet": {
+          "x": 0,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "jump_cut": {
+          "x": 256,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "long_take_oneshot": {
+          "x": 512,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "snorricam": {
+          "x": 768,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "day_for_night": {
+          "x": 1024,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "blue_screen_chroma_key": {
+          "x": 1280,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "rear_projection": {
+          "x": 1536,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "matte_painting_film": {
+          "x": 1792,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "miniature_forced_perspective": {
+          "x": 0,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "stop_motion_animation": {
+          "x": 256,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "rotoscoping": {
+          "x": 512,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "motion_capture_cinematography": {
+          "x": 768,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "deepfake_synthetic_face": {
+          "x": 1024,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "ai_generated_video": {
+          "x": 1280,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "virtual_production_led_volume": {
+          "x": 1536,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "painting": {
+      "atlas": "painting.webp",
+      "tiles": {
+        "oil_painting": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "acrylic": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "impasto": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "glazing": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "sfumato": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "alla_prima": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "fresco": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "tempera": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "encaustic": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "egg_tempera": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "plein_air": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "palette_knife": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "dry_brush": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "scumbling": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "grisaille": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "verdaccio": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "tenebrism": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "divisionism": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "pointillism": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "tachisme": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "aerosol": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "enamel_painting": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "casein_painting": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "vinyl_paint": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "automotive_paint": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "reverse_glass": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "sand_painting": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "action_painting": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "hard_edge_painting": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "color_field_painting": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "art_movements": {
+      "atlas": "art_movements.webp",
+      "tiles": {
+        "impressionism": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "post_impressionism": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "cubism": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "surrealism": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "abstract_expressionism": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "pop_art": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "minimalism": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "art_nouveau": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "art_deco": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "bauhaus": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "de_stijl": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "futurism": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "dada": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "fauvism": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "expressionism": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "baroque": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "rococo": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "neoclassicism": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "romanticism": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "preraphaelite": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "orphism": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "vorticism": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "synchromism": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "precisionism": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "regionalism": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "social_realism": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "magic_realism": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "neo_expressionism": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "transavantgarde": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "yba": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "anime_manga": {
+      "atlas": "anime_manga.webp",
+      "tiles": {
+        "nineties_cel_anime": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "modern_digital_anime": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "ghibli_studio": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "makoto_shinkai": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "satoshi_kon": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "ghost_in_the_shell": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "akira_otomo": {
+          "x": 1536,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "shoujo_takeuchi": {
+          "x": 1792,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "clamp_ornate": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "yoshitaka_amano": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "evangelion": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "cowboy_bebop": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "one_piece_oda": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "jojos_bizarre_adventure": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "junji_ito_horror": {
+          "x": 1536,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "inio_asano_realism": {
+          "x": 1792,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "yotsuba_azuma": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "urasawa_monster": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "vagabond_inoue": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "otoyomegatari_mori": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "isekai_fantasy": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "mecha_gundam": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "slice_of_life_moe": {
+          "x": 1536,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "superflat": {
+          "x": 1792,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "gekiga_mature": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "chibi_super_deformed": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "kemonomimi_animal_ear": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "yaoi_bl_style": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "yuri_gl_style": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "dark_fantasy_manga": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "sports_manga": {
+          "x": 1536,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "cooking_manga": {
+          "x": 1792,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "music_manga_band": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "bl_visual_novel": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "otome_game": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "visual_kei": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "gothic_lolita": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "decora_harajuku_fashion": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "cyberpunk_anime": {
+          "x": 1536,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "steampunk_manga": {
+          "x": 1792,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "magical_girl_transformation": {
+          "x": 0,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "harem_romcom": {
+          "x": 256,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "psychological_thriller_anime": {
+          "x": 512,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "post_apocalyptic_anime": {
+          "x": 768,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "cute_girls_doing_cute_things": {
+          "x": 1024,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "reverse_harem_otome": {
+          "x": 1280,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "trapped_in_game_isekai_game": {
+          "x": 1536,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "historical_fantasy_anime": {
+          "x": 1792,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "tokusatsu_henshin_hero": {
+          "x": 0,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "mecha_pilot_drama": {
+          "x": 256,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "three_d_digital": {
+      "atlas": "three_d_digital.webp",
+      "tiles": {
+        "low_poly": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "voxel": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "clay_render": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "wireframe": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "photoreal_3d": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "cel_shaded_3d": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "isometric_pixel": {
+          "x": 1536,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "8bit_pixel": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "16bit_pixel": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "vector_flat": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "3d_matte_painting": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "digital_oil_painting": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "photobashing": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "kitbashing": {
+          "x": 1536,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "blender_donut": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "subsurface_scattering": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "npr_render": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "procedural_generation": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "particle_system_render": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "motion_graphics_3d": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "ray_traced_render": {
+          "x": 1536,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "path_traced_global_illumination": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "ambient_occlusion_pass": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "zbrush_sculpt_render": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "physically_based_rendering": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "real_time_render_game_engine": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "volumetric_render": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "fractal_art_mandelbrot": {
+          "x": 1536,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "data_visualization_info_aesthetic": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "generative_ai_image": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "sss_subsurface_scattering": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "displacement_mapping": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "normal_mapping_bump": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "texture_baking": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "light_baking": {
+          "x": 1536,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "hdri_environment_lighting": {
+          "x": 0,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "motion_capture_mocap": {
+          "x": 256,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "photogrammetry_scan": {
+          "x": 512,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "retopology_wireframe": {
+          "x": 768,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "lod_level_of_detail": {
+          "x": 1024,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "particle_hair_fur": {
+          "x": 1280,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "fluid_simulation": {
+          "x": 1536,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "cloth_simulation": {
+          "x": 0,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "rigid_body_dynamics": {
+          "x": 256,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "soft_body_dynamics": {
+          "x": 512,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "print_graphic": {
+      "atlas": "print_graphic.webp",
+      "tiles": {
+        "silkscreen_serigraphy": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "linocut": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "woodblock_print": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "risograph": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "letterpress": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "screen_print_poster": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "cyanotype": {
+          "x": 1536,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "blueprint_schematic": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "offset_lithography": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "rubber_stamp": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "newspaper_halftone": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "photocopied_zine": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "mimeograph": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "cmyk_misregistration": {
+          "x": 1536,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "foil_stamp": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "lithograph_stone_print": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "etching_intaglio": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "monotype_print": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "thermography_raised_print": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "photogravure": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "intaglio_copperplate": {
+          "x": 1536,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "aquatint": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "mezzotint": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "drypoint": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "collagraph": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "linocut_reduction": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "wood_engraving": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "litho_crayon_tusche": {
+          "x": 1536,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "transfer_print": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "blind_emboss_deboss": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "thermal_receipt_print": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "dot_matrix_print": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "flexography_package": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "gravure_rotogravure": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "pad_printing": {
+          "x": 1536,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "embroidery_patch_merrowed": {
+          "x": 0,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "woven_label_damask": {
+          "x": 256,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "hot_foil_stamping": {
+          "x": 512,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "edge_painting_gilding": {
+          "x": 768,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "die_cut_window": {
+          "x": 1024,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "object_artifact": {
+      "atlas": "object_artifact.webp",
+      "tiles": {
+        "arcade_cabinet_screen": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "pinball_backglass": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "trading_card_foil_holo": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "vhs_box_cover": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "vinyl_record_sleeve": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "cassette_jcard": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "postage_stamp": {
+          "x": 1536,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "banknote_engraving": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "coin_face": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "matchbox_label": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "snow_globe": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "action_figure_blister_pack": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "pop_up_book_spread": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "cereal_box": {
+          "x": 1536,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "museum_diorama": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "tarot_card": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "vintage_travel_poster": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "enamel_pin": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "holographic_sticker": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "viewmaster_slide": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "film_strip_frame": {
+          "x": 1536,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "playing_card": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "concert_ticket_stub": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "commemorative_medal": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "video_game_cartridge": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "cameo_brooch": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "pocket_watch": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "old_map_parchment": {
+          "x": 1536,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "glass_marble": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "shadow_box_frame": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "wax_seal_on_letter": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "film_negative_strip": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "35mm_slide_mount": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "magic_lantern_slide": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "daguerreotype_case": {
+          "x": 1536,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "product_design_render": {
+          "x": 0,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "industrial_design_sketch": {
+          "x": 256,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "automotive_design_concept": {
+          "x": 512,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "sneaker_trainer_design": {
+          "x": 768,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "watch_horology_face": {
+          "x": 1024,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "packaging_label_design_mockup": {
+          "x": 1280,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "furniture_design_render": {
+          "x": 1536,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "jewelry_design_board": {
+          "x": 0,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "craft_material": {
+      "atlas": "craft_material.webp",
+      "tiles": {
+        "embroidery": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "cross_stitch": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "needlepoint": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "crochet": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "knitwear": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "felted_wool": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "macrame": {
+          "x": 1536,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "woven_tapestry": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "quilted": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "needle_felted": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "papercraft": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "origami": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "paper_quilling": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "stained_glass": {
+          "x": 1536,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "mosaic": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "beadwork": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "leather_tooling": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "basketry_weaving": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "glass_blowing": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "ceramic_glazing": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "batik_wax_resist": {
+          "x": 1536,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "tie_dye_shibori": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "marbling_ebru": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "lacquerware_urushi": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "wood_turning": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "marquetry_inlay": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "goldsmithing_filigree": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "enameling_cloisonne": {
+          "x": 1536,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "ikebana": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "bonsai": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "puppet_making_marionette": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "mask_making_papier_mache": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "candle_making": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "soap_carving": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "leather_burning_pyrography": {
+          "x": 1536,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "metal_embossing_repousse": {
+          "x": 0,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "wire_wrapping_jewelry": {
+          "x": 256,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "polymer_clay_sculpting": {
+          "x": 512,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "resin_casting": {
+          "x": 768,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "terrarium_miniature_garden": {
+          "x": 1024,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "bookbinding_codex": {
+          "x": 1280,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "calligraphy_hand_lettering": {
+          "x": 1536,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "sumi_e_ink_painting": {
+          "x": 0,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "marbled_paper_ebru": {
+          "x": 256,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        },
+        "papercutting_scherenschnitte": {
+          "x": 512,
+          "y": 1536,
+          "w": 256,
+          "h": 256
+        }
+      }
+    },
+    "collage_mixed": {
+      "atlas": "collage_mixed.webp",
+      "tiles": {
+        "paper_collage": {
+          "x": 0,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "photomontage": {
+          "x": 256,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "digital_collage": {
+          "x": 512,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "decollage": {
+          "x": 768,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "exquisite_corpse": {
+          "x": 1024,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "assemblage": {
+          "x": 1280,
+          "y": 0,
+          "w": 256,
+          "h": 256
+        },
+        "mixed_media_canvas": {
+          "x": 0,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "image_transfer": {
+          "x": 256,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "tape_art": {
+          "x": 512,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "sticker_collage": {
+          "x": 768,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "decoupage": {
+          "x": 1024,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "ransom_note": {
+          "x": 1280,
+          "y": 256,
+          "w": 256,
+          "h": 256
+        },
+        "glitch_collage": {
+          "x": 0,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "scanography": {
+          "x": 256,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "frottage_grattage": {
+          "x": 512,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "digital_photomontage": {
+          "x": 768,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "xerox_art": {
+          "x": 1024,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "mail_art": {
+          "x": 1280,
+          "y": 512,
+          "w": 256,
+          "h": 256
+        },
+        "altered_book": {
+          "x": 0,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "junk_journal": {
+          "x": 256,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "assemblage_box": {
+          "x": 512,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "textile_collage": {
+          "x": 768,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "typographic_collage": {
+          "x": 1024,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "street_art_paste_up": {
+          "x": 1280,
+          "y": 768,
+          "w": 256,
+          "h": 256
+        },
+        "altered_photography": {
+          "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "washi_chiyogami": {
+          "x": 256,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "map_collage": {
+          "x": 512,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "seed_bead_collage": {
+          "x": 768,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "button_art": {
+          "x": 1024,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "fabric_textile_collage": {
+          "x": 1280,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "assemblage_sculpture": {
+          "x": 0,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "altered_photo_painted": {
+          "x": 256,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "digital_glitch_art": {
+          "x": 512,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "paper_marbling_collage": {
+          "x": 768,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        },
+        "tea_stained_distressed": {
+          "x": 1024,
+          "y": 1280,
+          "w": 256,
+          "h": 256
+        }
+      }
+    }
+  }
+}
