@@ -183,5 +183,103 @@ class RoundTripTests(unittest.TestCase):
         self.assertEqual(re_parsed["style"]["id"], "test")
 
 
+class SchemaValidationTests(unittest.TestCase):
+    """Verify node schemas match what ComfyUI's prompt validator checks.
+
+    These catch the class of bug where a widget default or saved value
+    is not in the options list, which fails prompt validation silently.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        try:
+            from comfy_api.latest import io  # noqa: F401
+        except ImportError:
+            raise unittest.SkipTest("ComfyUI not available")
+        from stylebook_nodes.stylebook_style import StylebookStyle
+        from stylebook_nodes.stylebook_artist import StylebookArtist
+        from stylebook_nodes.stylebook_blend import StylebookBlend
+        cls.style_node = StylebookStyle
+        cls.artist_node = StylebookArtist
+        cls.modifier_node = StylebookModifier
+        cls.blend_node = StylebookBlend
+
+    def _get_schema_inputs(self, node_cls):
+        schema = node_cls.define_schema()
+        return {inp.id: inp for inp in schema.inputs}
+
+    def test_style_node_style_dropdown_has_random(self):
+        """'Random' must be in the style dropdown for saved workflow compat."""
+        inputs = self._get_schema_inputs(self.style_node)
+        style_input = inputs.get("style")
+        self.assertIsNotNone(style_input, "style input missing")
+        options = getattr(style_input, "options", None)
+        if hasattr(options, "values"):
+            options = options.values
+        self.assertIn("Random", options,
+                      "'Random' missing from style dropdown -- saved workflows will fail")
+
+    def test_style_node_defaults_in_options(self):
+        """Every combo widget default must be in its options list."""
+        inputs = self._get_schema_inputs(self.style_node)
+        combo_inputs = {name: inp for name, inp in inputs.items()
+                        if hasattr(inp, "options")}
+        for name, inp in combo_inputs.items():
+            options = getattr(inp, "options", None)
+            if hasattr(options, "values"):
+                options = options.values
+            if not options:
+                continue
+            default = getattr(inp, "default", None)
+            if default is not None:
+                self.assertIn(default, options,
+                              f"style node '{name}' default '{default}' not in options")
+
+    def test_artist_node_defaults_in_options(self):
+        inputs = self._get_schema_inputs(self.artist_node)
+        combo_inputs = {name: inp for name, inp in inputs.items()
+                        if hasattr(inp, "options")}
+        for name, inp in combo_inputs.items():
+            options = getattr(inp, "options", None)
+            if hasattr(options, "values"):
+                options = options.values
+            if not options:
+                continue
+            default = getattr(inp, "default", None)
+            if default is not None:
+                self.assertIn(default, options,
+                              f"artist node '{name}' default '{default}' not in options")
+
+    def test_modifier_node_defaults_in_options(self):
+        inputs = self._get_schema_inputs(self.modifier_node)
+        combo_inputs = {name: inp for name, inp in inputs.items()
+                        if hasattr(inp, "options")}
+        for name, inp in combo_inputs.items():
+            options = getattr(inp, "options", None)
+            if hasattr(options, "values"):
+                options = options.values
+            if not options:
+                continue
+            default = getattr(inp, "default", None)
+            if default is not None:
+                self.assertIn(default, options,
+                              f"modifier node '{name}' default '{default}' not in options")
+
+    def test_blend_node_defaults_in_options(self):
+        inputs = self._get_schema_inputs(self.blend_node)
+        combo_inputs = {name: inp for name, inp in inputs.items()
+                        if hasattr(inp, "options")}
+        for name, inp in combo_inputs.items():
+            options = getattr(inp, "options", None)
+            if hasattr(options, "values"):
+                options = options.values
+            if not options:
+                continue
+            default = getattr(inp, "default", None)
+            if default is not None:
+                self.assertIn(default, options,
+                              f"blend node '{name}' default '{default}' not in options")
+
+
 if __name__ == "__main__":
     unittest.main()
