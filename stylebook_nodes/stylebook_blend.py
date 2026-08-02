@@ -60,14 +60,6 @@ if _COMFY_AVAILABLE:
                         tooltip="Second style chain to blend with (style B). "
                                 "Connect another Style node's style_chain output here.",
                     ),
-                    io.String.Input(
-                        "style_b",
-                        display_name="style B",
-                        optional=True,
-                        default="{}",
-                        tooltip="Second style chain to blend with (style B). "
-                                "Connect another Style node's style_chain output here.",
-                    ),
                     io.Float.Input(
                         "ratio",
                         default=0.5,
