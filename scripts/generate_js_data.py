@@ -74,7 +74,10 @@ def check_file(target: Path) -> tuple[bool, str]:
     import re
     match = re.search(r"// >>> GENERATED DATA >>>.*?// <<< GENERATED DATA <<<", actual, re.DOTALL)
     if not match:
-        return False, "No generated data block found in target file."
+        # Fallback: compare whole file (for standalone generated-data files).
+        if actual.strip() != expected.strip():
+            return False, "Generated data block differs from expected. Run: python scripts/generate_js_data.py"
+        return True, "OK (standalone generated data match)"
     actual_block = match.group(0)
 
     if actual_block.strip() != expected.strip():
