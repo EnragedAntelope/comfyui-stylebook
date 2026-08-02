@@ -14,6 +14,15 @@ Discovery uses the ComfyUI V3 ``comfy_entrypoint`` mechanism. Frontend
 widgets live in ``./js`` and are served via ``WEB_DIRECTORY``.
 """
 
+import sys
+from pathlib import Path
+
+# Ensure the pack root is on sys.path so absolute imports work
+# regardless of how ComfyUI sets up the module loader.
+_PACK_ROOT = Path(__file__).resolve().parent
+if str(_PACK_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PACK_ROOT))
+
 from comfy_api.latest import ComfyExtension, io
 
 # Package-relative inside ComfyUI; absolute fallback for tests.
