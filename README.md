@@ -1,14 +1,14 @@
-# Stylebook — ComfyUI style-injection node pack
+# Stylebook: ComfyUI style-injection node pack
 
 Tired of typing style keywords from memory? **Stylebook** gives you a
 deep, filterable taxonomy of visual styles you can pick, randomize, cycle,
-or batch into a style sheet — all inside ComfyUI.
+or batch into a style sheet. All inside ComfyUI.
 
 Four chainable nodes:
-- **Style** — the exclusive medium axis: pick from 12 categories
-- **Artist** — stack multiple artists, each with a hand-written descriptor
-- **Modifier** — tilt one axis: lighting, colour grade, era, finish, or mood
-- **Blend** — mix two styles at a ratio from 0.0 to 1.0
+- **Style**: the exclusive medium axis, pick from 12 categories
+- **Artist**: stack multiple artists, each with a hand-written descriptor
+- **Modifier**: tilt one axis (lighting, colour grade, era, finish, or mood)
+- **Blend**: mix two styles at a ratio from 0.0 to 1.0
 
 Zero dependencies. Works offline. Model-agnostic text output.
 
@@ -48,7 +48,7 @@ gives the same result.
 
 ## Style sheet
 
-Set `mode` to `Sheet`, choose a count — Stylebook emits N different
+Set `mode` to `Sheet`, choose a count, and Stylebook emits N different
 styles for a contact sheet of one subject across many styles.
 
 ## Extending

@@ -1,4 +1,4 @@
-"""Photography styles — genres, not camera bodies.
+﻿"""Photography styles - genres, not camera bodies.
 
 No "Canon EOS 1D" or similar equipment references. These describe
 the *rendering*, not the gear.
@@ -44,7 +44,7 @@ PHOTOGRAPHY_STYLES: dict[str, dict] = {
         "category": "photography",
         "aliases": ["film still", "movie frame"],
         "tags": "cinematic still, anamorphic lens flares, letterboxed 2.35:1 aspect, teal-and-orange colour grade, motivated lighting, film grain, shallow focus, atmosphere",
-        "prose": "A cinematic still: the 2.35:1 anamorphic frame, teal shadows grading into orange highlights, a subtle horizontal lens flare catching the light, shallow focus pulling the subject from a richly atmospheric background — every frame holding the weight of a story.",
+        "prose": "A cinematic still: the 2.35:1 anamorphic frame, teal shadows grading into orange highlights, a subtle horizontal lens flare catching the light, shallow focus pulling the subject from a richly atmospheric background - every frame holding the weight of a story.",
         "negative": "flat composition, clinical sharpness, even brightness, snapshot aesthetic",
         "preview": "photography#04",
         "blocks": [],
@@ -77,7 +77,7 @@ PHOTOGRAPHY_STYLES: dict[str, dict] = {
         "category": "photography",
         "aliases": ["light trails", "motion blur"],
         "tags": "long exposure, light trails streaking through frame, motion blur on moving elements, static elements sharp, ghosted figures, smoothed water surface, star trails, time compressed into single frame",
-        "prose": "A long exposure: time compressed into a single frame — light trails streaking through the composition, moving elements rendered as ghosted blurs while static forms hold sharp, water surfaces smoothed to glass, the passage of minutes visible in one image.",
+        "prose": "A long exposure: time compressed into a single frame - light trails streaking through the composition, moving elements rendered as ghosted blurs while static forms hold sharp, water surfaces smoothed to glass, the passage of minutes visible in one image.",
         "negative": "frozen motion, sharp throughout, short shutter, crisp action",
         "preview": "photography#07",
         "blocks": [],
@@ -88,7 +88,7 @@ PHOTOGRAPHY_STYLES: dict[str, dict] = {
         "category": "photography",
         "aliases": ["IR", "false colour"],
         "tags": "infrared photography, white foliage, surreal colour shift, pink-red vegetation, dark water, bright white trees against dark sky, dreamlike false-colour palette",
-        "prose": "An infrared photograph: foliage rendered in surreal white and pink, the sky gone dark, water surfaces black as ink — the false-colour palette of near-infrared light transforming a familiar scene into something dreamlike and alien.",
+        "prose": "An infrared photograph: foliage rendered in surreal white and pink, the sky gone dark, water surfaces black as ink - the false-colour palette of near-infrared light transforming a familiar scene into something dreamlike and alien.",
         "negative": "natural green foliage, realistic colour, blue sky, normal spectrum",
         "preview": "photography#08",
         "blocks": [],
@@ -110,7 +110,7 @@ PHOTOGRAPHY_STYLES: dict[str, dict] = {
         "category": "photography",
         "aliases": ["miniature", "diorama"],
         "tags": "tilt-shift, miniature effect, narrow band of focus across frame, everything else blurred, toy-town scale, selective defocus gradient, exaggerated depth compression",
-        "prose": "A tilt-shift photograph: a narrow band of sharp focus slicing across the frame while everything above and below dissolves into selective blur — the miniature effect that makes real scenes read as tiny dioramas, an entire city shrunk to toy scale.",
+        "prose": "A tilt-shift photograph: a narrow band of sharp focus slicing across the frame while everything above and below dissolves into selective blur - the miniature effect that makes real scenes read as tiny dioramas, an entire city shrunk to toy scale.",
         "negative": "deep focus, sharp throughout, normal perspective, full sharpness",
         "preview": "photography#10",
         "blocks": [],

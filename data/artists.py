@@ -1,9 +1,9 @@
-"""Artist records — ~800 hand-curated entries with descriptors.
+﻿"""Artist records - ~800 hand-curated entries with descriptors.
 
 Every artist carries a descriptor that steers the model independently
 of whether it knows the name. Name + description = works on all lineages.
 
-Keep descriptors to 12–25 words so two of them compose cleanly.
+Keep descriptors to 12-25 words so two of them compose cleanly.
 """
 
 from __future__ import annotations
@@ -58,7 +58,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Vincent van Gogh",
         "category": "fine-art",
         "aliases": ["post-impressionist", "impasto"],
-        "descriptor": "thick swirling impasto brushstrokes laid down in rhythmic waves, vibrating complementary colours — cobalt against orange, ochre against violet — the paint itself carrying the emotion",
+        "descriptor": "thick swirling impasto brushstrokes laid down in rhythmic waves, vibrating complementary colours - cobalt against orange, ochre against violet - the paint itself carrying the emotion",
     },
     "monet": {
         "label": "Claude Monet",

@@ -1,9 +1,9 @@
-"""Model family auto-detection for artist name handling.
+﻿"""Model family auto-detection for artist name handling.
 
 Each family entry maps a model filename substring to a default
 ``name_handling`` mode. The Artist node uses this to auto-select
 whether to emit artist names, descriptors, or both. If a model is
-not in this map, the default ``"name_descriptor"`` still works —
+not in this map, the default ``"name_descriptor"`` still works -
 the name is simply redundant on recaption-lineage models rather
 than broken.
 
@@ -24,7 +24,7 @@ FAMILY_MAP: dict[str, str] = {
 
     # Recaption-lineage: artist names were stripped by VLM captioners,
     # so the descriptor does all the work. Emitting just the name is
-    # the least-wrong default — it avoids the "Rembrandt" token polluting
+    # the least-wrong default - it avoids the "Rembrandt" token polluting
     # the prompt on a model that was never trained on it.
     "flux":           "descriptor_only",
     "flux2":          "descriptor_only",

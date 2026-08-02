@@ -1,4 +1,4 @@
-"""Modifier records — per-axis style adjustments.
+﻿"""Modifier records - per-axis style adjustments.
 
 A modifier tilts the rendering without defining the primary style.
 Five axes: lighting, color_grade, era, finish, mood.
@@ -9,7 +9,7 @@ either output format.
 
 from __future__ import annotations
 
-#: Modifier axes — the buckets modifiers are grouped into.
+#: Modifier axes - the buckets modifiers are grouped into.
 AXES: tuple[str, ...] = ("lighting", "color_grade", "era", "finish", "mood")
 
 #: Sentinels for the modifier combo.
@@ -24,7 +24,7 @@ MODIFIERS: dict[str, dict] = {
         "axis": "lighting",
         "aliases": ["sunset light", "warm sidelight"],
         "tags": "golden hour, warm directional light from low sun, long shadows, amber-orange highlights, rim-lit edges, softened contrast",
-        "prose": "lit by golden-hour sunlight falling low from the side — long crisp shadows, rim-lit edges glowing amber-orange against softened warm highlights, the whole scene wrapped in the last deep light of the afternoon.",
+        "prose": "lit by golden-hour sunlight falling low from the side - long crisp shadows, rim-lit edges glowing amber-orange against softened warm highlights, the whole scene wrapped in the last deep light of the afternoon.",
         "negative": "cool daylight, flat overhead sun, harsh noonday shadows",
     },
     "rim_lighting": {
@@ -118,7 +118,7 @@ MODIFIERS: dict[str, dict] = {
         "axis": "finish",
         "aliases": ["darkened edges", "spotlight falloff"],
         "tags": "vignette, darkened edges fading to black, spotlight concentration on centre, gradual luminance falloff, tunnel effect",
-        "prose": "framed by a strong vignette: the edges fall off into deep black, drawing the eye to the centre in a gradual luminance tunnel — the subject spotlit by the frame itself.",
+        "prose": "framed by a strong vignette: the edges fall off into deep black, drawing the eye to the centre in a gradual luminance tunnel - the subject spotlit by the frame itself.",
         "negative": "even edge-to-edge lighting, full-frame brightness, no focus point",
     },
     "bloom_glow": {
@@ -157,7 +157,7 @@ MODIFIERS: dict[str, dict] = {
     },
 }
 
-#: Per-axis modifier id lists — used for cycling/randomizing within an axis.
+#: Per-axis modifier id lists - used for cycling/randomizing within an axis.
 MODIFIERS_BY_AXIS: dict[str, list[str]] = {}
 for _mod_id, _mod in MODIFIERS.items():
     _axis = _mod.get("axis", "")

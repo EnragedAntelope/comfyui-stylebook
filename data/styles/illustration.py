@@ -1,4 +1,4 @@
-"""Illustration styles — drawn, painted, and graphic techniques."""
+﻿"""Illustration styles - drawn, painted, and graphic techniques."""
 
 ILLUSTRATION_STYLES: dict[str, dict] = {
     "line_art": {
@@ -7,7 +7,7 @@ ILLUSTRATION_STYLES: dict[str, dict] = {
         "category": "illustration",
         "aliases": ["ink drawing", "pen and ink"],
         "tags": "line art, black ink on white paper, variable line weight, pure contour, no shading, no colour, expressive hatch marks, crisp clean strokes, negative space as form",
-        "prose": "Drawn in line art: black ink on white paper, form built entirely through contour and variable line weight — no shading, no colour, just the expressive rhythm of the pen stroke, negative space defining shape as much as the marks themselves.",
+        "prose": "Drawn in line art: black ink on white paper, form built entirely through contour and variable line weight - no shading, no colour, just the expressive rhythm of the pen stroke, negative space defining shape as much as the marks themselves.",
         "negative": "colour, shading, gradients, digital paint, 3D rendering, photographic",
         "preview": "illustration#01",
         "blocks": [],
@@ -40,7 +40,7 @@ ILLUSTRATION_STYLES: dict[str, dict] = {
         "category": "illustration",
         "aliases": ["vine charcoal", "smudged drawing"],
         "tags": "charcoal drawing, deep rich blacks, soft smudged midtones, visible paper tooth, gestural broad strokes, erased highlights, finger-blended gradients, dusty texture, chiaroscuro",
-        "prose": "Drawn in charcoal: deep velvet blacks against rough paper tooth, midtones built through finger-blended smudging, highlights pulled out with an eraser — broad gestural strokes carrying the form in dust and shadow.",
+        "prose": "Drawn in charcoal: deep velvet blacks against rough paper tooth, midtones built through finger-blended smudging, highlights pulled out with an eraser - broad gestural strokes carrying the form in dust and shadow.",
         "negative": "crisp lines, digital vector, flat colour, smooth gradients, photographic",
         "preview": "illustration#04",
         "blocks": [],
@@ -51,7 +51,7 @@ ILLUSTRATION_STYLES: dict[str, dict] = {
         "category": "illustration",
         "aliases": ["opaque watercolor", "designer's colour"],
         "tags": "gouache painting, flat opaque colour, matte velvety finish, crisp edges, graphic shapes, no visible brushstrokes, solid even coverage, mid-century illustration look",
-        "prose": "Painted in gouache: flat opaque colour laid down in crisp graphic shapes, the matte velvety finish absorbing light evenly, no visible brushstrokes — the solid, confident coverage of mid-century illustration.",
+        "prose": "Painted in gouache: flat opaque colour laid down in crisp graphic shapes, the matte velvety finish absorbing light evenly, no visible brushstrokes - the solid, confident coverage of mid-century illustration.",
         "negative": "transparent washes, heavy impasto, glossy finish, visible brush texture",
         "preview": "illustration#05",
         "blocks": [],
@@ -73,7 +73,7 @@ ILLUSTRATION_STYLES: dict[str, dict] = {
         "category": "illustration",
         "aliases": ["hatching", "engraving style"],
         "tags": "crosshatching, dense intersecting line fields, tonal value from line density, no solid blacks except deep shadow, engraving aesthetic, woodcut texture, rhythmic parallel strokes",
-        "prose": "Built from crosshatching: every tone carried by the density of intersecting lines — light areas thin and spaced, shadows dense and layered — the rhythmic parallel strokes of the engraver's hand, form emerging from nothing but line.",
+        "prose": "Built from crosshatching: every tone carried by the density of intersecting lines - light areas thin and spaced, shadows dense and layered - the rhythmic parallel strokes of the engraver's hand, form emerging from nothing but line.",
         "negative": "smooth gradients, soft shading, flat colour, digital blur, photographic",
         "preview": "illustration#07",
         "blocks": [],
@@ -95,7 +95,7 @@ ILLUSTRATION_STYLES: dict[str, dict] = {
         "category": "illustration",
         "aliases": ["vis dev", "production painting"],
         "tags": "concept art, digital painting, broad brushstrokes, loose suggestive rendering, strong silhouette read, callout thumbnails, callout arrows, production notes, design iteration, colour roughs",
-        "prose": "Treated as concept art: broad digital brushstrokes suggesting form rather than finishing it, strong silhouettes reading at a glance, the loose exploratory energy of design iteration — colour roughs and callout details floating around the main composition.",
+        "prose": "Treated as concept art: broad digital brushstrokes suggesting form rather than finishing it, strong silhouettes reading at a glance, the loose exploratory energy of design iteration - colour roughs and callout details floating around the main composition.",
         "negative": "photorealistic, finished render, tight polish, final-frame quality",
         "preview": "illustration#09",
         "blocks": [],

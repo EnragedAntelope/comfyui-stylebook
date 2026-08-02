@@ -1,4 +1,4 @@
-"""Style data aggregator — imports all category files and merges them.
+﻿"""Style data aggregator - imports all category files and merges them.
 
 Each category file in data/styles/ defines a CATEGORY_STYLES dict.
 This module imports them all, applies user additions from user_styles.json,
@@ -7,7 +7,7 @@ and exports a single STYLES dict + helper accessors.
 
 from __future__ import annotations
 
-# Relative imports — works both inside ComfyUI and standalone with sys.path set.
+# Relative imports - works both inside ComfyUI and standalone with sys.path set.
 from .photography import PHOTOGRAPHY_STYLES
 from .illustration import ILLUSTRATION_STYLES
 from .comics import COMICS_STYLES

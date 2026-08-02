@@ -1,9 +1,9 @@
-"""Optional user-supplied styles (survive ``git pull``).
+﻿"""Optional user-supplied styles (survive ``git pull``).
 
 Drop a ``user_styles.json`` in the pack root to add styles, artists, or
-modifiers without editing the source — so updates won't clobber them.
+modifiers without editing the source - so updates won't clobber them.
 
-The file is parsed as plain JSON — no code is executed.
+The file is parsed as plain JSON - no code is executed.
 """
 
 from __future__ import annotations
