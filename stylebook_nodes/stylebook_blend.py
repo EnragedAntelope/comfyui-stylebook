@@ -46,9 +46,19 @@ if _COMFY_AVAILABLE:
                     io.String.Input(
                         "style_chain",
                         display_name="style_chain",
+                        force_input=True,
                         optional=True,
                         default="{}",
                         tooltip="Primary style chain (style A).",
+                    ),
+                    io.String.Input(
+                        "style_b",
+                        display_name="style B",
+                        force_input=True,
+                        optional=True,
+                        default="{}",
+                        tooltip="Second style chain to blend with (style B). "
+                                "Connect another Style node's style_chain output here.",
                     ),
                     io.String.Input(
                         "style_b",
@@ -84,9 +94,9 @@ if _COMFY_AVAILABLE:
         @classmethod
         def execute(
             cls,
-            style_chain: str,
-            style_b: str,
-            ratio: float,
+            style_chain: str = "{}",
+            style_b: str = "{}",
+            ratio: float = 0.5,
         ) -> io.NodeOutput:
             chain_a = parse_chain(style_chain)
             chain_b = parse_chain(style_b)
@@ -98,7 +108,7 @@ if _COMFY_AVAILABLE:
             if not style_b_rec:
                 meta = resolve_meta(chain_a)
                 return io.NodeOutput(
-                    render_prompt(chain_a, meta),
+                    render_prompt(chain_a, meta, chain_a.get("_meta", {}).get("user_prompt", "")),
                     render_negative(chain_a),
                     dump_chain(chain_a),
                 )
@@ -107,7 +117,7 @@ if _COMFY_AVAILABLE:
             if not style_a:
                 meta = resolve_meta(chain_b)
                 return io.NodeOutput(
-                    render_prompt(chain_b, meta),
+                    render_prompt(chain_b, meta, chain_b.get("_meta", {}).get("user_prompt", "")),
                     render_negative(chain_b),
                     dump_chain(chain_b),
                 )
@@ -151,7 +161,7 @@ if _COMFY_AVAILABLE:
                 result_chain = chain_a
 
             meta = resolve_meta(result_chain)
-            prompt = render_prompt(result_chain, meta)
+            prompt = render_prompt(result_chain, meta, result_chain.get("_meta", {}).get("user_prompt", ""))
             negative = render_negative(result_chain)
 
             return io.NodeOutput(prompt, negative, dump_chain(result_chain))

@@ -78,6 +78,7 @@ if _COMFY_AVAILABLE:
                     io.String.Input(
                         "style_chain",
                         display_name="style_chain",
+                        force_input=True,
                         optional=True,
                         default="{}",
                         tooltip="Connect an upstream Stylebook node's style_chain output.",
@@ -124,10 +125,10 @@ if _COMFY_AVAILABLE:
         @classmethod
         def execute(
             cls,
-            style_chain: str,
             artist: str,
             name_handling: str,
             artist_detail: str,
+            style_chain: str = "{}",
         ) -> io.NodeOutput:
             chain = parse_chain(style_chain)
             warnings: list[str] = []
@@ -182,7 +183,7 @@ if _COMFY_AVAILABLE:
                 print(f"[Stylebook] {w}")
 
             meta = resolve_meta(chain)
-            prompt = render_prompt(chain, meta)
+            prompt = render_prompt(chain, meta, chain.get("_meta", {}).get("user_prompt", ""))
             negative = render_negative(chain)
 
             return io.NodeOutput(prompt, negative, dump_chain(chain))

@@ -168,6 +168,11 @@ if _COMFY_AVAILABLE:
         cycle through a pool deterministically, or emit a batch style-sheet.
         Connects to any downstream Stylebook node (Artist, Modifier, Blend)
         or directly to a CLIPTextEncode node.
+
+        The user_prompt input accepts your subject description. Leave it
+        empty to output style text only — connect it to a CLIPTextEncode
+        and add your prompt afterwards. Or type your subject here and
+        the style will be prepended (or appended) to it.
         """
 
         @classmethod
@@ -181,16 +186,28 @@ if _COMFY_AVAILABLE:
                 node_id="StylebookStyle",
                 display_name="Stylebook Style",
                 category="conditioning/stylebook",
-                description="Pick, randomize, cycle, or batch-sheet a visual style from 12 categories. "
-                            "The exclusive medium axis — a second Style node replaces the first. "
-                            "Connect to Artist and Modifier nodes downstream.",
+                description="Pick, randomize, cycle, or batch-sheet a visual style from "
+                            "12 categories. Type your subject in user_prompt or connect a "
+                            "text source — the style wraps around it.",
                 inputs=[
                     io.String.Input(
                         "style_chain",
                         display_name="style_chain",
+                        force_input=True,
                         optional=True,
                         default="{}",
                         tooltip="Connect an upstream Stylebook node's style_chain output here.",
+                    ),
+                    io.String.Input(
+                        "user_prompt",
+                        display_name="user_prompt",
+                        force_input=True,
+                        multiline=True,
+                        optional=True,
+                        default="",
+                        tooltip="Your subject description. The rendered style text will be "
+                                "prepended or appended to this. Leave empty to output just "
+                                "the style text. Connect a text source or type directly.",
                     ),
                     io.Combo.Input(
                         "mode",
@@ -285,17 +302,18 @@ if _COMFY_AVAILABLE:
         @classmethod
         def execute(
             cls,
-            style_chain: str,
-            mode: str,
-            style: str,
-            category: str,
-            tag_filter: str,
-            seed: int,
-            cycle_index: int,
-            sheet_count: int,
-            format: str,
-            strength: str,
-            placement: str,
+            style_chain: str = "{}",
+            user_prompt: str = "",
+            mode: str = "Pick",
+            style: str = "Random",
+            category: str = "None",
+            tag_filter: str = "",
+            seed: int = 0,
+            cycle_index: int = 0,
+            sheet_count: int = 4,
+            format: str = "inherit",
+            strength: str = "inherit",
+            placement: str = "inherit",
         ) -> io.NodeOutput:
             meta_overrides = {}
             if format != "inherit":
@@ -323,11 +341,15 @@ if _COMFY_AVAILABLE:
                 meta_overrides=meta_overrides,
             )
 
+            # Store the user prompt in the chain so downstream nodes can use it.
+            if user_prompt.strip():
+                chain.setdefault("_meta", {})
+                chain["_meta"]["user_prompt"] = user_prompt.strip()
+
             for w in warnings:
                 print(f"[Stylebook] {w}")
 
             meta = resolve_meta(chain)
-            prompt = render_prompt(chain, meta)
-            negative = render_negative(chain)
+            prompt = render_prompt(chain, meta, meta.get("user_prompt", ""))
 
-            return io.NodeOutput(prompt, negative, dump_chain(chain))
+            return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))
