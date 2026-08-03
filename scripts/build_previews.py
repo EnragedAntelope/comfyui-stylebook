@@ -182,18 +182,37 @@ def save_manifest(manifest: dict) -> None:
 
 
 def survey(model: str) -> tuple[list[str], list[str], list[str]]:
-    """Return (missing, stale, orphan) style ids against the manifest."""
+    """Return (missing, stale, orphan) style ids against the manifest.
+
+    Two different questions get asked here, and only one of them can be
+    answered on a fresh checkout:
+
+    * Does the manifest know about this style, and does its hash still
+      match the style text? That is the real gate. It catches the case
+      this pipeline exists for: somebody edited a style and did not
+      re-render its tile.
+    * Is the full-size source render still on disk? That only matters on
+      a machine that has rendered before, because ``previews/src`` is
+      gitignored and never reaches a clone.
+
+    Testing the second unconditionally made ``--check`` report all 433
+    styles as missing on any fresh checkout, which is why CI had never
+    once passed. When the source directory is absent entirely, the
+    manifest is the only truth available and is trusted.
+    """
     from data.styles import STYLES
 
     manifest = load_manifest()
     recorded = manifest.get("tiles", {})
     effective_model = model or manifest.get("model", "")
+    have_sources = SRC_DIR.is_dir()
 
     missing, stale = [], []
     for sid, rec in STYLES.items():
         entry = recorded.get(sid)
-        png = SRC_DIR / f"{sid}.png"
-        if entry is None or not png.is_file():
+        if entry is None:
+            missing.append(sid)
+        elif have_sources and not (SRC_DIR / f"{sid}.png").is_file():
             missing.append(sid)
         elif entry.get("hash") != tile_hash(rec, effective_model):
             stale.append(sid)
