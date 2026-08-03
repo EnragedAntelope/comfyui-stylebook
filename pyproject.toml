@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-stylebook"
-version = "0.1.0"
-description = "A style-injection node pack for ComfyUI with a deep filterable taxonomy, in-node previews, dual tag/prose output, and model-agnostic style text. Pick, randomize, cycle, or batch-sheet a Style, chain Artist nodes, layer Modifiers by axis, and blend two styles at a ratio — all of it offline, dependency-free."
+version = "0.3.0"
+description = "430+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list and a matching negative prompt, plus 650+ artists with descriptors that work even when your model does not know the name. Offline, no dependencies."
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10"

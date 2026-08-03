@@ -1,43 +1,43 @@
-"""comfyui-stylebook — V3 custom node pack entrypoint.
+"""comfyui-stylebook - V3 custom node pack entrypoint.
 
-Exposes four nodes:
+Five nodes:
 
-* ``StylebookStyle`` — the exclusive medium axis. Pick, randomize,
-  cycle, or batch-sheet a visual style from 12 categories.
-* ``StylebookArtist`` — additive, chainable artist selection. Stack
-  multiple to blend influences.
-* ``StylebookModifier`` — additive, one per sub-axis (lighting,
-  color_grade, era, finish, mood).
-* ``StylebookBlend`` — blend two styles at a controllable ratio.
+* ``StylebookStyle`` - the exclusive medium axis, across 12 categories.
+* ``StylebookArtist`` - additive and chainable. Stack several to blend
+  influences.
+* ``StylebookModifier`` - one modifier per axis (lighting, color_grade,
+  era, finish, mood).
+* ``StylebookBlend`` - blend two styles at a ratio.
+* ``StylebookSheet`` - one subject rendered across many styles as a batch.
+
+The first three share one widget layout: a ``mode`` of Pick, Random or
+Cycle, then the picker, then the filters that narrow what Random and
+Cycle draw from. They do the same job on different axes, so looking
+different was a cost with no benefit.
+
+They pass state along a ``style_chain`` socket carrying its own type,
+``STYLEBOOK_CHAIN``. It used to be a STRING, which meant the ``prompt``
+output connected happily to a chain input and then parsed as an empty
+chain.
 
 Discovery uses the ComfyUI V3 ``comfy_entrypoint`` mechanism. Frontend
-widgets live in ``./js`` and are served via ``WEB_DIRECTORY``.
+assets live in ``./js`` and are served via ``WEB_DIRECTORY``.
+
+Imports here are strictly package-relative. An earlier revision inserted
+the pack root onto ``sys.path`` so that ``import data`` would resolve,
+which put a module named ``data`` in the global namespace where any
+other custom node pack doing the same thing would collide with it.
 """
-
-import sys
-from pathlib import Path
-
-# Ensure the pack root is on sys.path so absolute imports work
-# regardless of how ComfyUI sets up the module loader.
-_PACK_ROOT = Path(__file__).resolve().parent
-if str(_PACK_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PACK_ROOT))
 
 from comfy_api.latest import ComfyExtension, io
 
-# Package-relative inside ComfyUI; absolute fallback for tests.
-try:
-    from .stylebook_nodes.stylebook_style import StylebookStyle
-    from .stylebook_nodes.stylebook_artist import StylebookArtist
-    from .stylebook_nodes.stylebook_modifier import StylebookModifier
-    from .stylebook_nodes.stylebook_blend import StylebookBlend
-except ImportError:  # pragma: no cover
-    from stylebook_nodes.stylebook_style import StylebookStyle
-    from stylebook_nodes.stylebook_artist import StylebookArtist
-    from stylebook_nodes.stylebook_modifier import StylebookModifier
-    from stylebook_nodes.stylebook_blend import StylebookBlend
+from .stylebook_nodes.stylebook_artist import StylebookArtist
+from .stylebook_nodes.stylebook_blend import StylebookBlend
+from .stylebook_nodes.stylebook_modifier import StylebookModifier
+from .stylebook_nodes.stylebook_sheet import StylebookSheet
+from .stylebook_nodes.stylebook_style import StylebookStyle
 
-#: Tells ComfyUI where to find this pack's frontend JavaScript.
+#: Where ComfyUI finds this pack's frontend assets.
 WEB_DIRECTORY = "./js"
 
 __all__ = ["comfy_entrypoint", "WEB_DIRECTORY"]
@@ -47,7 +47,13 @@ class StylebookExtension(ComfyExtension):
     """Registers the Stylebook node pack with ComfyUI."""
 
     async def get_node_list(self) -> list[type[io.ComfyNode]]:
-        return [StylebookStyle, StylebookArtist, StylebookModifier, StylebookBlend]
+        return [
+            StylebookStyle,
+            StylebookArtist,
+            StylebookModifier,
+            StylebookBlend,
+            StylebookSheet,
+        ]
 
 
 async def comfy_entrypoint() -> StylebookExtension:

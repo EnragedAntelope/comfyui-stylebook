@@ -1,219 +1,645 @@
 {
-  "last_node_id": 7,
-  "last_link_id": 7,
+  "id": "stylebook-basic",
+  "revision": 0,
+  "last_node_id": 12,
+  "last_link_id": 22,
   "nodes": [
     {
       "id": 1,
       "type": "StylebookStyle",
-      "pos": [50, 100],
-      "size": [270, 242],
-      "flags": {},
-      "order": 0,
-      "mode": 0,
-      "inputs": [
-        {"name": "style_chain", "type": "STRING", "link": null},
-        {"name": "mode", "type": "COMBO", "widget": {"name": "mode"}, "link": null},
-        {"name": "style", "type": "COMBO", "widget": {"name": "style"}, "link": null},
-        {"name": "category", "type": "COMBO", "widget": {"name": "category"}, "link": null},
-        {"name": "tag_filter", "type": "STRING", "widget": {"name": "tag_filter"}, "link": null},
-        {"name": "seed", "type": "INT", "widget": {"name": "seed"}, "link": null},
-        {"name": "cycle_index", "type": "INT", "widget": {"name": "cycle_index"}, "link": null},
-        {"name": "sheet_count", "type": "INT", "widget": {"name": "sheet_count"}, "link": null},
-        {"name": "format", "type": "COMBO", "widget": {"name": "format"}, "link": null},
-        {"name": "strength", "type": "COMBO", "widget": {"name": "strength"}, "link": null},
-        {"name": "placement", "type": "COMBO", "widget": {"name": "placement"}, "link": null}
+      "pos": [
+        40,
+        60
       ],
-      "outputs": [
-        {"name": "prompt", "type": "STRING", "links": []},
-        {"name": "negative", "type": "STRING", "links": []},
-        {"name": "style_chain", "type": "STRING", "links": [1]}
+      "size": [
+        340,
+        300
       ],
-      "widgets_values": ["Pick", "Portrait Photography", "None", "", 42, "fixed", 0, 4, "inherit", "inherit", "inherit"]
-    },
-    {
-      "id": 2,
-      "type": "StylebookModifier",
-      "pos": [370, 100],
-      "size": [270, 122],
       "flags": {},
       "order": 1,
       "mode": 0,
       "inputs": [
-        {"name": "style_chain", "type": "STRING", "link": 1},
-        {"name": "axis", "type": "COMBO", "widget": {"name": "axis"}, "link": null},
-        {"name": "modifier", "type": "COMBO", "widget": {"name": "modifier"}, "link": null}
+        {
+          "name": "style_chain",
+          "type": "STYLEBOOK_CHAIN",
+          "link": null
+        }
       ],
       "outputs": [
-        {"name": "prompt", "type": "STRING", "links": []},
-        {"name": "negative", "type": "STRING", "links": []},
-        {"name": "style_chain", "type": "STRING", "links": [3]}
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 0
+        },
+        {
+          "name": "negative",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 0
+        },
+        {
+          "name": "style_chain",
+          "type": "STYLEBOOK_CHAIN",
+          "links": [
+            10
+          ],
+          "slot_index": 0
+        }
       ],
-      "widgets_values": ["lighting", "Golden Hour"]
+      "properties": {
+        "Node name for S&R": "StylebookStyle"
+      },
+      "widgets_values": [
+        "Pick",
+        "Cyanotype",
+        "All categories",
+        "",
+        42,
+        "fixed",
+        0,
+        "prose",
+        "normal",
+        "append",
+        "a woman in a red coat waiting at a tram stop"
+      ],
+      "title": "Stylebook Style (start here)"
     },
     {
-      "id": 3,
+      "id": 2,
       "type": "StylebookArtist",
-      "pos": [690, 100],
-      "size": [270, 150],
+      "pos": [
+        40,
+        400
+      ],
+      "size": [
+        340,
+        180
+      ],
       "flags": {},
       "order": 2,
       "mode": 0,
       "inputs": [
-        {"name": "style_chain", "type": "STRING", "link": 3},
-        {"name": "artist", "type": "COMBO", "widget": {"name": "artist"}, "link": null},
-        {"name": "name_handling", "type": "COMBO", "widget": {"name": "name_handling"}, "link": null},
-        {"name": "artist_detail", "type": "COMBO", "widget": {"name": "artist_detail"}, "link": null}
+        {
+          "name": "style_chain",
+          "type": "STYLEBOOK_CHAIN",
+          "link": 10
+        }
       ],
       "outputs": [
-        {"name": "prompt", "type": "STRING", "links": [5]},
-        {"name": "negative", "type": "STRING", "links": [6]},
-        {"name": "style_chain", "type": "STRING", "links": []}
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 0
+        },
+        {
+          "name": "negative",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 0
+        },
+        {
+          "name": "style_chain",
+          "type": "STYLEBOOK_CHAIN",
+          "links": [
+            11
+          ],
+          "slot_index": 0
+        }
       ],
-      "widgets_values": ["Rembrandt van Rijn", "Name + descriptor", "inherit"]
+      "properties": {
+        "Node name for S&R": "StylebookArtist"
+      },
+      "widgets_values": [
+        "Pick",
+        "Ansel Adams",
+        "All artists",
+        "",
+        0,
+        "fixed",
+        0,
+        "Name + descriptor"
+      ]
     },
     {
-      "id": 4,
-      "type": "CheckpointLoaderSimple",
-      "pos": [50, 420],
-      "size": [315, 98],
+      "id": 3,
+      "type": "StylebookModifier",
+      "pos": [
+        40,
+        620
+      ],
+      "size": [
+        340,
+        180
+      ],
       "flags": {},
       "order": 3,
       "mode": 0,
       "inputs": [
-        {"name": "ckpt_name", "type": "COMBO", "widget": {"name": "ckpt_name"}, "link": null}
+        {
+          "name": "style_chain",
+          "type": "STYLEBOOK_CHAIN",
+          "link": 11
+        }
       ],
       "outputs": [
-        {"name": "MODEL", "type": "MODEL", "links": [7]},
-        {"name": "CLIP", "type": "CLIP", "links": [2, 4]},
-        {"name": "VAE", "type": "VAE", "links": [8]}
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            12
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "negative",
+          "type": "STRING",
+          "links": [
+            13
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "style_chain",
+          "type": "STYLEBOOK_CHAIN",
+          "links": null,
+          "slot_index": 0
+        }
       ],
-      "widgets_values": ["Chroma\\Chroma1-HD.safetensors"]
+      "properties": {
+        "Node name for S&R": "StylebookModifier"
+      },
+      "widgets_values": [
+        "lighting",
+        "Pick",
+        "Golden Hour",
+        0,
+        "fixed",
+        0
+      ],
+      "title": "Stylebook Modifier (read prompt from here)"
     },
     {
-      "id": 5,
-      "type": "CLIPTextEncode",
-      "pos": [50, 560],
-      "size": [400, 200],
+      "id": 4,
+      "type": "UNETLoader",
+      "pos": [
+        430,
+        60
+      ],
+      "size": [
+        340,
+        82
+      ],
       "flags": {},
       "order": 4,
       "mode": 0,
-      "inputs": [
-        {"name": "text", "type": "STRING", "link": 5, "widget": {"name": "text"}},
-        {"name": "clip", "type": "CLIP", "link": 2}
-      ],
+      "inputs": [],
       "outputs": [
-        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [9]}
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            14
+          ],
+          "slot_index": 0
+        }
       ],
-      "widgets_values": [""]
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "Chroma\\Chroma1-HD.safetensors",
+        "default"
+      ]
     },
     {
-      "id": 6,
-      "type": "CLIPTextEncode",
-      "pos": [470, 560],
-      "size": [400, 200],
+      "id": 5,
+      "type": "CLIPLoader",
+      "pos": [
+        430,
+        190
+      ],
+      "size": [
+        340,
+        106
+      ],
       "flags": {},
       "order": 5,
       "mode": 0,
-      "inputs": [
-        {"name": "text", "type": "STRING", "link": 6, "widget": {"name": "text"}},
-        {"name": "clip", "type": "CLIP", "link": 4}
-      ],
+      "inputs": [],
       "outputs": [
-        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [10]}
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            15,
+            16
+          ],
+          "slot_index": 0
+        }
       ],
-      "widgets_values": [""]
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "t5xxl_fp16.safetensors",
+        "chroma",
+        "default"
+      ]
     },
     {
-      "id": 7,
-      "type": "EmptyLatentImage",
-      "pos": [50, 800],
-      "size": [315, 106],
+      "id": 6,
+      "type": "VAELoader",
+      "pos": [
+        430,
+        340
+      ],
+      "size": [
+        340,
+        58
+      ],
       "flags": {},
       "order": 6,
       "mode": 0,
-      "inputs": [
-        {"name": "width", "type": "INT", "widget": {"name": "width"}, "link": null},
-        {"name": "height", "type": "INT", "widget": {"name": "height"}, "link": null},
-        {"name": "batch_size", "type": "INT", "widget": {"name": "batch_size"}, "link": null}
-      ],
+      "inputs": [],
       "outputs": [
-        {"name": "LATENT", "type": "LATENT", "links": [11]}
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            17
+          ],
+          "slot_index": 0
+        }
       ],
-      "widgets_values": [1024, 1024, 1]
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ae.safetensors"
+      ]
     },
     {
-      "id": 8,
-      "type": "KSampler",
-      "pos": [370, 800],
-      "size": [315, 262],
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [
+        810,
+        60
+      ],
+      "size": [
+        380,
+        100
+      ],
       "flags": {},
       "order": 7,
       "mode": 0,
       "inputs": [
-        {"name": "model", "type": "MODEL", "link": 7},
-        {"name": "positive", "type": "CONDITIONING", "link": 9},
-        {"name": "negative", "type": "CONDITIONING", "link": 10},
-        {"name": "latent_image", "type": "LATENT", "link": 11},
-        {"name": "seed", "type": "INT", "widget": {"name": "seed"}, "link": null},
-        {"name": "steps", "type": "INT", "widget": {"name": "steps"}, "link": null},
-        {"name": "cfg", "type": "FLOAT", "widget": {"name": "cfg"}, "link": null},
-        {"name": "sampler_name", "type": "COMBO", "widget": {"name": "sampler_name"}, "link": null},
-        {"name": "scheduler", "type": "COMBO", "widget": {"name": "scheduler"}, "link": null},
-        {"name": "denoise", "type": "FLOAT", "widget": {"name": "denoise"}, "link": null}
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 15
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 12
+        }
       ],
       "outputs": [
-        {"name": "LATENT", "type": "LATENT", "links": [12]}
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            18
+          ],
+          "slot_index": 0
+        }
       ],
-      "widgets_values": [42, "randomize", 30, 4.0, "euler", "normal", 1.0]
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "Positive (from Stylebook prompt)"
     },
     {
-      "id": 9,
-      "type": "VAEDecode",
-      "pos": [730, 800],
-      "size": [210, 46],
+      "id": 8,
+      "type": "CLIPTextEncode",
+      "pos": [
+        810,
+        210
+      ],
+      "size": [
+        380,
+        100
+      ],
       "flags": {},
       "order": 8,
       "mode": 0,
       "inputs": [
-        {"name": "samples", "type": "LATENT", "link": 12},
-        {"name": "vae", "type": "VAE", "link": 8}
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 16
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 13
+        }
       ],
       "outputs": [
-        {"name": "IMAGE", "type": "IMAGE", "links": [13]}
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            19
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "Negative (from Stylebook negative)"
+    },
+    {
+      "id": 9,
+      "type": "EmptySD3LatentImage",
+      "pos": [
+        810,
+        360
+      ],
+      "size": [
+        380,
+        106
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            20
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptySD3LatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
       ]
     },
     {
       "id": 10,
-      "type": "SaveImage",
-      "pos": [730, 900],
-      "size": [315, 270],
+      "type": "KSampler",
+      "pos": [
+        1240,
+        60
+      ],
+      "size": [
+        320,
+        262
+      ],
       "flags": {},
-      "order": 9,
+      "order": 10,
       "mode": 0,
       "inputs": [
-        {"name": "filename_prefix", "type": "STRING", "widget": {"name": "filename_prefix"}, "link": null},
-        {"name": "images", "type": "IMAGE", "link": 13}
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 14
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 18
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 19
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            21
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        42,
+        "fixed",
+        26,
+        3.5,
+        "euler",
+        "beta",
+        1.0
+      ]
+    },
+    {
+      "id": 11,
+      "type": "VAEDecode",
+      "pos": [
+        1240,
+        360
+      ],
+      "size": [
+        320,
+        46
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 21
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            22
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 12,
+      "type": "SaveImage",
+      "pos": [
+        1240,
+        450
+      ],
+      "size": [
+        380,
+        300
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 22
+        }
       ],
       "outputs": [],
-      "widgets_values": ["stylebook_basic"]
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "stylebook"
+      ]
     }
   ],
   "links": [
-    [1, 1, 2, 2, 0, "STRING"],
-    [2, 4, 1, 5, 0, "CLIP"],
-    [3, 2, 2, 3, 0, "STRING"],
-    [4, 4, 1, 6, 0, "CLIP"],
-    [5, 3, 0, 5, 0, "STRING"],
-    [6, 3, 1, 6, 0, "STRING"],
-    [7, 4, 0, 8, 0, "MODEL"],
-    [8, 4, 2, 9, 0, "VAE"],
-    [9, 5, 0, 8, 1, "CONDITIONING"],
-    [10, 6, 0, 8, 2, "CONDITIONING"],
-    [11, 7, 0, 8, 3, "LATENT"],
-    [12, 8, 0, 9, 0, "LATENT"],
-    [13, 9, 0, 10, 1, "IMAGE"]
+    [
+      10,
+      1,
+      2,
+      2,
+      0,
+      "STYLEBOOK_CHAIN"
+    ],
+    [
+      11,
+      2,
+      2,
+      3,
+      0,
+      "STYLEBOOK_CHAIN"
+    ],
+    [
+      12,
+      3,
+      0,
+      7,
+      1,
+      "STRING"
+    ],
+    [
+      13,
+      3,
+      1,
+      8,
+      1,
+      "STRING"
+    ],
+    [
+      14,
+      4,
+      0,
+      10,
+      0,
+      "MODEL"
+    ],
+    [
+      15,
+      5,
+      0,
+      7,
+      0,
+      "CLIP"
+    ],
+    [
+      16,
+      5,
+      0,
+      8,
+      0,
+      "CLIP"
+    ],
+    [
+      17,
+      6,
+      0,
+      11,
+      1,
+      "VAE"
+    ],
+    [
+      18,
+      7,
+      0,
+      10,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      19,
+      8,
+      0,
+      10,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      20,
+      9,
+      0,
+      10,
+      3,
+      "LATENT"
+    ],
+    [
+      21,
+      10,
+      0,
+      11,
+      0,
+      "LATENT"
+    ],
+    [
+      22,
+      11,
+      0,
+      12,
+      0,
+      "IMAGE"
+    ]
   ],
   "groups": [],
   "config": {},
-  "extra": {}
+  "extra": {},
+  "version": 0.4
 }

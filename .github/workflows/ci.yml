@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
   workflow_dispatch:
 
@@ -11,11 +11,12 @@ permissions:
 
 jobs:
   test:
-    name: Validate data, tests & generated artefacts
-    runs-on: ubuntu-latest
+    name: Test on ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, windows-latest]
         python-version: ["3.10", "3.13"]
     steps:
       - name: Check out code
@@ -30,6 +31,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Check generated frontend data is current
         run: python scripts/generate_js_data.py --check
+      - name: Check preview manifest is current
+        run: python scripts/build_previews.py --check
 
   lint:
     name: Lint

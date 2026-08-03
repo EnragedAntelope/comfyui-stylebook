@@ -22,3 +22,6 @@ docs/worklog/
 
 # Preview renders (published to gh-pages, not in repo)
 previews/src/
+
+# Generated review sheets (rebuildable from previews/src)
+previews/review/

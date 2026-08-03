@@ -1,25 +1,28 @@
-"""Stylebook chain engine — merge, render, randomize.
+"""Stylebook chain engine - merge, render, randomize.
 
-Pure functions with no ComfyUI dependency, so they can be
-unit-tested without a ComfyUI install. The node classes in
-``nodes/`` wrap these with V3 ``io.ComfyNode`` schemas.
+Pure functions with no ComfyUI dependency, so they can be unit-tested
+without a ComfyUI install. The node classes wrap these with V3
+``io.ComfyNode`` schemas.
 
-The chain protocol is a plain JSON string so any socket can
-connect to any socket. Every node outputs both ``prompt`` and
-``style_chain``, so the result can be tapped off any node.
+The chain protocol is a plain JSON string so any string socket can
+connect to any other. Every node outputs both ``prompt`` and
+``style_chain``, so the result can be tapped off any node in the chain.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
+import re
 from typing import Any
 
-# Dual import for data access — package-relative inside ComfyUI, absolute for tests.
 try:
-    from ..data.styles import STYLES, get_style_ids  # type: ignore[import-not-found]
-except ImportError:  # pragma: no cover
-    from data.styles import STYLES, get_style_ids  # noqa: E402
+    from ..data.artists import ARTISTS, get_artist_ids
+    from ..data.styles import STYLES, get_style_ids
+except ImportError:  # pragma: no cover - standalone/test context
+    from data.artists import ARTISTS, get_artist_ids
+    from data.styles import STYLES, get_style_ids
 
 
 # ---------------------------------------------------------------------------
@@ -31,47 +34,55 @@ EMPTY_CHAIN = '{"_meta":{},"style":null,"modifiers":[],"artists":[]}'
 
 #: Fields under ``_meta`` and their inheritance behaviour.
 _META_FIELDS: tuple[str, ...] = (
-    "format",           # "tags" | "prose" | "auto"
-    "placement",        # "prepend" | "append"
+    "format",           # "prose" | "tags"
+    "placement",        # "append" | "prepend"
     "strength",         # "subtle" | "normal" | "strong"
-    "artist_detail",    # "full" | "names_lead" | "names_only"
-    "template",         # user-supplied prompt template or null
+    "artist_detail",    # "full" | "names_lead" | "names_only" | "descriptor_only"
+    "template",         # user-supplied prompt template, or ""
 )
 
-#: How many artists before the node warns.
-ARTIST_WARN_THRESHOLD = 3
-
-#: Maximum number of chained artist nodes.
-ARTIST_MAX = 5
-
-#: Strength multipliers for the emphasis keyword.
-STRENGTH_MULTIPLIERS: dict[str, float] = {
-    "subtle": 0.75,
-    "normal": 1.0,
-    "strong": 1.25,
+#: There is no "auto" anywhere in here any more. ``format`` had one that
+#: claimed to pick prose when a style carried prose text, and every style
+#: does, so it was always prose. ``placement`` had one that resolved
+#: against the format, which was a real rule but an invisible one: the
+#: widget said "auto" and the user had to read the tooltip to find out
+#: what it would do. Two honest options beat three where one is a guess.
+_META_DEFAULTS: dict[str, str] = {
+    "format": "prose",
+    "placement": "append",
+    "strength": "normal",
+    "artist_detail": "full",
+    "template": "",
 }
 
+#: Chaining more artists than this muddies every descriptor.
+ARTIST_WARN_THRESHOLD = 3
 
-# ---------------------------------------------------------------------------
-# Chain merge
-# ---------------------------------------------------------------------------
+#: Hard cap on chained artists. Inclusive: the fifth is kept.
+ARTIST_MAX = 5
+
 
 def parse_chain(raw: str) -> dict[str, Any]:
-    """Parse a chain JSON string, falling back to an empty chain on failure."""
+    """Parse a chain JSON string, falling back to an empty chain."""
     if not raw or not raw.strip():
         return json.loads(EMPTY_CHAIN)
     try:
         chain = json.loads(raw)
-        if not isinstance(chain, dict):
-            return json.loads(EMPTY_CHAIN)
-        # Ensure expected keys exist.
-        chain.setdefault("_meta", {})
-        chain.setdefault("style", None)
-        chain.setdefault("modifiers", [])
-        chain.setdefault("artists", [])
-        return chain
     except (json.JSONDecodeError, TypeError):
         return json.loads(EMPTY_CHAIN)
+    if not isinstance(chain, dict):
+        return json.loads(EMPTY_CHAIN)
+    chain.setdefault("_meta", {})
+    chain.setdefault("style", None)
+    chain.setdefault("modifiers", [])
+    chain.setdefault("artists", [])
+    if not isinstance(chain["_meta"], dict):
+        chain["_meta"] = {}
+    if not isinstance(chain["modifiers"], list):
+        chain["modifiers"] = []
+    if not isinstance(chain["artists"], list):
+        chain["artists"] = []
+    return chain
 
 
 def dump_chain(chain: dict[str, Any]) -> str:
@@ -80,41 +91,37 @@ def dump_chain(chain: dict[str, Any]) -> str:
 
 
 def merge_chain(upstream: dict[str, Any], downstream: dict[str, Any]) -> dict[str, Any]:
-    """Two-level merge: downstream wins on overlap. The ``modifiers`` and
-    ``artists`` lists are concatenated (upstream first, downstream appended);
-    ``style`` and ``_meta`` are shallow-merged with downstream priority.
+    """Two-level merge, downstream winning on overlap.
+
+    ``modifiers`` and ``artists`` concatenate (upstream first);
+    ``style`` and ``_meta`` shallow-merge with downstream priority.
     """
-    merged: dict[str, Any] = {
+    return {
         "_meta": {**upstream.get("_meta", {}), **downstream.get("_meta", {})},
-        "style": downstream.get("style") if downstream.get("style") is not None else upstream.get("style"),
+        "style": (
+            downstream.get("style")
+            if downstream.get("style") is not None
+            else upstream.get("style")
+        ),
         "modifiers": upstream.get("modifiers", []) + downstream.get("modifiers", []),
         "artists": upstream.get("artists", []) + downstream.get("artists", []),
     }
-    return merged
 
 
-def resolve_meta(chain: dict[str, Any], defaults: dict[str, str] | None = None) -> dict[str, str]:
-    """Resolve ``_meta`` to concrete values, filling ``"inherit"`` slots
-    from *defaults* (or from hard-coded fallback values).
-    """
+def resolve_meta(
+    chain: dict[str, Any],
+    defaults: dict[str, str] | None = None,
+) -> dict[str, str]:
+    """Resolve ``_meta`` to concrete values, filling unset slots."""
     defaults = defaults or {}
     meta = chain.get("_meta", {})
     resolved: dict[str, str] = {}
     for field in _META_FIELDS:
-        value = meta.get(field, "inherit")
-        if value == "inherit" or value is None:
-            value = defaults.get(field, _META_DEFAULTS.get(field, "auto"))
+        value = meta.get(field)
+        if not value:
+            value = defaults.get(field, _META_DEFAULTS.get(field, ""))
         resolved[field] = value
     return resolved
-
-
-_META_DEFAULTS: dict[str, str] = {
-    "format": "auto",
-    "placement": "prepend",
-    "strength": "normal",
-    "artist_detail": "full",
-    "template": "",
-}
 
 
 # ---------------------------------------------------------------------------
@@ -125,63 +132,159 @@ def get_blocked_axes(style: dict | None) -> set[str]:
     """Return the modifier axes this style suppresses."""
     if style is None:
         return set()
-    return set(style.get("blocks", []))
+    blocks = style.get("blocks", [])
+    return set(blocks) if isinstance(blocks, list) else set()
 
 
-def filter_modifiers(modifiers: list[dict], blocked: set[str]) -> list[dict]:
-    """Return modifiers whose axis is NOT in *blocked*."""
+def filter_modifiers(
+    modifiers: list[dict],
+    blocked: set[str],
+) -> tuple[list[dict], list[dict]]:
+    """Split *modifiers* into (kept, dropped) by blocked axis.
+
+    Returning the dropped ones lets the node tell the user why their
+    modifier had no effect, instead of silently discarding it.
+    """
     if not blocked:
-        return modifiers
-    return [m for m in modifiers if m.get("axis", "") not in blocked]
+        return list(modifiers), []
+    kept, dropped = [], []
+    for mod in modifiers:
+        (dropped if mod.get("axis", "") in blocked else kept).append(mod)
+    return kept, dropped
 
 
 # ---------------------------------------------------------------------------
-# Prompt renderer
+# Style / modifier rendering
 # ---------------------------------------------------------------------------
 
-def _join_non_empty(parts: list[str], sep: str = ", ") -> str:
-    """Join non-empty strings, stripping whitespace."""
-    return sep.join(p for p in parts if p.strip())
+def _split_items(text: str) -> list[str]:
+    """Split a comma-separated tag string into trimmed, non-empty items."""
+    return [item.strip() for item in text.split(",") if item.strip()]
 
 
-def render_style_tags(style: dict, strength: float = 1.0) -> str:
-    """Render a style as comma-separated tags, with optional emphasis."""
-    tags = style.get("tags", "")
-    if not tags:
+def defining_term(style: dict | None) -> str:
+    """Return the style's defining tag, which is always written first.
+
+    ``strength="strong"`` restates this after the whole prompt is joined.
+    Restating inside :func:`render_style_tags` would not survive, because
+    joining deduplicates to stop a style, a modifier and an artist from
+    repeating each other.
+    """
+    if not style:
         return ""
-    if strength > 1.0:
-        emphasis = style.get("emphasis", "")
-        if emphasis:
-            tags = f"{tags}, {emphasis}"
-        tail = style.get("strength_tail", "")
-        if tail:
-            tags = f"{tags}, {tail}"
-    return tags
+    items = _split_items(style.get("tags", ""))
+    return items[0] if items else ""
 
 
-def render_style_prose(style: dict, strength: float = 1.0) -> str:
-    """Render a style as prose, with optional strength tail."""
-    prose = style.get("prose", "")
+def _lead_clause(text: str) -> str:
+    """Return the opening portion of a descriptive string.
+
+    Used by ``strength="subtle"``, which trims a style to its defining
+    phrase rather than dropping it entirely. Most style prose is a single
+    sentence of the form "Label: clause, clause, clause.", so falling back
+    to the leading half of the clauses keeps subtle meaningful where there
+    is no sentence break to cut at.
+    """
+    stripped = text.strip()
+    for sep in (": ", "; "):
+        _, found, tail = stripped.partition(sep)
+        if found and tail:
+            stripped = tail
+            break
+
+    match = re.search(r"(?<=[a-z0-9\"')])\.\s", stripped)
+    if match:
+        return stripped[:match.start() + 1].strip()
+
+    clauses = [c.strip() for c in stripped.rstrip(".").split(",") if c.strip()]
+    if len(clauses) > 1:
+        keep = max(1, len(clauses) // 2)
+        return ", ".join(clauses[:keep])
+    return stripped
+
+
+def render_style_tags(style: dict, strength: str = "normal") -> str:
+    """Render a style as comma-separated tags.
+
+    ``subtle`` keeps the leading half of the tag list, ``strong`` appends
+    the style's own emphasis terms when it has them and otherwise repeats
+    its defining term. This works for every style, including the ones
+    that carry no ``emphasis`` or ``strength_tail`` field.
+    """
+    items = _split_items(style.get("tags", ""))
+    if not items:
+        return ""
+
+    if strength == "subtle":
+        keep = max(1, (len(items) + 1) // 2)
+        return ", ".join(items[:keep])
+
+    if strength == "strong":
+        extra: list[str] = []
+        for field in ("emphasis", "strength_tail"):
+            value = style.get(field, "").strip()
+            if value:
+                extra.extend(_split_items(value))
+        return ", ".join(_dedupe_preserving_order(items + extra))
+
+    return ", ".join(items)
+
+
+def render_style_prose(style: dict, strength: str = "normal") -> str:
+    """Render a style as prose."""
+    prose = style.get("prose", "").strip()
     if not prose:
         return ""
-    if strength > 1.0:
-        tail = style.get("strength_tail", "")
+    if strength == "subtle":
+        return _ensure_sentence(_lead_clause(prose))
+    if strength == "strong":
+        tail = style.get("strength_tail", "").strip()
         if tail:
-            prose = f"{prose} {tail}."
-    return prose
+            return _ensure_sentence(f"{prose.rstrip('.')}. {tail}")
+    return _ensure_sentence(prose)
 
+
+def render_modifier_tags(modifier: dict) -> str:
+    """Render a modifier's tags form."""
+    return modifier.get("tags", "").strip()
+
+
+def render_modifier_prose(modifier: dict) -> str:
+    """Render a modifier's prose form."""
+    return modifier.get("prose", "").strip()
+
+
+def _dedupe_preserving_order(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    out: list[str] = []
+    for item in items:
+        key = item.lower()
+        if key not in seen:
+            seen.add(key)
+            out.append(item)
+    return out
+
+
+def _ensure_sentence(text: str) -> str:
+    """Capitalize the first letter and guarantee terminal punctuation."""
+    text = text.strip()
+    if not text:
+        return ""
+    if text[0].islower():
+        text = text[0].upper() + text[1:]
+    if text[-1] not in ".!?":
+        text += "."
+    return text
+
+
+# ---------------------------------------------------------------------------
+# Artists
+# ---------------------------------------------------------------------------
 
 def render_artist(artist: dict, mode: str = "full") -> str:
-    """Render a single artist record according to *mode*.
-
-    Modes:
-    - ``"full"`` — name + descriptor (default)
-    - ``"names_only"`` — name only
-    - ``"descriptor_only"`` — descriptor only
-    - ``"names_lead"`` — name + lead descriptor only
-    """
-    label = artist.get("label", "")
-    descriptor = artist.get("descriptor", "")
+    """Render one artist record according to *mode*."""
+    label = artist.get("label", "").strip()
+    descriptor = artist.get("descriptor", "").strip()
 
     if mode == "names_only":
         return label
@@ -189,48 +292,84 @@ def render_artist(artist: dict, mode: str = "full") -> str:
         return descriptor
     if mode == "names_lead":
         if label and descriptor:
-            # Take only the first sentence of the descriptor.
-            first_sent = descriptor.split(".")[0].strip()
-            return f"{label}, {first_sent}" if first_sent else label
+            first = descriptor.split(",")[0].strip()
+            return f"{label}, {first}" if first else label
         return label or descriptor
-
-    # mode == "full"
-    parts = []
-    if label:
-        parts.append(label)
-    if descriptor:
-        parts.append(descriptor)
-    return ", ".join(parts)
+    if label and descriptor:
+        return f"{label}, {descriptor}"
+    return label or descriptor
 
 
-def render_modifier_tags(modifier: dict) -> str:
-    """Render a modifier's tags form."""
-    return modifier.get("tags", "")
+def build_artist_clause(artists: list[dict], mode: str) -> str:
+    """Build the artist clause from a list of artist records.
 
-
-def render_modifier_prose(modifier: dict) -> str:
-    """Render a modifier's prose form."""
-    return modifier.get("prose", "")
-
-
-def _build_artist_clause(artists: list[dict], mode: str) -> str:
-    """Build the artist clause from a list of artist records."""
-    n = len(artists)
-    if n == 0:
+    ``descriptor_only`` never emits the word "by", because there is no
+    name to attribute to. Every other mode does.
+    """
+    rendered = [r for r in (render_artist(a, mode) for a in artists) if r]
+    if not rendered:
         return ""
-    if mode == "names_only" or (mode == "names_lead" and n <= 2):
-        parts = [render_artist(a, mode) for a in artists]
-        return ", ".join(parts) if parts else ""
-    # Multiple artists with descriptors: render individually and join.
-    rendered = []
-    for a in artists:
-        r = render_artist(a, mode)
-        if r:
-            rendered.append(r)
-    if mode == "names_lead" and n > 2:
-        # Names only for stacking beyond 2.
-        return "by " + ", ".join(a.get("label", "") for a in artists if a.get("label"))
-    return "by " + ", ".join(rendered) if rendered else ""
+    if mode == "descriptor_only":
+        return ", ".join(rendered)
+    return "by " + ", ".join(rendered)
+
+
+# ---------------------------------------------------------------------------
+# Prompt renderer
+# ---------------------------------------------------------------------------
+
+#: Introduces the style block in prose. Without it, a style described as
+#: a noun phrase reads as more scene content: "A View-Master stereo slide
+#: with a cardboard mount holding a plastic film strip" put a View-Master
+#: in the picture instead of rendering the picture as one. The connective
+#: retags everything after it as a description of the medium.
+STYLE_FRAME = "Rendered as"
+
+#: Introduces the subject when the style block leads instead. Same job in
+#: the other direction: it marks where the rendering description stops
+#: and the thing being depicted starts.
+SUBJECT_FRAME = "The image shows"
+
+
+def _lower_opening(text: str) -> str:
+    """Lower the first letter so *text* reads as a continuation.
+
+    An acronym keeps its capitals: "HDR tone mapping" must not become
+    "hDR". Everything else is lowered, including proper nouns, because
+    case carries no meaning to a text encoder and the common opening by
+    far is an article.
+    """
+    head, _, tail = text.partition(" ")
+    if len(head) > 1 and head.isupper():
+        return text
+    return head[:1].lower() + head[1:] + (" " + tail if tail else "")
+
+
+def _frame_style(text: str) -> str:
+    """Attach the rendering connective to a style block."""
+    text = text.strip()
+    if not text:
+        return ""
+    return f"{STYLE_FRAME} {_lower_opening(text)}"
+
+
+def _frame_subject(text: str) -> str:
+    """Attach the subject connective to the user's prompt."""
+    text = text.strip()
+    if not text:
+        return ""
+    return _ensure_sentence(f"{SUBJECT_FRAME} {_lower_opening(text)}")
+
+
+def _join_tags(parts: list[str]) -> str:
+    items: list[str] = []
+    for part in parts:
+        items.extend(_split_items(part))
+    return ", ".join(_dedupe_preserving_order(items))
+
+
+def _join_prose(parts: list[str]) -> str:
+    return " ".join(_ensure_sentence(p) for p in parts if p.strip())
 
 
 def render_prompt(
@@ -238,157 +377,263 @@ def render_prompt(
     meta: dict[str, str],
     user_prompt: str = "",
 ) -> str:
-    """Render the full prompt from a resolved chain.
-
-    The *user_prompt* is the user's own prompt text that the style
-    text wraps around (prepended or appended based on meta.placement).
-    """
-    fmt = meta.get("format", "auto")
-    placement = meta.get("placement", "prepend")
-    strength_name = meta.get("strength", "normal")
-    strength = STRENGTH_MULTIPLIERS.get(strength_name, 1.0)
+    """Render the full prompt from a resolved chain."""
+    fmt = meta.get("format") or _META_DEFAULTS["format"]
+    strength = meta.get("strength", "normal")
     artist_mode = meta.get("artist_detail", "full")
     template = meta.get("template", "")
+    placement = meta.get("placement") or _META_DEFAULTS["placement"]
 
     style_rec = chain.get("style")
     modifiers = chain.get("modifiers", [])
     artists = chain.get("artists", [])
 
-    # Auto-detect format: use prose if any prose text exists, else tags.
-    if fmt == "auto":
-        has_prose = bool(style_rec and style_rec.get("prose"))
-        if not has_prose:
-            has_prose = any(m.get("prose") for m in modifiers)
-        fmt = "prose" if has_prose else "tags"
-
-    # Build style text.
     parts: list[str] = []
-
     if style_rec:
-        if fmt == "tags":
-            s = render_style_tags(style_rec, strength)
-        else:
-            s = render_style_prose(style_rec, strength)
-        if s:
-            parts.append(s)
+        rendered = (
+            render_style_tags(style_rec, strength)
+            if fmt == "tags"
+            else render_style_prose(style_rec, strength)
+        )
+        if rendered:
+            parts.append(rendered)
 
-    # Modifiers.
     for mod in modifiers:
-        if fmt == "tags":
-            m = render_modifier_tags(mod)
-        else:
-            m = render_modifier_prose(mod)
-        if m:
-            parts.append(m)
+        rendered = (
+            render_modifier_tags(mod) if fmt == "tags" else render_modifier_prose(mod)
+        )
+        if rendered:
+            parts.append(rendered)
 
-    # Artists.
-    artist_text = _build_artist_clause(artists, artist_mode)
+    artist_text = build_artist_clause(artists, artist_mode)
     if artist_text:
         parts.append(artist_text)
 
-    style_text = ", ".join(parts) if fmt == "tags" else " ".join(parts)
-
-    # Apply template or default wrapping.
-    if template and "{style}" in template and "{prompt}" in template:
-        result = template.replace("{style}", style_text).replace("{prompt}", user_prompt.strip())
-    elif placement == "append":
-        if user_prompt.strip() and style_text:
-            sep = ", " if fmt == "tags" else " "
-            result = f"{user_prompt.strip()}{sep}{style_text}"
-        else:
-            result = user_prompt.strip() or style_text
+    if fmt == "tags":
+        style_text = _join_tags(parts)
+        # Restate the defining term after joining, so "strong" survives the
+        # deduplication that keeps style, modifier and artist from echoing
+        # each other. Without this, "strong" was identical to "normal" for
+        # every style that ships no hand-written emphasis field.
+        term = defining_term(style_rec)
+        if strength == "strong" and style_text and term:
+            style_text = f"{style_text}, {term}"
     else:
-        # prepend
-        if style_text and user_prompt.strip():
-            sep = ", " if fmt == "tags" else " "
-            result = f"{style_text}{sep}{user_prompt.strip()}"
-        else:
-            result = style_text or user_prompt.strip()
+        style_text = _join_prose(parts)
+    subject = user_prompt.strip()
 
-    # Clean up double commas, extra spaces.
-    while ", ," in result:
-        result = result.replace(", ,", ",")
-    result = " ".join(result.split())
+    if template and "{style}" in template and "{prompt}" in template:
+        result = template.replace("{style}", style_text).replace("{prompt}", subject)
+    elif not style_text or not subject:
+        # Nothing to separate, so no connective. A style block on its own
+        # is the style, and a subject on its own is the subject.
+        result = style_text or subject
+    elif fmt == "tags":
+        # A keyword list has no grammar to confuse, so it needs no frame.
+        # Position is the only signal, and the leading tokens weigh most.
+        result = (
+            f"{subject}, {style_text}"
+            if placement == "append"
+            else f"{style_text}, {subject}"
+        )
+    elif placement == "append":
+        result = f"{_ensure_sentence(subject)} {_frame_style(style_text)}"
+    else:
+        result = f"{_frame_style(style_text)} {_frame_subject(subject)}"
 
-    return result
+    return _tidy(result)
+
+
+def _tidy(text: str) -> str:
+    """Collapse whitespace and repair punctuation left by empty parts."""
+    text = re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"(,\s*){2,}", ", ", text)
+    text = re.sub(r"\s+,", ",", text)
+    text = re.sub(r"\.\s*\.", ".", text)
+    return text.strip(" ,")
 
 
 def render_negative(chain: dict[str, Any]) -> str:
     """Build the negative prompt from the chain's style and modifiers."""
     parts: list[str] = []
     style = chain.get("style")
-    if style:
-        neg = style.get("negative", "")
-        if neg:
-            parts.append(neg)
+    if style and style.get("negative"):
+        parts.append(style["negative"])
     for mod in chain.get("modifiers", []):
-        neg = mod.get("negative", "")
-        if neg:
-            parts.append(neg)
-    return ", ".join(parts)
+        if mod.get("negative"):
+            parts.append(mod["negative"])
+    return _join_tags(parts)
 
 
 # ---------------------------------------------------------------------------
-# RNG helpers
+# Pool filtering and selection
 # ---------------------------------------------------------------------------
+
+def filter_pool(
+    category: str | None = None,
+    tag_filter: str = "",
+    style_map: dict[str, dict] | None = None,
+) -> list[str]:
+    """Return the sorted style ids matching *category* and *tag_filter*.
+
+    ``tag_filter`` is comma-separated and every term must match (AND), so
+    ``"bw, high-contrast"`` narrows to styles that are both. A term
+    matches against the style's tags, prose, label and aliases. The old
+    behaviour searched for the entire raw string as one substring, which
+    meant any filter containing a comma matched nothing at all.
+    """
+    smap = style_map if style_map is not None else STYLES
+    ids = get_style_ids(category=category) if category else list(smap)
+    ids = [sid for sid in ids if sid in smap]
+
+    terms = [t.strip().lower() for t in tag_filter.split(",") if t.strip()]
+    if terms:
+        matched = []
+        for sid in ids:
+            rec = smap[sid]
+            haystack = " ".join([
+                rec.get("tags", ""),
+                rec.get("prose", ""),
+                rec.get("label", ""),
+                " ".join(rec.get("aliases", [])),
+            ]).lower()
+            if all(term in haystack for term in terms):
+                matched.append(sid)
+        ids = matched
+    return sorted(ids)
+
+
+def filter_artist_pool(
+    category: str | None = None,
+    tag_filter: str = "",
+    artist_map: dict[str, dict] | None = None,
+) -> list[str]:
+    """Return the sorted artist ids matching *category* and *tag_filter*.
+
+    Same contract as :func:`filter_pool`: comma-separated terms, every one
+    must match, and a term matches against the descriptor, label, aliases
+    and category. Searching the descriptor is the point, because it is how
+    you find an artist by what their work looks like rather than by
+    already knowing the name.
+    """
+    amap = artist_map if artist_map is not None else ARTISTS
+    ids = get_artist_ids(category) if category else list(amap)
+    ids = [aid for aid in ids if aid in amap]
+
+    terms = [t.strip().lower() for t in tag_filter.split(",") if t.strip()]
+    if terms:
+        matched = []
+        for aid in ids:
+            rec = amap[aid]
+            haystack = " ".join([
+                rec.get("descriptor", ""),
+                rec.get("label", ""),
+                rec.get("category", ""),
+                " ".join(rec.get("aliases", [])),
+            ]).lower()
+            if all(term in haystack for term in terms):
+                matched.append(aid)
+        ids = matched
+    return sorted(ids)
+
 
 def seeded_rng(seed: int) -> random.Random:
-    """Return a ``random.Random`` instance seeded from *seed*."""
+    """Return a ``random.Random`` seeded from *seed*."""
     return random.Random(seed)
 
 
+def _score(seed: int, candidate: str) -> str:
+    """Score one candidate for a seed. Stable across releases."""
+    return hashlib.sha256(f"{seed}:{candidate}".encode("utf-8")).hexdigest()
+
+
+def stable_choice(seed: int, candidates: list[str]) -> str | None:
+    """Pick one candidate for *seed*, stably as the pool grows.
+
+    Indexing a sorted list would be simpler, but it makes every saved
+    workflow lie the moment the pack ships a new entry: inserting one
+    artist alphabetically shifts every later index, so seed 7 silently
+    starts producing something else and a workflow someone liked no
+    longer reproduces.
+
+    Scoring each candidate independently and taking the winner avoids
+    that. Adding a new entry only changes the outcome for the seeds where
+    the newcomer happens to score highest, which is roughly one seed in N
+    rather than all of them. Removing an entry only affects the seeds it
+    used to win.
+    """
+    if not candidates:
+        return None
+    return max(candidates, key=lambda candidate: _score(seed, candidate))
+
+
+def stable_sample(seed: int, candidates: list[str], count: int) -> list[str]:
+    """Pick up to *count* distinct candidates, stably as the pool grows.
+
+    Same reasoning as :func:`stable_choice`: ranking by per-candidate
+    score means a new entry displaces at most one existing pick instead
+    of reshuffling the whole sheet.
+    """
+    if not candidates or count <= 0:
+        return []
+    ranked = sorted(candidates, key=lambda candidate: _score(seed, candidate),
+                    reverse=True)
+    return ranked[:count]
+
+
 def random_style_id(
-    rng: random.Random,
+    seed: int,
     category: str | None = None,
-    tag_filter: str | None = None,
-    style_ids: list[str] | None = None,
+    tag_filter: str = "",
     style_map: dict[str, dict] | None = None,
     exclude: list[str] | None = None,
 ) -> str | None:
-    """Pick a random style id from the optional filtered pool.
-
-    Falls back to the global STYLES if *style_ids*/*style_map* are not given.
-    """
-    smap = style_map or STYLES
-    if style_ids is None:
-        ids = get_style_ids(category=category, tag_filter=tag_filter)
-        ids = [i for i in ids if i in smap]
-    else:
-        ids = [i for i in style_ids if i in smap]
-        if category is not None:
-            ids = [i for i in ids if smap[i].get("category") == category]
-        if tag_filter:
-            tf = tag_filter.lower().strip()
-            ids = [i for i in ids if tf in (smap[i].get("tags", "") + " " + smap[i].get("prose", "")).lower()]
+    """Pick a style id for *seed* from the filtered pool."""
+    ids = filter_pool(category, tag_filter, style_map)
     if exclude:
-        ids = [i for i in ids if i not in exclude]
-    return rng.choice(ids) if ids else None
+        skip = set(exclude)
+        ids = [sid for sid in ids if sid not in skip]
+    return stable_choice(seed, ids)
 
 
 def cycle_style_id(
     index: int,
     category: str | None = None,
-    tag_filter: str | None = None,
+    tag_filter: str = "",
     style_map: dict[str, dict] | None = None,
 ) -> str | None:
-    """Return the style id at deterministic *index* within the filter pool."""
-    smap = style_map or STYLES
-    smap = style_map or STYLES
-    ids = get_style_ids(category=category, tag_filter=tag_filter)
-    ids = [i for i in ids if i in smap]
-    if not ids:
-        return None
-    return ids[index % len(ids)]
+    """Return the style id at deterministic *index* within the pool."""
+    ids = filter_pool(category, tag_filter, style_map)
+    return ids[index % len(ids)] if ids else None
 
 
-# ---------------------------------------------------------------------------
-# Strength modifiers
-# ---------------------------------------------------------------------------
+def random_artist_id(
+    seed: int,
+    category: str | None = None,
+    tag_filter: str = "",
+    artist_map: dict[str, dict] | None = None,
+) -> str | None:
+    """Pick an artist id for *seed* from the filtered pool."""
+    return stable_choice(seed, filter_artist_pool(category, tag_filter, artist_map))
 
-def strength_adjust(text: str, multiplier: float) -> str:
-    """Apply emphasis by repeating the text (for tags format) or no-op (for prose).
 
-    For tags format: if multiplier > 1.0, the text is repeated.
-    For prose: the strength tail is already baked into the render.
-    """
-    return text  # strength is handled at render time via emphasis/strength_tail
+def cycle_artist_id(
+    index: int,
+    category: str | None = None,
+    tag_filter: str = "",
+    artist_map: dict[str, dict] | None = None,
+) -> str | None:
+    """Return the artist id at deterministic *index* within the pool."""
+    ids = filter_artist_pool(category, tag_filter, artist_map)
+    return ids[index % len(ids)] if ids else None
+
+
+def sheet_style_ids(
+    seed: int,
+    count: int,
+    category: str | None = None,
+    tag_filter: str = "",
+    style_map: dict[str, dict] | None = None,
+) -> list[str]:
+    """Return up to *count* distinct style ids for a style sheet."""
+    return stable_sample(seed, filter_pool(category, tag_filter, style_map), count)

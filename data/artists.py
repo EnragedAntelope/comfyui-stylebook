@@ -1,4 +1,4 @@
-"""Artist records - ~800 hand-curated entries with descriptors.
+"""Artist records - hand-curated entries, each with a descriptor.
 
 Every artist carries a descriptor that steers the model independently
 of whether it knows the name. Name + description = works on all lineages.
@@ -427,7 +427,7 @@ ARTISTS: dict[str, dict] = {
         "descriptor": "harsh morning light slicing through windows into empty rooms, solitary figures in quiet urban stillness, sharp shadows and saturated colour blocks, the weight of isolation in every composition",
     },
     "magritte": {
-        "label": "RenÃ© Magritte",
+        "label": "René Magritte",
         "category": "fine-art",
         "aliases": ["surrealist", "Belgian"],
         "descriptor": "deadpan realism rendering impossible juxtapositions, ordinary objects in extraordinary contexts, clear blue skies behind bowler-hatted figures, the unsettling precision of a dream transcribed in oil",
@@ -445,12 +445,6 @@ ARTISTS: dict[str, dict] = {
         "category": "fine-art",
         "aliases": ["Renaissance master", "sfumato"],
         "descriptor": "soft sfumato blending edges into atmospheric haze, warm umber underpainting glowing through translucent flesh tones, pyramidal compositions balanced with geometric precision",
-    },
-    "michelangelo": {
-        "label": "Michelangelo",
-        "category": "fine-art",
-        "aliases": ["High Renaissance", "monumental figure"],
-        "descriptor": "muscular sculptural figures rendered in chalky stone-grey tones, dramatic contrapposto poses, deep shadow carving out monumental forms against austere backgrounds",
     },
     "raphael": {
         "label": "Raphael",
@@ -682,29 +676,11 @@ ARTISTS: dict[str, dict] = {
     },
 
     # --- Fine Art: Early Modern and Abstract ---
-    "kandinsky": {
-        "label": "Wassily Kandinsky",
-        "category": "fine-art",
-        "aliases": ["abstract pioneer", "Bauhaus"],
-        "descriptor": "pure abstract compositions of floating geometric shapes in vivid primary colour, circles and triangles dancing like visual music, spiritual rhythm in pure form",
-    },
-    "malevich": {
-        "label": "Kazimir Malevich",
-        "category": "fine-art",
-        "aliases": ["Suprematism", "geometric abstraction"],
-        "descriptor": "pure geometric shapes floating on white ground, black squares and red wedges reduced to essential form, absolute zero of painting where colour shape are all",
-    },
     "mondrian": {
         "label": "Piet Mondrian",
         "category": "fine-art",
         "aliases": ["De Stijl", "Neoplasticism"],
         "descriptor": "strict grid of black horizontal and vertical lines enclosing rectangles of pure red blue and yellow against white, absolute harmony through geometric reduction",
-    },
-    "klee": {
-        "label": "Paul Klee",
-        "category": "fine-art",
-        "aliases": ["Bauhaus", "poetic abstraction"],
-        "descriptor": "whimsical childlike symbols and arrows on tinted grounds, delicate watercolour washes beneath fine linework, pictographic poetry balancing abstraction and representation with gentle humour",
     },
     "miro": {
         "label": "Joan Miro",
@@ -868,12 +844,6 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["Pop Art", "comic strip"],
         "descriptor": "Ben-Day dots and bold black outlines mimicking cheap comic printing, melodramatic close-ups in primary colour, the mass-produced image elevated to high art through mechanical precision",
     },
-    "richter": {
-        "label": "Gerhard Richter",
-        "category": "fine-art",
-        "aliases": ["photo-painting", "German contemporary"],
-        "descriptor": "photo-based paintings dragged with a soft brush into blurred uncertainty, family portraits and abstract squeegee works, the tension between photographic truth and painted ambiguity",
-    },
     "hockney": {
         "label": "David Hockney",
         "category": "fine-art",
@@ -910,35 +880,17 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["Op Art", "perceptual"],
         "descriptor": "precise geometric patterns of black and white creating optical vibration and movement, the retina fooled by systematic line and curve, perception itself made visible",
     },
-    "hirst": {
-        "label": "Damien Hirst",
-        "category": "fine-art",
-        "aliases": ["YBA", "conceptual"],
-        "descriptor": "clinical display of preserved animals and spot paintings in industrial colour, the shock of death aestheticised in formaldehyde and enamel, concept dominating the painted surface",
-    },
     "emin": {
         "label": "Tracey Emin",
         "category": "fine-art",
         "aliases": ["YBA", "confessional"],
         "descriptor": "raw autobiographical neon and textile works spelling out intimate confessions, handwritten text and sewn appliques in vulnerable colour, the personal made public without filter",
     },
-    "doig": {
-        "label": "Peter Doig",
-        "category": "fine-art",
-        "aliases": ["British contemporary", "atmospheric landscape"],
-        "descriptor": "dreamlike landscapes and architectural scenes rendered in lush textured paint, reflections on water and snow in muted colour, memory and photograph blurred into painterly atmosphere",
-    },
     "ofili": {
         "label": "Chris Ofili",
         "category": "fine-art",
         "aliases": ["YBA", "decoration"],
         "descriptor": "richly decorated paintings incorporating beadwork and collage, Afrofuturist figures in psychedelic colour, the decorative and the political layered in glittering surface texture",
-    },
-    "saville": {
-        "label": "Jenny Saville",
-        "category": "fine-art",
-        "aliases": ["British figurative", "flesh"],
-        "descriptor": "monumental flesh-coloured bodies filling the frame, thick impasto of bruised pink and yellow, the weight and texture of flesh examined at overwhelming scale without idealisation",
     },
     "utril_o": {
         "label": "Maurice Utrillo",
@@ -951,7 +903,7 @@ ARTISTS: dict[str, dict] = {
     "moebius": {
         "label": "Moebius (Jean Giraud)",
         "category": "illustration",
-        "aliases": ["Jean Giraud", "bande dessinÃ©e"],
+        "aliases": ["Jean Giraud", "bande dessinée"],
         "descriptor": "fine clear linework over luminous watercolour washes, alien landscapes rendered with the precision of observation, soft atmospheric colour transitions, every panel a self-contained world",
     },
     "much_cover": {
@@ -1017,7 +969,7 @@ ARTISTS: dict[str, dict] = {
     "michelangelo": {
         "label": "Michelangelo",
         "category": "fine-art",
-        "aliases": ["high renaissance", "marble sculptor"],
+        "aliases": ["high renaissance", "marble sculptor", "monumental figure"],
         "descriptor": "monumental marble figures emerging from rough-hewn stone, twisting contrapposto poses, highly polished flesh surfaces against textured backgrounds, idealized anatomy straining against material limits",
     },
     "brancusi": {
@@ -1059,7 +1011,7 @@ ARTISTS: dict[str, dict] = {
     "damien_hirst": {
         "label": "Damien Hirst",
         "category": "fine-art",
-        "aliases": ["yba", "conceptual sculpture"],
+        "aliases": ["yba", "conceptual sculpture", "conceptual"],
         "descriptor": "stainless steel and glass cases preserving suspended animal forms, diamond-encrusted skulls gleaming under clinical light, pharmaceutical dot paintings in saturated acrylic colour grids",
     },
     "jeff_koons": {
@@ -1151,7 +1103,7 @@ ARTISTS: dict[str, dict] = {
     "gerhard_richter": {
         "label": "Gerhard Richter",
         "category": "fine-art",
-        "aliases": ["abstract painter", "photo painting"],
+        "aliases": ["abstract painter", "photo painting", "photo-painting", "German contemporary"],
         "descriptor": "photorealistic portraits blurred by dragged wet paint, abstract squeegeed surfaces in layered translucent colour, the tension between photographic precision and painterly destruction of the image",
     },
     "cy_twombly": {
@@ -1183,7 +1135,7 @@ ARTISTS: dict[str, dict] = {
     "jenny_saville": {
         "label": "Jenny Saville",
         "category": "fine-art",
-        "aliases": ["flesh painter", "body monumental"],
+        "aliases": ["flesh painter", "body monumental", "British figurative", "flesh"],
         "descriptor": "monumental flesh-toned oil paintings where thick impasto presses against the picture plane, bruised purples and raw pinks, visceral body weight at overwhelming scale",
     },
     "cecily_brown": {
@@ -1195,7 +1147,7 @@ ARTISTS: dict[str, dict] = {
     "peter_doig": {
         "label": "Peter Doig",
         "category": "fine-art",
-        "aliases": ["atmospheric painter", "memory landscape"],
+        "aliases": ["atmospheric painter", "memory landscape", "British contemporary", "atmospheric landscape"],
         "descriptor": "dreamlike landscapes and architectural scenes in soft acrylic washes, blurred reflective water surfaces, figures half-lost in atmospheric haze, colour of memory and old photographs",
     },
     "marlene_dumas": {
@@ -1211,7 +1163,7 @@ ARTISTS: dict[str, dict] = {
         "descriptor": "pale washed-out oil paintings from photographic sources, muted desaturated colour and soft blurred edges, historical trauma in the flat tone of faded film stills",
     },
     "michael_borremans": {
-        "label": "MichaÃ«l Borremans",
+        "label": "Michaël Borremans",
         "category": "fine-art",
         "aliases": ["belgian painter", "uncanny realism"],
         "descriptor": "small-scale oil paintings with smooth enamel-like surfaces, figures in ambiguous rituals under flat even lighting, muted earth tones and eerie stillness refusing explanation",
@@ -1949,19 +1901,19 @@ ARTISTS: dict[str, dict] = {
     "kazimir_malevich": {
         "label": "Kazimir Malevich",
         "category": "fine-art",
-        "aliases": ["suprematism", "black square"],
+        "aliases": ["suprematism", "black square", "geometric abstraction"],
         "descriptor": "suprematist geometric abstraction with floating coloured squares on white grounds, pure artistic feeling through basic forms, iconic black square and bold colour block compositions",
     },
     "wassily_kandinsky": {
         "label": "Wassily Kandinsky",
         "category": "fine-art",
-        "aliases": ["abstract pioneer", "visual music"],
+        "aliases": ["abstract pioneer", "visual music", "Bauhaus"],
         "descriptor": "pioneering abstract painting with musical rhythm, geometric shapes and vivid colours dancing across canvas, synesthetic compositions translating sound into visual form",
     },
     "paul_klee": {
         "label": "Paul Klee",
         "category": "fine-art",
-        "aliases": ["bauhaus master", "childlike abstraction"],
+        "aliases": ["bauhaus master", "childlike abstraction", "Bauhaus", "poetic abstraction"],
         "descriptor": "whimsical abstract compositions with childlike simplicity, delicate colour washes and linear hieroglyphs, poetic small-scale paintings blending symbols and musical notation",
     },
     "josef_albers": {
@@ -2680,7 +2632,7 @@ ARTISTS: dict[str, dict] = {
         "label": "David B.",
         "category": "comics",
         "aliases": ["Epileptic", "French autobiographical"],
-        "descriptor": "surreal detailed ink rendering with symbolic imagery, autobiographical family trauma, French bande dessinÃ©e at its most psychologically intense",
+        "descriptor": "surreal detailed ink rendering with symbolic imagery, autobiographical family trauma, French bande dessinée at its most psychologically intense",
     },
     "joann_sfar": {
         "label": "Joann Sfar",
@@ -2698,7 +2650,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Enki Bilal",
         "category": "comics",
         "aliases": ["Nikopol", "European sci-fi"],
-        "descriptor": "painterly colour rendering with atmospheric perspective, dystopian science fiction narrative, European bande dessinÃ©e merged with fine-art painting technique",
+        "descriptor": "painterly colour rendering with atmospheric perspective, dystopian science fiction narrative, European bande dessinée merged with fine-art painting technique",
     },
     "milo_manara": {
         "label": "Milo Manara",
@@ -3092,24 +3044,6 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["Victorian portrait", "soft focus pioneer"],
         "descriptor": "soft-focus Victorian portraits of literary and scientific figures, haloed heads in dreamy diffused light, intentional blur and chemical imperfection elevating photography to Pre-Raphaelite painting",
     },
-    "robert_adams": {
-        "label": "Robert Adams",
-        "category": "photography",
-        "aliases": ["New West", "suburban landscape"],
-        "descriptor": "precise black-and-white photographs of Denver suburban sprawl and deforested hillsides, tract houses and construction sites in flat daylight, quiet elegy for landscape consumed by development",
-    },
-    "lewis_baltz": {
-        "label": "Lewis Baltz",
-        "category": "photography",
-        "aliases": ["New Topographics", "industrial landscape"],
-        "descriptor": "deadpan black-and-white photographs of warehouses and subdivisions, flat even light on tract architecture, the New Topographics of human alteration rendered in austere graphic clarity",
-    },
-    "bernd_and_hilla_becher": {
-        "label": "Bernd and Hilla Becher",
-        "category": "photography",
-        "aliases": ["typological photography", "industrial archaeology"],
-        "descriptor": "systematic black-and-white typologies of water towers and gas tanks, frontal views against grey sky, industrial structures documented with conceptual rigour and serial comparison",
-    },
     "gabriele_basilico": {
         "label": "Gabriele Basilico",
         "category": "photography",
@@ -3168,35 +3102,11 @@ ARTISTS: dict[str, dict] = {
     },
 
     # --- Fine Art: Minimalist and Land Art ---
-    "richard_serra": {
-        "label": "Richard Serra",
-        "category": "fine-art",
-        "aliases": ["minimalist sculptor", "weathering steel"],
-        "descriptor": "monumental weathering-steel plates curving through landscape, massive industrial forms altering viewer perception, weight and balance of raw metal defining space through sheer physical presence",
-    },
     "robert_morris": {
         "label": "Robert Morris",
         "category": "fine-art",
         "aliases": ["minimalist sculptor", "felt pieces"],
         "descriptor": "minimalist geometric sculptures in felt and plywood, anti-form sagging materials defying rigid geometry, the body scale of industrial material exploring gravity and perception",
-    },
-    "dan_flavin": {
-        "label": "Dan Flavin",
-        "category": "fine-art",
-        "aliases": ["fluorescent light", "minimalist installation"],
-        "descriptor": "fluorescent light tubes arranged in precise geometric configurations, colour and illumination as sculptural medium, commercial fixtures transforming architectural space into pure chromatic environment",
-    },
-    "donald_judd": {
-        "label": "Donald Judd",
-        "category": "fine-art",
-        "aliases": ["specific objects", "minimalist"],
-        "descriptor": "precise aluminium and plexiglass boxes stacked in serial progression, industrial fabrication of specific objects, colour and material presented without illusion or reference",
-    },
-    "sol_lewitt": {
-        "label": "Sol LeWitt",
-        "category": "fine-art",
-        "aliases": ["conceptual art", "wall drawing"],
-        "descriptor": "geometric wall drawings and modular cube structures executed from written instructions, serial permutation of line and colour, the idea as machine making the art",
     },
     "robert_smithson": {
         "label": "Robert Smithson",
@@ -3215,12 +3125,6 @@ ARTISTS: dict[str, dict] = {
         "category": "fine-art",
         "aliases": ["land art", "sky frame"],
         "descriptor": "land art sculptures framing sky and horizon, concrete tubes aligning with solstice sun, cosmic alignment and geological time rendered in monumental site-specific structure",
-    },
-    "james_turrell": {
-        "label": "James Turrell",
-        "category": "fine-art",
-        "aliases": ["light artist", "skyspace"],
-        "descriptor": "immersive light installations and skyspaces framing the sky, perceptual environments of pure colour and luminance, light itself as material and architectural experience",
     },
     "walter_de_maria": {
         "label": "Walter De Maria",
@@ -3474,7 +3378,7 @@ ARTISTS: dict[str, dict] = {
     "bernd_and_hilla_becher": {
         "label": "Bernd and Hilla Becher",
         "category": "photography",
-        "aliases": ["Dusseldorf school", "typological photography"],
+        "aliases": ["Dusseldorf school", "typological photography", "industrial archaeology"],
         "descriptor": "systematic black-and-white photographs of industrial structures arranged in typological grids, water towers and blast furnaces against grey skies, conceptual taxonomy of vanishing architectural forms",
     },
     "elger_esser": {
@@ -3583,7 +3487,7 @@ ARTISTS: dict[str, dict] = {
     "james_turrell": {
         "label": "James Turrell",
         "category": "fine-art",
-        "aliases": ["light and space", "skyspace"],
+        "aliases": ["light and space", "skyspace", "light artist"],
         "descriptor": "controlled light installations in darkened rooms where colour appears as solid form, open apertures framing sky, perception of light as tangible material substance",
     },
     "robert_irwin": {
@@ -3595,13 +3499,13 @@ ARTISTS: dict[str, dict] = {
     "dan_flavin": {
         "label": "Dan Flavin",
         "category": "fine-art",
-        "aliases": ["minimalist light", "fluorescent sculpture"],
+        "aliases": ["minimalist light", "fluorescent sculpture", "fluorescent light", "minimalist installation"],
         "descriptor": "commercial fluorescent tubes arranged in geometric configurations along walls and corners, coloured light bathing architectural space, minimal industrial material transformed into luminous environment",
     },
     "donald_judd": {
         "label": "Donald Judd",
         "category": "fine-art",
-        "aliases": ["minimalist sculpture", "specific objects"],
+        "aliases": ["minimalist sculpture", "specific objects", "minimalist"],
         "descriptor": "precise geometric boxes and stacks in industrial materials, polished aluminium and painted plywood in mathematical progression, the object itself as art without reference or metaphor",
     },
     "sol_lewitt": {
@@ -3619,7 +3523,7 @@ ARTISTS: dict[str, dict] = {
     "richard_serra": {
         "label": "Richard Serra",
         "category": "fine-art",
-        "aliases": ["steel sculpture", "torqued ellipses"],
+        "aliases": ["steel sculpture", "torqued ellipses", "minimalist sculptor", "weathering steel"],
         "descriptor": "massive weathered steel plates curved into spiralling corridors and tilted walls, the viewer immersed in monumental rusted surfaces, weight and gravity as sculptural material",
     },
     "bruce_nauman": {
@@ -3730,4 +3634,487 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["installation art", "body politics"],
         "descriptor": "domestic objects transformed into threatening installations, kitchen graters and hair meshes scaled to monumental danger, the uncanny violence hidden in everyday familiar forms",
     },
+
+    # --- Film, animation and cinematography ---
+    "david_lynch": {
+        "label": "David Lynch",
+        "category": "film",
+        "aliases": ["surreal Americana", "dream logic"],
+        "descriptor": "small-town Americana lit like a nightmare, red curtains and chevron floors, industrial haze, dread sitting under ordinary brightly lit rooms",
+    },
+    "stanley_kubrick": {
+        "label": "Stanley Kubrick",
+        "category": "film",
+        "aliases": ["one-point perspective", "symmetry"],
+        "descriptor": "rigid one-point perspective down long symmetrical corridors, wide-angle clarity, cold exact framing lit by hard practical sources, unnerving formal order",
+    },
+    "david_cronenberg": {
+        "label": "David Cronenberg",
+        "category": "film",
+        "aliases": ["body horror", "clinical"],
+        "descriptor": "clinical body horror in cold institutional interiors, flesh fused with machinery, wet organic prosthetics rendered with matter-of-fact medical calm",
+    },
+    "alejandro_jodorowsky": {
+        "label": "Alejandro Jodorowsky",
+        "category": "film",
+        "aliases": ["surreal ritual", "midnight movie"],
+        "descriptor": "surreal ritual tableaux in scorched desert light, saturated symbolic costume, mysticism and cruelty staged with flat frontal theatricality",
+    },
+    "jan_svankmajer": {
+        "label": "Jan Svankmajer",
+        "category": "film",
+        "aliases": ["stop motion", "Czech surrealism"],
+        "descriptor": "stop-motion assemblage of raw meat, glass doll eyes and rusted tools, tactile decayed texture, jerky puppet movement in claustrophobic close-up",
+    },
+    "guillermo_del_toro": {
+        "label": "Guillermo del Toro",
+        "category": "film",
+        "aliases": ["creature design", "gothic fairy tale"],
+        "descriptor": "ornate practical-creature fantasy in teal and amber, gothic clockwork and insect anatomy, fairy-tale monsters lit with warm painterly gloom",
+    },
+    "wes_anderson": {
+        "label": "Wes Anderson",
+        "category": "film",
+        "aliases": ["symmetry", "pastel"],
+        "descriptor": "flat symmetrical frontal composition, pastel and mustard palette, dollhouse sets with the subject dead centre, planar storybook staging",
+    },
+    "andrei_tarkovsky": {
+        "label": "Andrei Tarkovsky",
+        "category": "film",
+        "aliases": ["long take", "poetic cinema"],
+        "descriptor": "slow drifting takes over standing water, wet grass and ruined interiors, desaturated sepia and green, drifting mist and rain falling indoors",
+    },
+    "dario_argento": {
+        "label": "Dario Argento",
+        "category": "film",
+        "aliases": ["giallo", "gel lighting"],
+        "descriptor": "lurid primary-gel lighting in saturated red, blue and green, stained-glass colour washing gothic interiors, violence staged like opera",
+    },
+    "panos_cosmatos": {
+        "label": "Panos Cosmatos",
+        "category": "film",
+        "aliases": ["neon", "analogue haze"],
+        "descriptor": "hallucinatory neon red and violet bleeding across the frame, slow creeping zooms, heavy analogue grain, hypnotic synth-lit darkness",
+    },
+    "nicolas_winding_refn": {
+        "label": "Nicolas Winding Refn",
+        "category": "film",
+        "aliases": ["neon noir", "high gloss"],
+        "descriptor": "immaculate neon-lit symmetry, hot magenta and cyan against deep black, glacial stillness, high-gloss surfaces and held unblinking stares",
+    },
+    "terry_gilliam": {
+        "label": "Terry Gilliam",
+        "category": "film",
+        "aliases": ["fisheye", "retro-futurist"],
+        "descriptor": "wide-angle fisheye distortion inside cluttered retro-futurist bureaucracy, ducting and paperwork everywhere, absurd scale, cut-paper collage grotesques",
+    },
+    "tim_burton": {
+        "label": "Tim Burton",
+        "category": "film",
+        "aliases": ["gothic whimsy", "spindly"],
+        "descriptor": "spindly gothic whimsy in bone white and black stripes, spiral hills and bare curling trees, big-eyed outsiders, storybook menace",
+    },
+    "gaspar_noe": {
+        "label": "Gaspar Noe",
+        "category": "film",
+        "aliases": ["strobing colour", "long take"],
+        "descriptor": "strobing saturated colour through unbroken takes, tilting disorienting camera, corridors bathed in a single hot hue, sensory assault",
+    },
+    "kenneth_anger": {
+        "label": "Kenneth Anger",
+        "category": "film",
+        "aliases": ["occult", "superimposition"],
+        "descriptor": "occult ritual imagery in feverish superimposed colour, glittering costume and candlelight, hand-tinted dreamlike montage",
+    },
+    "maya_deren": {
+        "label": "Maya Deren",
+        "category": "film",
+        "aliases": ["avant-garde", "dream logic"],
+        "descriptor": "black-and-white dream logic, mirrored doubles and impossible continuity, drifting figures on empty stairs, silent avant-garde poetry",
+    },
+    "ridley_scott": {
+        "label": "Ridley Scott",
+        "category": "film",
+        "aliases": ["industrial gothic", "rain and neon"],
+        "descriptor": "rain-slicked neon megacity under permanent night, hard shafts of light through smoke and window blinds, industrial gothic scale",
+    },
+    "roger_deakins": {
+        "label": "Roger Deakins",
+        "category": "film",
+        "aliases": ["cinematography", "single source"],
+        "descriptor": "one dominant light source and nothing wasted, immaculate clean composition, muted natural palette, small silhouettes against vast skies",
+    },
+    "christopher_doyle": {
+        "label": "Christopher Doyle",
+        "category": "film",
+        "aliases": ["cinematography", "step-printed"],
+        "descriptor": "smeared handheld colour, saturated green and red seen through glass and rain, step-printed motion blur, crowded intimate interiors",
+    },
+    "vittorio_storaro": {
+        "label": "Vittorio Storaro",
+        "category": "film",
+        "aliases": ["cinematography", "colour as story"],
+        "descriptor": "bold theatrical colour used as narrative, amber and cobalt pools of light, sculpted shadow, painterly chiaroscuro",
+    },
+    "emmanuel_lubezki": {
+        "label": "Emmanuel Lubezki",
+        "category": "film",
+        "aliases": ["cinematography", "natural light"],
+        "descriptor": "natural available light in long roaming takes, wide lenses held close to faces, magic-hour flare, luminous naturalism",
+    },
+    "hayao_miyazaki": {
+        "label": "Hayao Miyazaki",
+        "category": "film",
+        "aliases": ["anime", "watercolour landscape"],
+        "descriptor": "hand-painted watercolour landscapes under towering cumulus, lush wind-moved grass, warm humane character design, gentle luminous naturalism",
+    },
+    "satoshi_kon": {
+        "label": "Satoshi Kon",
+        "category": "film",
+        "aliases": ["anime", "match cut"],
+        "descriptor": "photoreal urban Tokyo in exact perspective, hard cuts sliding between reality and delusion, crowded incidental detail, unsettling calm",
+    },
+    "katsuhiro_otomo": {
+        "label": "Katsuhiro Otomo",
+        "category": "film",
+        "aliases": ["anime", "cyberpunk"],
+        "descriptor": "dense mechanical detail across a decaying neo-Tokyo, exact architectural perspective, explosive scale, cold cyberpunk realism",
+    },
+    "mamoru_oshii": {
+        "label": "Mamoru Oshii",
+        "category": "film",
+        "aliases": ["anime", "cyberpunk"],
+        "descriptor": "rain-soaked cyberpunk cityscape in cold blue-green, canal reflections and hanging cables, contemplative wide compositions, dense reflected light",
+    },
+    "wong_kar_wai": {
+        "label": "Wong Kar-wai",
+        "category": "film",
+        "aliases": ["saturated longing", "Hong Kong"],
+        "descriptor": "cramped Hong Kong corridors and noodle stalls in saturated green and amber, figures passing in slow motion through narrow doorways",
+    },
+    "bela_tarr": {
+        "label": "Bela Tarr",
+        "category": "film",
+        "aliases": ["long take", "monochrome"],
+        "descriptor": "monumental black-and-white long takes across mud and endless plains, slow drifting camera, oppressive flat grey light, relentless wind",
+    },
+    "sergei_parajanov": {
+        "label": "Sergei Parajanov",
+        "category": "film",
+        "aliases": ["folk tableau", "textile"],
+        "descriptor": "flat frontal folk tableaux crammed with textiles, icons and symbolic objects, jewel-toned embroidery, ritual stillness",
+    },
+    "ari_aster": {
+        "label": "Ari Aster",
+        "category": "film",
+        "aliases": ["folk horror", "daylight dread"],
+        "descriptor": "bright pitiless daylight over ritual horror, dollhouse cutaway framing, symmetrical dread, floral pastel wrongness",
+    },
+    "robert_eggers": {
+        "label": "Robert Eggers",
+        "category": "film",
+        "aliases": ["folk horror", "period exact"],
+        "descriptor": "period-exact candlelit interiors, near-monochrome cold northern light, boxy squared-off framing, austere folk-horror texture",
+    },
+
+    # --- Outsider, symbolist, surreal and lowbrow ---
+    "mc_escher": {
+        "label": "M.C. Escher",
+        "category": "fine-art",
+        "aliases": ["impossible architecture", "tessellation"],
+        "descriptor": "impossible architecture in exact black-and-white lithograph, interlocking tessellated figures, recursive staircases, cool mathematical hatching",
+    },
+    "odilon_redon": {
+        "label": "Odilon Redon",
+        "category": "fine-art",
+        "aliases": ["symbolism", "noirs"],
+        "descriptor": "floating disembodied eyes and spectral heads in smudged charcoal, later blooming into dreamy pastel colour, symbolist reverie",
+    },
+    "alfred_kubin": {
+        "label": "Alfred Kubin",
+        "category": "fine-art",
+        "aliases": ["macabre", "pen and ink"],
+        "descriptor": "spidery pen-and-ink nightmares over grey wash, deformed creatures in grotesque procession, fine nervous crosshatching",
+    },
+    "mark_ryden": {
+        "label": "Mark Ryden",
+        "category": "fine-art",
+        "aliases": ["pop surrealism", "lowbrow"],
+        "descriptor": "porcelain big-eyed girls in candy pastel, meat and bees and religious kitsch, immaculate glazed old-master surface",
+    },
+    "henry_darger": {
+        "label": "Henry Darger",
+        "category": "fine-art",
+        "aliases": ["outsider art", "panorama"],
+        "descriptor": "traced child figures marching across long panoramic watercolour scrolls, naive flat colour, obsessive repetition, storybook scale",
+    },
+    "adolf_wolfli": {
+        "label": "Adolf Wolfli",
+        "category": "fine-art",
+        "aliases": ["outsider art", "horror vacui"],
+        "descriptor": "densely packed outsider drawing filling every inch of the sheet, bordered notation and staring faces, obsessive symmetrical pattern",
+    },
+    "hans_bellmer": {
+        "label": "Hans Bellmer",
+        "category": "fine-art",
+        "aliases": ["assemblage", "jointed doll"],
+        "descriptor": "jointed doll anatomy recombined into impossible arrangements, hand-tinted photographic surface, unsettling constructed geometry",
+    },
+    "roland_topor": {
+        "label": "Roland Topor",
+        "category": "fine-art",
+        "aliases": ["absurdist", "pen and ink"],
+        "descriptor": "cruel absurdist pen drawings, bodies folding into impossible shapes, crisp confident linework, deadpan horror",
+    },
+    "kris_kuksi": {
+        "label": "Kris Kuksi",
+        "category": "fine-art",
+        "aliases": ["assemblage", "baroque"],
+        "descriptor": "dense assemblage sculpture built from thousands of tiny cast figures, baroque monochrome altarpieces bristling with detail",
+    },
+    "dorothea_tanning": {
+        "label": "Dorothea Tanning",
+        "category": "fine-art",
+        "aliases": ["surrealism", "hotel corridor"],
+        "descriptor": "surreal hotel corridors with wallpaper peeling into flesh, girls with wind-blown hair, soft sinister pastel",
+    },
+    "yves_tanguy": {
+        "label": "Yves Tanguy",
+        "category": "fine-art",
+        "aliases": ["surrealism", "biomorphic"],
+        "descriptor": "smooth biomorphic forms casting long shadows across an infinite empty seabed plain, misty gradient horizon",
+    },
+    "kay_sage": {
+        "label": "Kay Sage",
+        "category": "fine-art",
+        "aliases": ["surrealism", "architectural"],
+        "descriptor": "architectural scaffolds and draped forms in bleached desolate perspective, muted grey-blue, immense empty space",
+    },
+    "unica_zurn": {
+        "label": "Unica Zurn",
+        "category": "fine-art",
+        "aliases": ["automatic drawing", "hallucinatory"],
+        "descriptor": "automatic ink drawings of interlocking eyes and faces, fine spidery line, hallucinatory density filling the page",
+    },
+    "toyen": {
+        "label": "Toyen",
+        "category": "fine-art",
+        "aliases": ["Czech surrealism", "spectral"],
+        "descriptor": "spectral surrealist figures in muted ochre, fragmented bodies and floating drapery, dreamlike Czech surrealism",
+    },
+    "james_ensor": {
+        "label": "James Ensor",
+        "category": "fine-art",
+        "aliases": ["carnival masks", "expressionism"],
+        "descriptor": "carnival masks and skeletons crowding the whole frame in raw acid colour, thick impasto, grotesque satire",
+    },
+    "austin_osman_spare": {
+        "label": "Austin Osman Spare",
+        "category": "fine-art",
+        "aliases": ["occult", "automatic drawing"],
+        "descriptor": "occult automatic drawing, sinuous atavistic faces surfacing out of scribbled line, sepia grotesques on toned paper",
+    },
+    "marion_peck": {
+        "label": "Marion Peck",
+        "category": "fine-art",
+        "aliases": ["pop surrealism", "lowbrow"],
+        "descriptor": "pop-surrealist oil of doe-eyed children and animals in candy landscapes, sweet storybook imagery turned faintly wrong",
+    },
+    "todd_schorr": {
+        "label": "Todd Schorr",
+        "category": "fine-art",
+        "aliases": ["lowbrow", "cartoon maximalism"],
+        "descriptor": "hyper-detailed lowbrow oil crammed with cartoon characters and monsters, glossy airbrushed saturation, no empty space anywhere",
+    },
+    "joe_coleman": {
+        "label": "Joe Coleman",
+        "category": "fine-art",
+        "aliases": ["outsider", "miniature detail"],
+        "descriptor": "obsessive miniature portraiture ringed with tiny narrative panels and hand-lettered text, brimstone density under a magnifier",
+    },
+    "gottfried_helnwein": {
+        "label": "Gottfried Helnwein",
+        "category": "fine-art",
+        "aliases": ["photorealism", "bandaged"],
+        "descriptor": "photorealist bandaged figures in bleached greyscale, enormous scale, clinical unbearable stillness",
+    },
+    "paul_delvaux": {
+        "label": "Paul Delvaux",
+        "category": "fine-art",
+        "aliases": ["surrealism", "moonlit"],
+        "descriptor": "sleepwalking figures among classical colonnades and moonlit railway stations, cool even light, dreamlike stasis",
+    },
+    "felicien_rops": {
+        "label": "Felicien Rops",
+        "category": "fine-art",
+        "aliases": ["symbolism", "etching"],
+        "descriptor": "decadent symbolist etching, skeletal allegory and satirical figures, fine nineteenth-century line on toned paper",
+    },
+    "jean_delville": {
+        "label": "Jean Delville",
+        "category": "fine-art",
+        "aliases": ["symbolism", "esoteric"],
+        "descriptor": "luminous symbolist bodies floating in cosmic blue radiance, idealised anatomy, esoteric grandeur",
+    },
+    "victor_brauner": {
+        "label": "Victor Brauner",
+        "category": "fine-art",
+        "aliases": ["surrealism", "totemic"],
+        "descriptor": "totemic hybrid figures in flat folkloric colour, occult symbols and single staring eyes, naive surrealist iconography",
+    },
+    "bruno_schulz": {
+        "label": "Bruno Schulz",
+        "category": "fine-art",
+        "aliases": ["cliche-verre", "dreamlike"],
+        "descriptor": "cramped provincial interiors in scratchy nervous ink, stooping figures and looming presences, dreamlike distortion of scale",
+    },
+    "stanislaw_szukalski": {
+        "label": "Stanislaw Szukalski",
+        "category": "fine-art",
+        "aliases": ["mythic", "sculptural"],
+        "descriptor": "monumental muscular figures fused with mythic Slavic ornament, chiselled heroic distortion, obsessive linear detail",
+    },
+    "ernst_fuchs": {
+        "label": "Ernst Fuchs",
+        "category": "fine-art",
+        "aliases": ["fantastic realism", "jewelled glaze"],
+        "descriptor": "fantastic-realist visions in jewelled translucent glazes, elongated mystical figures, Renaissance technique carrying hallucinatory ornament",
+    },
+    "mati_klarwein": {
+        "label": "Mati Klarwein",
+        "category": "fine-art",
+        "aliases": ["psychedelic", "mandala"],
+        "descriptor": "psychedelic mandala composition crowded with world-religion iconography in hot saturated colour, meticulous flat detail",
+    },
+
+    # --- Horror manga and underground comics ---
+    "junji_ito": {
+        "label": "Junji Ito",
+        "category": "comics",
+        "aliases": ["horror manga", "body horror"],
+        "descriptor": "meticulous black-and-white horror manga, spirals and holes and swelling flesh, obsessive hatching, calm faces distorting into terror",
+    },
+    "suehiro_maruo": {
+        "label": "Suehiro Maruo",
+        "category": "comics",
+        "aliases": ["ero-guro", "retro manga"],
+        "descriptor": "grotesque manga in immaculate retro-Taisho line, lurid imagery rendered with delicate antique precision",
+    },
+    "shintaro_kago": {
+        "label": "Shintaro Kago",
+        "category": "comics",
+        "aliases": ["surreal manga", "cross-section"],
+        "descriptor": "clinical manga surrealism, bodies sliced into cross-sections and exploded diagrams, precise cheerful linework, absurd anatomy",
+    },
+    "takato_yamamoto": {
+        "label": "Takato Yamamoto",
+        "category": "comics",
+        "aliases": ["heisei decadence", "ink"],
+        "descriptor": "pale figures with flowing black hair among skulls and flowers, ukiyo-e line carrying morbid decadent elegance",
+    },
+    "jim_woodring": {
+        "label": "Jim Woodring",
+        "category": "comics",
+        "aliases": ["wordless", "hallucinatory"],
+        "descriptor": "wordless hallucinatory cartooning, rubbery organic forms and staring idols, thick clean brush line, benign menace",
+    },
+    "basil_wolverton": {
+        "label": "Basil Wolverton",
+        "category": "comics",
+        "aliases": ["grotesque caricature", "pen"],
+        "descriptor": "grotesque cartoon caricature with lumpy warty faces, bulging eyes and stringy detail, gleeful ugliness in fine pen",
+    },
+    "richard_corben": {
+        "label": "Richard Corben",
+        "category": "comics",
+        "aliases": ["airbrush fantasy", "underground"],
+        "descriptor": "airbrushed muscular fantasy in lurid glowing colour, rounded exaggerated anatomy, heavy smoothly modelled shading",
+    },
+
+    # --- Macabre and folk illustration ---
+    "edward_gorey": {
+        "label": "Edward Gorey",
+        "category": "illustration",
+        "aliases": ["macabre", "crosshatch"],
+        "descriptor": "crosshatched pen-and-ink vignettes of Edwardian figures, wan children and looming urns, deadpan macabre restraint",
+    },
+    "ivan_bilibin": {
+        "label": "Ivan Bilibin",
+        "category": "illustration",
+        "aliases": ["Russian folk tale", "ornament"],
+        "descriptor": "Russian folk-tale illustration with heavy black outline, flat ornamental colour, dense decorative borders framing every scene",
+    },
+    "gustave_dore": {
+        "label": "Gustave Dore",
+        "category": "illustration",
+        "aliases": ["wood engraving", "infernal"],
+        "descriptor": "dramatic wood-engraved biblical and infernal scenes, vast crowds under shafts of light, dense tonal hatching",
+    },
+    "winsor_mccay": {
+        "label": "Winsor McCay",
+        "category": "illustration",
+        "aliases": ["art nouveau", "dream comic"],
+        "descriptor": "art-nouveau newspaper fantasy in exact ink, vertiginous architectural perspective, dreamlike shifts of scale",
+    },
 }
+
+# Merge user-supplied artists so they survive a git pull.
+from .user_data import apply_user_artists  # noqa: E402
+
+apply_user_artists(ARTISTS)
+
+#: Label to id, built once. Lookups by label happen on every execute,
+#: and a linear scan over every record on each one is wasted work.
+ARTISTS_BY_LABEL: dict[str, str] = {
+    rec["label"].lower(): aid for aid, rec in ARTISTS.items()
+}
+
+#: Display names for the artist categories, in the order they are offered.
+#: Title-casing the raw id gives "Fine-art" and "Film", which is close but
+#: not what a person would write, so the common ones are spelled out.
+ARTIST_CATEGORY_LABELS: dict[str, str] = {
+    "photography": "Photography",
+    "fine-art": "Fine Art",
+    "illustration": "Illustration",
+    "comics": "Comics & Manga",
+    "digital": "Digital & Concept",
+    "film": "Film & Animation",
+}
+
+
+def _artist_categories() -> tuple[str, ...]:
+    """Categories actually present in the data, known ones first.
+
+    Derived rather than hard-coded so a category introduced by a
+    ``user_styles.json`` artist still reaches the dropdown instead of
+    being silently unreachable.
+    """
+    present = {rec.get("category", "") for rec in ARTISTS.values()}
+    present.discard("")
+    known = [c for c in ARTIST_CATEGORY_LABELS if c in present]
+    extra = sorted(present - set(ARTIST_CATEGORY_LABELS))
+    for category in extra:
+        ARTIST_CATEGORY_LABELS.setdefault(
+            category,
+            " ".join(w.capitalize() for w in category.replace("-", " ").split()),
+        )
+    return tuple(known + extra)
+
+
+ARTIST_CATEGORIES: tuple[str, ...] = _artist_categories()
+
+
+def get_artist_ids(category: str | None = None) -> list[str]:
+    """Artist ids, optionally narrowed to one category."""
+    if not category:
+        return list(ARTISTS)
+    return [aid for aid, rec in ARTISTS.items() if rec.get("category") == category]
+
+
+def get_artist(name_or_id: str) -> dict | None:
+    """Return an artist record by id or label, case-insensitively."""
+    key = name_or_id.lower().strip()
+    if key in ARTISTS:
+        return ARTISTS[key]
+    aid = ARTISTS_BY_LABEL.get(key)
+    return ARTISTS[aid] if aid else None

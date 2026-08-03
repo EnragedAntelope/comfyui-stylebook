@@ -1,18 +1,27 @@
-"""StylebookModifier node — additive, one per sub-axis.
+"""StylebookModifier node - additive, one modifier per axis.
 
-Add a lighting, colour grade, era, finish, or mood tilt.
-Each modifier node targets one axis; a second modifier on the
-same axis replaces the first (with a warning).
+Add a lighting, colour grade, era, finish or mood tilt. Each node
+targets one axis; a second modifier on the same axis replaces the first.
 """
 
 from __future__ import annotations
 
 try:
-    from ..data.modifiers import MODIFIERS, AXES, MODIFIERS_BY_AXIS
-    from .stylebook_core import parse_chain, dump_chain, merge_chain, resolve_meta, render_prompt, render_negative
-except ImportError:  # pragma: no cover
-    from data.modifiers import MODIFIERS, AXES, MODIFIERS_BY_AXIS
-    from stylebook_nodes.stylebook_core import parse_chain, dump_chain, merge_chain, resolve_meta, render_prompt, render_negative
+    from ..data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS, get_modifier
+    from . import schema_options as opt
+    from .node_support import report, show_readout
+    from .stylebook_core import (
+        dump_chain, get_blocked_axes, parse_chain, render_negative,
+        render_prompt, resolve_meta, stable_choice,
+    )
+except ImportError:  # pragma: no cover - standalone/test context
+    from data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS, get_modifier
+    from stylebook_nodes import schema_options as opt
+    from stylebook_nodes.node_support import report, show_readout
+    from stylebook_nodes.stylebook_core import (
+        dump_chain, get_blocked_axes, parse_chain, render_negative,
+        render_prompt, resolve_meta, stable_choice,
+    )
 
 try:
     from comfy_api.latest import io  # type: ignore[import-not-found]
@@ -21,26 +30,74 @@ except ImportError:  # pragma: no cover
     _COMFY_AVAILABLE = False
 
 
-_MOD_OFF = "Off"
-_MOD_RANDOM = "Random"
+def apply_modifier(
+    chain_json: str,
+    axis: str,
+    modifier_label: str,
+    mode: str,
+    seed: int,
+    cycle_index: int = 0,
+) -> tuple[dict, list[str]]:
+    """Apply one modifier to the chain and return ``(chain, warnings)``."""
+    chain = parse_chain(chain_json)
+    warnings: list[str] = []
 
+    axis_ids = sorted(MODIFIERS_BY_AXIS.get(axis, []))
 
-def _modifier_options(axis: str) -> list[str]:
-    ids = MODIFIERS_BY_AXIS.get(axis, [])
-    names = [MODIFIERS[mid]["label"] for mid in ids if mid in MODIFIERS]
-    return [_MOD_RANDOM, _MOD_OFF] + sorted(names)
+    record = None
+    if mode == opt.MODE_RANDOM:
+        chosen = stable_choice(seed, axis_ids)
+        record = MODIFIERS[chosen] if chosen else None
+    elif mode == opt.MODE_CYCLE:
+        chosen = axis_ids[cycle_index % len(axis_ids)] if axis_ids else None
+        record = MODIFIERS[chosen] if chosen else None
+    elif modifier_label and modifier_label != opt.OFF:
+        record = get_modifier(modifier_label, axis)
+        if record is None:
+            # The dropdown carries every axis's modifiers so that changing
+            # axis never leaves it holding an invalid value. Say plainly
+            # which axis the chosen modifier actually belongs to.
+            elsewhere = get_modifier(modifier_label)
+            if elsewhere is not None:
+                warnings.append(
+                    f"Modifier: '{modifier_label}' belongs to the "
+                    f"'{elsewhere['axis']}' axis, not '{axis}'. Set axis to "
+                    f"'{elsewhere['axis']}' to use it."
+                )
+            else:
+                warnings.append(f"Modifier: no modifier named '{modifier_label}'.")
+
+    if record is not None:
+        blocked = get_blocked_axes(chain.get("style"))
+        if axis in blocked:
+            style_label = (chain.get("style") or {}).get("label", "the style")
+            warnings.append(
+                f"Modifier: '{style_label}' already fixes the {axis} axis, "
+                f"so '{record['label']}' would be overridden. Not applied."
+            )
+        else:
+            modifiers = chain.get("modifiers", [])
+            for index, existing in enumerate(modifiers):
+                if existing.get("axis") == axis:
+                    if existing.get("label") != record["label"]:
+                        warnings.append(
+                            f"Modifier: the {axis} axis already held "
+                            f"'{existing.get('label', '?')}'. Replaced with "
+                            f"'{record['label']}'."
+                        )
+                    modifiers[index] = record
+                    break
+            else:
+                modifiers.append(record)
+            chain["modifiers"] = modifiers
+
+    return chain, warnings
 
 
 if _COMFY_AVAILABLE:
 
     class StylebookModifier(io.ComfyNode):
-        """Add a rendering modifier on one axis.
-
-        Five axes: lighting, color_grade, era, finish, mood. Each modifier
-        node targets exactly one axis. A second modifier on the same axis
-        replaces the first. Defaults to Off on every axis — no modifier is
-        applied unless you enable one.
-        """
+        """Tilt the rendering on one axis."""
 
         @classmethod
         def define_schema(cls) -> io.Schema:
@@ -48,38 +105,82 @@ if _COMFY_AVAILABLE:
                 node_id="StylebookModifier",
                 display_name="Stylebook Modifier",
                 category="conditioning/stylebook",
-                description="Tilt the rendering on one axis: lighting, colour grade, "
-                            "era, finish, or mood. One per axis — stacking another on the "
-                            "same axis replaces the first. Defaults to Off.",
+                description=(
+                    "Tilt the rendering on one axis: lighting, colour grade, "
+                    "era, finish or mood. One modifier per axis; a second on "
+                    "the same axis replaces the first. Defaults to Off."
+                ),
                 inputs=[
-                    io.String.Input(
+                    io.Custom(opt.CHAIN_TYPE).Input(
                         "style_chain",
                         display_name="style_chain",
-                        force_input=True,
                         optional=True,
-                        default="{}",
-                        tooltip="Connect an upstream Stylebook node's style_chain output.",
+                        tooltip="Connect an upstream Stylebook style_chain output.",
                     ),
                     io.Combo.Input(
                         "axis",
-                        options=list(AXES),
-                        default=AXES[0],
-                        tooltip="Which rendering axis this modifier tilts. "
-                                "Each axis can hold exactly one modifier.",
+                        options=opt.axis_options(),
+                        default=opt.DEFAULTS["axis"],
+                        tooltip=(
+                            "Which rendering axis this node tilts. Each axis "
+                            "holds exactly one modifier, so use one Modifier "
+                            "node per axis you want to set."
+                        ),
+                    ),
+                    # Mode sits above the widgets it swaps, so the control
+                    # you just clicked never moves out from under the cursor.
+                    io.Combo.Input(
+                        "mode",
+                        options=list(opt.MODES),
+                        default=opt.DEFAULTS["modifier_mode"],
+                        tooltip=(
+                            "Pick: choose one modifier yourself, which is the "
+                            "default because a modifier is a deliberate "
+                            "finishing tilt. Random: a seeded pick from this "
+                            "axis. Cycle: step through this axis by index."
+                        ),
                     ),
                     io.Combo.Input(
                         "modifier",
-                        options=_modifier_options(AXES[0]),
-                        default=_MOD_OFF,
-                        tooltip="The modifier to apply on this axis. 'Off' applies no modifier. "
-                                "'Random' picks from the axis pool.",
+                        options=opt.modifier_options(),
+                        default=opt.DEFAULTS["modifier"],
+                        tooltip=(
+                            "The modifier to apply in Pick mode. The list "
+                            "narrows to the selected axis. Off applies "
+                            "nothing, which is what a fresh node does."
+                        ),
+                    ),
+                    io.Int.Input(
+                        "seed",
+                        default=0,
+                        min=0,
+                        max=0xFFFFFFFFFFFFFFFF,
+                        control_after_generate=True,
+                        tooltip=(
+                            "Seed for Random mode. The same seed on the same "
+                            "axis gives the same modifier."
+                        ),
+                    ),
+                    io.Int.Input(
+                        "cycle_index",
+                        display_name="cycle index",
+                        default=0,
+                        min=0,
+                        max=9999,
+                        tooltip=(
+                            "Which modifier to take in Cycle mode. 0 is the "
+                            "first on this axis and the index wraps at the "
+                            "end. This is a list position, not a seed, so "
+                            "adding modifiers to an axis shifts it."
+                        ),
                     ),
                 ],
                 outputs=[
                     io.String.Output(display_name="prompt"),
                     io.String.Output(display_name="negative"),
-                    io.String.Output(display_name="style_chain"),
+                    io.Custom(opt.CHAIN_TYPE).Output(display_name="style_chain"),
                 ],
+                hidden=[io.Hidden.unique_id],
             )
 
         @classmethod
@@ -89,42 +190,26 @@ if _COMFY_AVAILABLE:
         @classmethod
         def execute(
             cls,
-            axis: str,
-            modifier: str,
-            style_chain: str = "{}",
+            style_chain: str = "",
+            axis: str = AXES[0],
+            mode: str = opt.DEFAULTS["modifier_mode"],
+            modifier: str = opt.OFF,
+            seed: int = 0,
+            cycle_index: int = 0,
         ) -> io.NodeOutput:
-            chain = parse_chain(style_chain)
-            warnings: list[str] = []
-
-            if modifier and modifier not in (_MOD_OFF, _MOD_RANDOM):
-                mod_rec = None
-                for mid, mrec in MODIFIERS.items():
-                    if mrec.get("label") == modifier and mrec.get("axis") == axis:
-                        mod_rec = mrec
-                        break
-
-                if mod_rec:
-                    # Check if this axis already has a modifier.
-                    existing = chain.get("modifiers", [])
-                    for i, ex in enumerate(existing):
-                        if ex.get("axis") == axis:
-                            warnings.append(
-                                f"Modifier: {axis} already has '{ex.get('label', '?')}' "
-                                f"— replacing with '{mod_rec['label']}'."
-                            )
-                            existing[i] = mod_rec
-                            break
-                    else:
-                        existing.append(mod_rec)
-                    chain["modifiers"] = existing
-                else:
-                    warnings.append(f"Modifier: unknown '{modifier}' on axis '{axis}'.")
-
-            for w in warnings:
-                print(f"[Stylebook] {w}")
+            chain, warnings = apply_modifier(
+                chain_json=style_chain,
+                axis=axis,
+                modifier_label=modifier,
+                mode=mode,
+                seed=seed,
+                cycle_index=cycle_index,
+            )
+            report(warnings)
 
             meta = resolve_meta(chain)
-            prompt = render_prompt(chain, meta, chain.get("_meta", {}).get("user_prompt", ""))
-            negative = render_negative(chain)
-
-            return io.NodeOutput(prompt, negative, dump_chain(chain))
+            prompt = render_prompt(
+                chain, meta, chain["_meta"].get("user_prompt", "")
+            )
+            show_readout(cls.hidden.unique_id, prompt, warnings)
+            return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))

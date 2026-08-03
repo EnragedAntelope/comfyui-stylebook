@@ -1,250 +1,409 @@
-/* Stylebook gallery dialog styles — loaded via WEB_DIRECTORY. */
+/*
+ * Stylebook picker dialog.
+ *
+ * Colours come from ComfyUI's own CSS custom properties so the dialog
+ * follows the user's theme, with fallbacks for older frontends that do
+ * not define them. The previous revision hardcoded a dark purple, which
+ * was unreadable in light mode.
+ */
 
-.stylebook-gallery-overlay {
+/*
+ * Scoped reset.
+ *
+ * ComfyUI's global stylesheet restyles bare elements, and its button
+ * rules in particular reset padding and collapse intrinsic height. The
+ * dialog therefore states every box property it depends on rather than
+ * inheriting one. Tiles and tabs are divs for the same reason: a
+ * button's intrinsic height does not grow from an aspect-ratio child,
+ * which collapsed every tile to the height of its label.
+ */
+.stylebook-overlay,
+.stylebook-overlay *,
+.stylebook-overlay *::before,
+.stylebook-overlay *::after {
+    box-sizing: border-box;
+}
+
+.stylebook-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
+    inset: 0;
     z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    line-height: 1.4;
 }
 
-.stylebook-gallery-dialog {
-    background: #1a1a2e;
-    border-radius: 12px;
-    width: 90vw;
-    max-width: 1200px;
-    max-height: 85vh;
+.stylebook-dialog {
+    /* One place to change the thumbnail size. */
+    --sb-tile: 168px;
+    --sb-label: 38px;
     display: flex;
     flex-direction: column;
+    width: min(92vw, 1180px);
+    max-height: 86vh;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color, #4a4a4a);
+    border-radius: 10px;
+    background: var(--comfy-menu-bg, #202020);
+    color: var(--fg-color, #e8e8e8);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+    font-size: 13px;
 }
 
-.stylebook-gallery-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid #2a2a4a;
+/* ---- header ---- */
+
+.stylebook-header {
+    flex: 0 0 auto;
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color, #4a4a4a);
 }
 
-.stylebook-gallery-search {
+.stylebook-search {
     flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #3a3a5a;
+    min-width: 0;
+    padding: 7px 11px;
+    border: 1px solid var(--border-color, #4a4a4a);
     border-radius: 6px;
-    background: #12122a;
-    color: #e0e0e0;
-    font-size: 14px;
+    background: var(--comfy-input-bg, #131313);
+    color: var(--input-text, #e8e8e8);
+    font-size: 13px;
+    font-family: inherit;
 }
 
-.stylebook-gallery-tabs {
+.stylebook-search:focus {
+    outline: 2px solid var(--p-primary-color, #4a9eff);
+    outline-offset: -1px;
+}
+
+.stylebook-count {
+    flex: 0 0 auto;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+}
+
+.stylebook-close {
+    flex: 0 0 auto;
+    padding: 7px 14px;
+    border: 1px solid var(--border-color, #4a4a4a);
+    border-radius: 6px;
+    background: var(--comfy-input-bg, #131313);
+    color: var(--input-text, #e8e8e8);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.stylebook-close:hover {
+    border-color: var(--p-primary-color, #4a9eff);
+}
+
+/* The confirm button in multi-select. Filled rather than outlined, so the
+   action that commits the choice does not look identical to the one that
+   throws it away. */
+.stylebook-done {
+    border-color: var(--p-primary-color, #4a9eff);
+    background: var(--p-primary-color, #4a9eff);
+    color: #fff;
+    font-weight: 600;
+}
+
+.stylebook-done:hover {
+    filter: brightness(1.1);
+}
+
+/* Position chip on a multi-selected entry. The sheet renders in pick
+   order, so the number is the part worth showing, not a tick. */
+.stylebook-order {
+    display: inline-block;
+    min-width: 18px;
+    margin-right: 6px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: var(--p-primary-color, #4a9eff);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- category tabs ---- */
+
+.stylebook-tabs {
+    flex: 0 0 auto;
     display: flex;
     gap: 4px;
-    padding: 8px 20px;
-    border-bottom: 1px solid #2a2a4a;
+    padding: 8px 16px;
     overflow-x: auto;
+    border-bottom: 1px solid var(--border-color, #4a4a4a);
+    scrollbar-width: thin;
 }
 
-.stylebook-gallery-tab {
-    padding: 6px 14px;
+.stylebook-tab {
+    flex: 0 0 auto;
+    min-height: 26px;
+    line-height: 16px;
+    padding: 5px 12px;
     border: 1px solid transparent;
     border-radius: 6px;
     background: transparent;
-    color: #888;
-    cursor: pointer;
-    font-size: 13px;
+    color: var(--fg-color, #e8e8e8);
+    opacity: 0.65;
+    font-size: 12px;
+    font-family: inherit;
     white-space: nowrap;
-}
-
-.stylebook-gallery-tab:hover {
-    background: #2a2a4a;
-}
-
-.stylebook-gallery-tab.active {
-    background: #3a3a6a;
-    color: #e0e0e0;
-    border-color: #5a5a8a;
-}
-
-.stylebook-gallery-grid {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 12px;
-}
-
-.stylebook-gallery-tile {
-    aspect-ratio: 1;
-    border-radius: 8px;
-    overflow: hidden;
     cursor: pointer;
+}
+
+.stylebook-tab:hover {
+    opacity: 1;
+    background: var(--comfy-input-bg, #131313);
+}
+
+.stylebook-tab.active {
+    opacity: 1;
+    border-color: var(--p-primary-color, #4a9eff);
+    background: var(--comfy-input-bg, #131313);
+}
+
+.stylebook-tab:focus-visible {
+    outline: 2px solid var(--p-primary-color, #4a9eff);
+    outline-offset: 1px;
+}
+
+/* ---- tile grid ---- */
+
+/*
+ * Fixed-size tiles, not fluid ones.
+ *
+ * Both `aspect-ratio` and percentage padding resolve to zero when a grid
+ * computes a row's intrinsic height contribution, so a fluid `1fr`
+ * column left every row sized to the label alone and every tile
+ * overlapping the one below. A definite tile width makes the square
+ * thumbnail a definite height too, so rows size correctly. It also means
+ * the gallery renders identically at any window size, zoom level or
+ * display scaling, which a fluid grid does not guarantee.
+ */
+.stylebook-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, var(--sb-tile));
+    /* Explicit row height. The grid refuses to size an auto row from a
+       flex item's children here, so state it: the tile is a fixed-size
+       square plus a fixed two-line label. Everything is deterministic,
+       which is also what makes the gallery look the same on every
+       display regardless of resolution or scaling. */
+    grid-auto-rows: calc(var(--sb-tile) + var(--sb-label));
+    justify-content: center;
+    align-content: start;
+    gap: 14px;
+    padding: 16px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.stylebook-grid:focus {
+    outline: none;
+}
+
+.stylebook-tile {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 0;
+    overflow: hidden;
     border: 2px solid transparent;
-    transition: border-color 0.15s;
+    border-radius: 8px;
+    background: var(--comfy-input-bg, #131313);
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.stylebook-tile:hover,
+.stylebook-tile.focused {
+    border-color: var(--p-primary-color, #4a9eff);
+}
+
+.stylebook-tile.selected {
+    border-color: var(--p-primary-color, #4a9eff);
+    box-shadow: inset 0 0 0 2px var(--comfy-menu-bg, #202020);
+}
+
+.stylebook-tile:focus-visible {
+    outline: 2px solid var(--p-primary-color, #4a9eff);
+    outline-offset: 2px;
+}
+
+/*
+ * Square thumbnail via percentage padding rather than aspect-ratio.
+ *
+ * An aspect-ratio box contributes no definite height while a CSS grid is
+ * sizing its rows, so the rows collapsed to the height of the label and
+ * every tile overlapped the one below it. Percentage padding resolves
+ * against the already-known column width, so the row gets a real height.
+ */
+.stylebook-tile-art {
     position: relative;
+    width: 100%;
+    /* Square against the tile's content box, which is narrower than
+       --sb-tile by the border. Safe here only because grid-auto-rows is
+       explicit: aspect-ratio contributes nothing to intrinsic row sizing,
+       but it does size the element itself once the width is known. */
+    aspect-ratio: 1;
+    flex: 0 0 auto;
+    background-color: rgba(127, 127, 127, 0.12);
+    background-repeat: no-repeat;
 }
 
-.stylebook-gallery-tile:hover {
-    border-color: #6a6aaa;
-}
-
-.stylebook-gallery-tile.selected {
-    border-color: #8a8aff;
-}
-
-.stylebook-gallery-tile-label {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 6px 8px;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-    color: #e0e0e0;
-    font-size: 11px;
-    text-align: center;
-}
-
-.stylebook-gallery-footer {
-    padding: 10px 20px;
-    border-top: 1px solid #2a2a4a;
-    color: #666;
-    font-size: 11px;
-    text-align: center;
-.stylebook-gallery-footer {
-    padding: 10px 20px;
-    border-top: 1px solid #2a2a4a;
-    color: #666;
-    font-size: 11px;
-    text-align: center;
-}
-
-/* ---- focus / keyboard states ---- */
-.stylebook-gallery-search:focus {
-    outline: none;
-    border-color: #6a6aaa;
-    background: #16163a;
-}
-
-.stylebook-gallery-tab:focus-visible {
-    outline: none;
-    border-color: #6a6aaa;
-    color: #e0e0e0;
-}
-
-.stylebook-gallery-tile:focus-visible {
-    outline: none;
-    border-color: #8a8aff;
-    box-shadow: 0 0 0 2px rgba(138, 138, 255, 0.3);
-}
-
-/* ---- placeholder tile (no preview image yet) ---- */
-.stylebook-gallery-tile-placeholder {
+.stylebook-tile-initials {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 600;
-    color: rgba(224, 224, 224, 0.35);
-    letter-spacing: 0.5px;
-    background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+    letter-spacing: 1px;
+    opacity: 0.4;
 }
 
-.stylebook-gallery-tile[data-category="photography"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #3a3a5a 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="illustration"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #3a3050 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="comics"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #3a2050 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="film_cinema"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #2a3a50 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="painting"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #4a3a2a 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="art_movements"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #4a2a3a 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="anime_manga"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #3a2a4a 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="three_d_digital"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #2a4a3a 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="print_graphic"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #3a3a2a 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="object_artifact"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #2a2a3a 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="craft_material"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #4a3a3a 0%, #1a1a2e 100%);
-}
-.stylebook-gallery-tile[data-category="collage_mixed"] .stylebook-gallery-tile-placeholder {
-    background: linear-gradient(135deg, #3a4a3a 0%, #1a1a2e 100%);
+.stylebook-tile-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--sb-label);
+    padding: 4px 6px;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.25;
+    text-align: center;
+    /* Two lines, then ellipsis. The full name is always in the tooltip,
+       so a clipped label never hides which style this is. */
+    overflow-wrap: anywhere;
 }
 
-/* ---- empty / no-results state ---- */
-.stylebook-gallery-empty {
+.stylebook-tile-label > span {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ---- empty state and footer ---- */
+
+.stylebook-empty {
     grid-column: 1 / -1;
-    padding: 40px 20px;
+    padding: 48px 20px;
     text-align: center;
-    color: #666;
-    font-size: 13px;
+    opacity: 0.6;
 }
 
-.stylebook-gallery-count {
-    color: #888;
-    font-size: 12px;
-    margin-left: auto;
-    white-space: nowrap;
-}
-
-/* ---- open-gallery button on the node ---- */
-.stylebook-gallery-open-btn {
-    width: 100%;
-    margin-top: 4px;
-    padding: 6px 10px;
-    background: #2a2a4a;
-    color: #e0e0e0;
-    border: 1px solid #3a3a6a;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
+.stylebook-footer {
+    flex: 0 0 auto;
+    padding: 9px 16px;
+    border-top: 1px solid var(--border-color, #4a4a4a);
+    opacity: 0.6;
+    font-size: 11.5px;
     text-align: center;
 }
 
-.stylebook-gallery-open-btn:hover {
-    background: #3a3a6a;
-    border-color: #5a5a8a;
-}
+/* ---- narrow viewports ---- */
 
-.stylebook-gallery-open-btn:focus-visible {
-    outline: none;
-    border-color: #8a8aff;
-}
-
-/* ---- responsive: narrow viewports ---- */
 @media (max-width: 720px) {
-    .stylebook-gallery-dialog {
+    .stylebook-dialog {
         width: 100vw;
-        max-width: 100vw;
         max-height: 100vh;
+        border: none;
         border-radius: 0;
     }
-    .stylebook-gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+
+    .stylebook-dialog {
+        --sb-tile: 132px;
+        --sb-label: 34px;
+    }
+
+    .stylebook-grid {
+        gap: 8px;
+        padding: 10px;
     }
 }
 
+/* ---- reduced motion and high contrast ---- */
+
+@media (prefers-reduced-motion: reduce) {
+    .stylebook-tile {
+        transition: none;
+    }
+}
+
+@media (prefers-contrast: more) {
+    .stylebook-dialog,
+    .stylebook-tile {
+        border-color: currentColor;
+    }
+}
+
+/* ---- list layout (artists, which have no thumbnails) ----
+ *
+ * 590 identical letter tiles are not browsable. An artist is chosen by
+ * what their work looks like, so the descriptor is the content and the
+ * name is the label. A dense list shows far more of them per screen.
+ */
+
+.stylebook-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 16px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.stylebook-row {
+    display: grid;
+    grid-template-columns: minmax(140px, 210px) 1fr;
+    gap: 14px;
+    align-items: baseline;
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.stylebook-row:hover,
+.stylebook-row.focused {
+    border-color: var(--p-primary-color, #4a9eff);
+    background: var(--comfy-input-bg, #131313);
+}
+
+.stylebook-row.selected {
+    background: var(--comfy-input-bg, #131313);
+    border-color: var(--p-primary-color, #4a9eff);
+}
+
+.stylebook-row-name {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.stylebook-row-detail {
+    opacity: 0.72;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+@media (max-width: 720px) {
+    .stylebook-row {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+}
