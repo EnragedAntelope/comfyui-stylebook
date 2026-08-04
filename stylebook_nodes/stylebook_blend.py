@@ -8,15 +8,17 @@ from __future__ import annotations
 
 try:
     from . import schema_options as opt
-    from .node_support import report, show_readout
+    from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
-        dump_chain, parse_chain, render_negative, render_prompt, resolve_meta,
+        dump_chain, parse_chain, readout_detail, render_negative,
+        render_prompt, resolve_meta, resolved_summary,
     )
 except ImportError:  # pragma: no cover - standalone/test context
     from stylebook_nodes import schema_options as opt
-    from stylebook_nodes.node_support import report, show_readout
+    from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
-        dump_chain, parse_chain, render_negative, render_prompt, resolve_meta,
+        dump_chain, parse_chain, readout_detail, render_negative,
+        render_prompt, resolve_meta, resolved_summary,
     )
 
 try:
@@ -236,8 +238,18 @@ if _COMFY_AVAILABLE:
             report(warnings)
 
             meta = resolve_meta(chain)
-            prompt = render_prompt(
-                chain, meta, chain["_meta"].get("user_prompt", "")
+            subject = chain["_meta"].get("user_prompt", "")
+            prompt = render_prompt(chain, meta, subject)
+            show_readout(
+                cls.hidden.unique_id,
+                resolved_summary(chain),
+                readout_detail(chain, meta, subject),
+                warnings,
             )
-            show_readout(cls.hidden.unique_id, prompt, warnings)
+            # No style/artist/modifier/axis: a blend's style is a synthetic
+            # merged record, not a single named pick a Pin menu item could
+            # write back to a widget (Blend has no Pin item -- see
+            # js/stylebook_readout.js). Copy resolved prompt still works
+            # off `prompt` alone.
+            send_resolved_event(cls.hidden.unique_id, prompt)
             return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))

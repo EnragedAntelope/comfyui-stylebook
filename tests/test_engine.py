@@ -2,12 +2,19 @@
 
 Pure-stdlib ``unittest`` so it runs without ComfyUI installed:
 
-    python -m unittest discover -s tests -v
+    python -m unittest discover -s tests -t . -v
+
+The ``-t .`` matters: it makes ``tests`` a genuine subpackage of the repo
+root rather than an implicit top-level directory, which is what guarantees
+``tests/__init__.py`` (and the comfy_api stub it registers) runs before any
+test_*.py file in this directory. See that file for why.
 """
 
 from __future__ import annotations
 
+import inspect
 import json
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -16,17 +23,18 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from data.artists import ARTISTS, get_artist  # noqa: E402
+from data.artists import ARTISTS, get_artist, get_artist_ids  # noqa: E402
 from data.modifiers import MODIFIERS, MODIFIERS_BY_AXIS, get_modifier  # noqa: E402
-from data.styles import CATEGORIES, CATEGORY_LABELS, STYLES  # noqa: E402
+from data.styles import CATEGORIES, CATEGORY_LABELS, STYLES, get_style_ids  # noqa: E402
 from stylebook_nodes import schema_options as opt  # noqa: E402
 from stylebook_nodes.stylebook_artist import add_artist  # noqa: E402
 from stylebook_nodes.stylebook_blend import blend_styles, build_blend_chain  # noqa: E402
 from stylebook_nodes.stylebook_core import (  # noqa: E402
     EMPTY_CHAIN, build_artist_clause, cycle_style_id, dump_chain, filter_modifiers,
     filter_pool, get_blocked_axes, merge_chain, parse_chain, random_style_id,
-    render_negative, render_prompt, render_style_prose, render_style_tags,
-    resolve_meta, sheet_style_ids, stable_choice, stable_sample,
+    readout_detail, render_negative, render_prompt, render_style_prose,
+    render_style_tags, resolve_meta, resolved_summary, sheet_style_ids,
+    stable_choice, stable_sample,
 )
 from stylebook_nodes.stylebook_modifier import apply_modifier  # noqa: E402
 from stylebook_nodes.stylebook_sheet import (  # noqa: E402
@@ -61,6 +69,25 @@ class DataLayerTests(unittest.TestCase):
         rec = MODIFIERS["golden_hour"]
         self.assertIs(get_modifier("Golden Hour", "lighting"), rec)
         self.assertIsNone(get_modifier("Golden Hour", "mood"))
+
+    def test_get_style_ids_and_get_artist_ids_take_the_same_parameters(self):
+        """There is exactly one tag-filter implementation in this pack
+        (stylebook_core.filter_pool). get_style_ids used to carry a second,
+        buggier one (whole-string matching, so any filter with a comma
+        matched nothing); it was removed rather than fixed twice. This
+        pins the two id-lookup functions to the same, category-only
+        signature so a tag_filter parameter cannot quietly reappear on
+        either one."""
+        self.assertEqual(
+            inspect.signature(get_style_ids), inspect.signature(get_artist_ids),
+        )
+
+    def test_get_style_ids_filters_by_category(self):
+        photography_ids = get_style_ids(category="photography")
+        self.assertTrue(photography_ids)
+        for sid in photography_ids:
+            self.assertEqual(STYLES[sid]["category"], "photography")
+        self.assertEqual(get_style_ids(), list(STYLES))
 
 
 class NegationGuardTests(unittest.TestCase):
@@ -558,6 +585,78 @@ class BlockedAxesTests(unittest.TestCase):
         kept, dropped = filter_modifiers(mods, set())
         self.assertEqual(kept, mods)
         self.assertEqual(dropped, [])
+
+
+class ReadoutTests(unittest.TestCase):
+    """resolved_summary and readout_detail back the node-face readout.
+
+    The bug these close: the old single-line readout truncated the
+    rendered prompt from the front, so with a subject connected every node
+    in a chain showed the same opening of the user's own text, and in
+    Random mode there was no readout at all -- nothing named what got
+    picked.
+    """
+
+    def test_empty_chain_says_nothing_applied(self):
+        chain = json.loads(EMPTY_CHAIN)
+        self.assertEqual(resolved_summary(chain), "(nothing applied yet)")
+
+    def test_style_only(self):
+        chain = json.loads(EMPTY_CHAIN)
+        chain["style"] = {"label": "Cyanotype"}
+        self.assertEqual(resolved_summary(chain), "Cyanotype")
+
+    def test_style_artist_and_modifier_join_with_middle_dot(self):
+        chain = json.loads(EMPTY_CHAIN)
+        chain["style"] = {"label": "Cyanotype"}
+        chain["artists"] = [{"label": "Ansel Adams"}]
+        chain["modifiers"] = [{"label": "Golden Hour", "axis": "lighting"}]
+        self.assertEqual(
+            resolved_summary(chain),
+            "Cyanotype · Ansel Adams · Golden Hour (lighting)",
+        )
+
+    def test_artists_at_the_warn_threshold_are_still_named(self):
+        chain = json.loads(EMPTY_CHAIN)
+        chain["artists"] = [{"label": "A"}, {"label": "B"}, {"label": "C"}]
+        self.assertEqual(resolved_summary(chain), "A · B · C")
+
+    def test_artists_past_the_warn_threshold_elide_to_a_count(self):
+        chain = json.loads(EMPTY_CHAIN)
+        chain["artists"] = [{"label": n} for n in "ABCD"]
+        self.assertEqual(resolved_summary(chain), "4 artists")
+
+    def test_summary_truncates_past_its_own_limit(self):
+        chain = json.loads(EMPTY_CHAIN)
+        chain["style"] = {"label": "x" * 200}
+        summary = resolved_summary(chain)
+        self.assertLessEqual(len(summary), 120)
+        self.assertTrue(summary.endswith("…"))
+
+    def test_detail_with_no_subject_is_the_style_text_unframed(self):
+        chain = json.loads(EMPTY_CHAIN)
+        chain["style"] = {"label": "Cyanotype", "prose": "a cyanotype print."}
+        meta = resolve_meta(chain)
+        self.assertEqual(
+            readout_detail(chain, meta, ""),
+            render_prompt(chain, meta, ""),
+        )
+        self.assertNotIn("[subject]", readout_detail(chain, meta, ""))
+
+    def test_detail_with_a_subject_marks_it_with_a_literal_token(self):
+        chain = json.loads(EMPTY_CHAIN)
+        chain["style"] = {"label": "Cyanotype", "prose": "a cyanotype print."}
+        meta = resolve_meta(chain)
+        detail = readout_detail(chain, meta, "a woman in a red coat")
+        self.assertTrue(detail.startswith("[subject] "))
+        # The user's own words must not appear in the detail line -- that
+        # is the whole point of the marker.
+        self.assertNotIn("red coat", detail)
+
+    def test_detail_with_a_subject_and_no_style_is_just_the_marker(self):
+        chain = json.loads(EMPTY_CHAIN)
+        meta = resolve_meta(chain)
+        self.assertEqual(readout_detail(chain, meta, "a woman"), "[subject]")
 
 
 class StyleNodeTests(unittest.TestCase):
@@ -1202,51 +1301,6 @@ class SchemaOptionTests(unittest.TestCase):
         self.assertEqual(len(opt.category_options()), 13)
 
 
-class NodeSchemaTests(unittest.TestCase):
-    """Build the real schemas when ComfyUI is present."""
-
-    @classmethod
-    def setUpClass(cls):
-        try:
-            from comfy_api.latest import io  # noqa: F401
-        except ImportError:
-            raise unittest.SkipTest("ComfyUI not installed")
-        from stylebook_nodes.stylebook_artist import StylebookArtist
-        from stylebook_nodes.stylebook_blend import StylebookBlend
-        from stylebook_nodes.stylebook_modifier import StylebookModifier
-        from stylebook_nodes.stylebook_sheet import StylebookSheet
-        from stylebook_nodes.stylebook_style import StylebookStyle
-        cls.nodes = [StylebookStyle, StylebookArtist, StylebookModifier,
-                     StylebookBlend, StylebookSheet]
-
-    def test_every_combo_default_is_in_its_options(self):
-        for node in self.nodes:
-            for inp in node.define_schema().inputs:
-                options = getattr(inp, "options", None)
-                if options is None:
-                    continue
-                values = getattr(options, "values", options)
-                default = getattr(inp, "default", None)
-                if values and default is not None:
-                    self.assertIn(default, values,
-                                  f"{node.__name__}.{inp.id} default not in options")
-
-    def test_every_input_has_a_tooltip(self):
-        for node in self.nodes:
-            for inp in node.define_schema().inputs:
-                self.assertTrue(getattr(inp, "tooltip", ""),
-                                f"{node.__name__}.{inp.id} has no tooltip")
-
-    def test_input_ids_are_unique_per_node(self):
-        for node in self.nodes:
-            ids = [inp.id for inp in node.define_schema().inputs]
-            self.assertEqual(len(ids), len(set(ids)), f"{node.__name__} dup input")
-
-    def test_node_ids_are_unique(self):
-        ids = [n.define_schema().node_id for n in self.nodes]
-        self.assertEqual(len(ids), len(set(ids)))
-
-
 class DocumentedCountTests(unittest.TestCase):
     """The README and the registry description quote counts.
 
@@ -1325,30 +1379,10 @@ class ExampleWorkflowTests(unittest.TestCase):
 
     EXAMPLES = sorted((ROOT / "examples").glob("*.json"))
 
-    # Widget order per node, as the frontend actually serialises it. Two
-    # rules matter and neither is obvious from define_schema:
-    #
-    #   - a seed with control_after_generate contributes two entries,
-    #     value then control;
-    #   - a multiline string is a DOM-backed widget and sorts after every
-    #     plain one, whatever position it holds in the schema. That is why
-    #     user_prompt trails on Style, and why both text boxes trail on
-    #     Sheet.
-    #
-    # These were read off a live node with serialize(), not inferred.
-    EXPECTED = {
-        "StylebookStyle": ["mode", "style", "category", "tag_filter", "seed",
-                           "control_after_generate", "cycle_index", "format",
-                           "strength", "placement", "user_prompt"],
-        "StylebookArtist": ["mode", "artist", "category", "tag_filter", "seed",
-                            "control_after_generate", "cycle_index",
-                            "artist_detail"],
-        "StylebookModifier": ["axis", "mode", "modifier", "seed",
-                              "control_after_generate", "cycle_index"],
-        "StylebookSheet": ["count", "category", "tag_filter", "seed",
-                           "control_after_generate", "user_prompt", "styles"],
-        "StylebookBlend": ["ratio"],
-    }
+    # The single source of truth moved to schema_options.WIDGET_ORDER, so
+    # that both this test and the JS fixture generator
+    # (scripts/dump_frontend_fixtures.py) read the same list.
+    EXPECTED = opt.WIDGET_ORDER
 
     OPTIONS = {
         "mode": lambda: list(opt.MODES),
@@ -1496,6 +1530,92 @@ class ExampleWorkflowTests(unittest.TestCase):
                     reaches = True
             with self.subTest(path.name):
                 self.assertTrue(reaches, "prompt never reaches a CLIPTextEncode")
+
+
+class IdentityForgeDriftTests(unittest.TestCase):
+    """Catches the exact class of drift that broke
+    stylebook_with_identity_forge.json: Identity Forge's own schema moved
+    (a new field, a renamed output slot) out from under our saved example,
+    and nothing here noticed until diagnose_workflow did it by hand.
+
+    Best-effort and environment-gated: point ``IDENTITY_FORGE_REPO`` at a
+    comfyui-identity-forge checkout to run this locally. It is a plain
+    skip everywhere else, including CI, which has neither repo -- this is
+    a local safety net, not a hard gate.
+
+    Runs in a subprocess, not this process. Both packages import a
+    top-level ``data`` package; in-process, Stylebook's own ``data`` (from
+    this very test run) shadows Identity Forge's in ``sys.modules``, and
+    ``from data.fields import ...`` inside Identity Forge's node module
+    resolves to Stylebook's data layer instead, which has no ``fields``
+    submodule. A fresh subprocess never loads Stylebook's ``data`` at all,
+    so there is nothing to collide with. It reuses this repo's own
+    ``tests/comfy_stub`` for ``comfy_api.latest.io`` -- Identity Forge's
+    node module uses only Combo/ComfyNode/Int/NodeOutput/Schema/String,
+    all of which the stub already covers -- with the same real-first,
+    stub-fallback rule as everywhere else it is used.
+    """
+
+    def test_saved_identity_forge_widget_count_matches_the_live_schema(self):
+        import subprocess
+
+        repo = os.environ.get("IDENTITY_FORGE_REPO")
+        if not repo:
+            raise unittest.SkipTest(
+                "IDENTITY_FORGE_REPO not set; point it at a comfyui-identity-forge "
+                "checkout to run this locally"
+            )
+        repo_path = Path(repo)
+        if not repo_path.is_dir():
+            raise unittest.SkipTest(f"IDENTITY_FORGE_REPO does not exist: {repo}")
+
+        stub_path = ROOT / "tests" / "comfy_stub"
+        script = f"""
+import sys
+sys.path.insert(0, {str(repo_path)!r})
+try:
+    import comfy_api.latest.io
+except ImportError:
+    sys.path.insert(0, {str(stub_path)!r})
+from nodes.identity_forge import IdentityForge
+schema = IdentityForge.define_schema()
+# hasattr(default) tells a widget-shaped Input apart from a socket-only
+# one (e.g. a Custom chain type); force_input=True is the other way an
+# Input that would otherwise be a widget stops serialising into
+# widgets_values -- archetype_json is one, string-typed but connection-
+# only. Both must be excluded for the count to match what ComfyUI
+# actually writes.
+count = sum(
+    1 for inp in schema.inputs
+    if hasattr(inp, "default") and not getattr(inp, "force_input", False)
+)
+seed = next((i for i in schema.inputs if i.id == "seed"), None)
+if seed is not None and getattr(seed, "control_after_generate", None):
+    count += 1
+print(count)
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", script], capture_output=True, text=True,
+        )
+        if result.returncode != 0:
+            raise unittest.SkipTest(
+                f"could not inspect Identity Forge's live schema: "
+                f"{result.stderr.strip().splitlines()[-1] if result.stderr else 'unknown error'}"
+            )
+        widget_count = int(result.stdout.strip())
+
+        for path in ExampleWorkflowTests.EXAMPLES:
+            graph = json.loads(path.read_text(encoding="utf-8"))
+            for node in graph["nodes"]:
+                if node["type"] != "IdentityForge":
+                    continue
+                values = node.get("widgets_values") or []
+                with self.subTest(path.name):
+                    self.assertEqual(
+                        len(values), widget_count,
+                        f"IdentityForge in {path.name} has {len(values)} widget "
+                        f"values, the live schema expects {widget_count}"
+                    )
 
 
 if __name__ == "__main__":

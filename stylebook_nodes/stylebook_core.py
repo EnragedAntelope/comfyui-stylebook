@@ -466,6 +466,87 @@ def render_negative(chain: dict[str, Any]) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Node-face readout
+# ---------------------------------------------------------------------------
+#
+# The readout used to be the rendered prompt, truncated from the front at
+# 300 characters. With the default placement="append" the user's subject
+# leads, so every node in a chain showed the same opening of the user's own
+# text and the style -- the only thing the node actually added -- was
+# always past the cut. Worse, Random mode had no readout of what it picked
+# at all: nothing on the node, nothing in the console.
+#
+# The fix is two lines: a short summary of what this node resolved (never
+# truncated, so it survives Random mode), then detail with the user's
+# subject collapsed to a literal marker (see readout_detail), so truncation
+# spends its budget on what changed rather than on text the user already
+# typed.
+
+#: Above this many artists, the summary line stops naming them individually
+#: and elides to a count -- the same point past which ARTIST_WARN_THRESHOLD
+#: already says stacked descriptors start blending together in the
+#: rendered prompt itself.
+SUMMARY_ARTIST_THRESHOLD = ARTIST_WARN_THRESHOLD
+
+#: Cap on the resolved-summary line. Short by construction (a style label,
+#: up to a couple of artist names, up to five "Label (axis)" modifiers), but
+#: truncate rather than let an unusual combination crowd out the detail
+#: line entirely.
+SUMMARY_LIMIT = 120
+
+
+def resolved_summary(chain: dict[str, Any]) -> str:
+    """One short line naming what a chain currently holds, e.g.
+    ``"Cyanotype · Ansel Adams · Golden Hour (lighting)"``.
+
+    This is what makes Random mode legible: previously the only way to
+    learn what a Random pick resolved to was to read it out of the full
+    rendered prompt, which is impossible when no user_prompt is connected
+    and unreliable when one is (see the module docstring above this).
+    """
+    style = chain.get("style")
+    artists = chain.get("artists", [])
+    modifiers = chain.get("modifiers", [])
+
+    parts: list[str] = []
+    if style and style.get("label"):
+        parts.append(style["label"])
+
+    if len(artists) > SUMMARY_ARTIST_THRESHOLD:
+        parts.append(f"{len(artists)} artists")
+    else:
+        parts.extend(a["label"] for a in artists if a.get("label"))
+
+    parts.extend(
+        f"{m.get('label', '?')} ({m.get('axis', '?')})" for m in modifiers
+    )
+
+    if not parts:
+        return "(nothing applied yet)"
+
+    summary = " · ".join(parts)
+    if len(summary) > SUMMARY_LIMIT:
+        summary = summary[:SUMMARY_LIMIT - 1].rstrip() + "…"
+    return summary
+
+
+def readout_detail(chain: dict[str, Any], meta: dict[str, str], user_prompt: str) -> str:
+    """The readout's second line: style/artist/modifier text with the
+    user's own subject collapsed to a literal ``[subject]`` marker.
+
+    Rendering with an empty subject sidesteps render_prompt's framing
+    connectives entirely (see its "not style_text or not subject" branch),
+    leaving exactly the style/artist/modifier text with no half-formed
+    sentence around it. That is also exactly what a reader needs here: the
+    part of the prompt this node is actually responsible for.
+    """
+    style_only = render_prompt(chain, meta, "")
+    if not user_prompt.strip():
+        return style_only
+    return f"[subject] {style_only}" if style_only else "[subject]"
+
+
+# ---------------------------------------------------------------------------
 # Pool filtering and selection
 # ---------------------------------------------------------------------------
 

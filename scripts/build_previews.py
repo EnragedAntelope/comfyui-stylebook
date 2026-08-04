@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 import time
 import urllib.error
@@ -36,6 +37,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+# A maintainer's own local user_styles.json must never make --check
+# machine-dependent or reach a rendered preview. Set before any `data`
+# import below, since data/user_data.py reads this once at merge time.
+os.environ.setdefault("STYLEBOOK_IGNORE_USER_STYLES", "1")
 
 SRC_DIR = ROOT / "previews" / "src"
 OUT_DIR = ROOT / "js" / "previews"

@@ -48,6 +48,14 @@ set to Pick, Random or Cycle, then the picker, then the filters that
 narrow what Random and Cycle draw from. Only the widgets the current mode
 actually uses stay on the node.
 
+Every node names what it resolved on its own face — including on Random,
+where there used to be no way to tell what you got without reading the
+final rendered prompt. Right-click a node for two more: **Copy resolved
+prompt** puts the full, untruncated text on your clipboard, and **Pin this
+pick** (Style, Artist and Modifier) writes a Random or Cycle result into
+that node's own picker and switches it to Pick — the fast way to keep
+something you landed on without setting up a `user_styles.json`.
+
 ![The style gallery](docs/images/style-gallery.png)
 
 ## The five nodes
@@ -194,6 +202,15 @@ Craft & Material, Collage & Mixed.
 Drop a `user_styles.json` in the pack root; copy `user_styles.example.json`
 to start. Styles, artists and modifiers all merge over the built-ins and
 survive a `git pull`. It is parsed as plain JSON, and no code is executed.
+Custom entries show up in the gallery under a **Yours** tab, alongside their
+real category like any built-in. A bad entry is skipped with a reason
+printed to the console rather than breaking the rest of the file. See
+[`docs/custom-styles.md`](docs/custom-styles.md) for the full field
+reference, what a rejection message means, and how to keep the file outside
+the pack directory.
+
+If what you have is worth everyone getting, a PR is better than a private
+JSON file — see **Bug reports and suggestions welcome** below.
 
 ## Using Stylebook with Identity Forge
 
@@ -206,14 +223,16 @@ The split is by what each pack is describing, not by which one got
 there first:
 
 - **Identity Forge owns the subject.** Who or what is in the picture, and
-  also where the camera is: framing, shot type, pose, expression, eye
-  contact. Stylebook never touches composition.
+  also where the camera is: framing, shot type, composition, pose,
+  expression, eye contact. Stylebook never touches composition.
 - **Stylebook owns the rendering.** What process produced the image, plus
   the lighting, colour grade, era, finish and mood it was rendered with.
 
 So set Identity Forge's `lighting` and `mood` to `None` and leave its
 shot type alone. See `examples/stylebook_with_identity_forge.json` for a
-ready-to-run workflow.
+ready-to-run workflow, built against Identity Forge 0.85.0 — if your
+Identity Forge is newer and the example fails to load, right-click its
+node and choose **Fix node (recreate)**.
 
 ## About the previews
 

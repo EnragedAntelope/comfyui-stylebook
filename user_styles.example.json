@@ -1,7 +1,6 @@
 {
     "styles": {
         "my_custom_style": {
-            "id": "my_custom_style",
             "label": "My Custom Style",
             "category": "illustration",
             "aliases": ["custom"],
@@ -12,6 +11,22 @@
             "blocks": []
         }
     },
-    "artists": {},
-    "modifiers": {}
+    "artists": {
+        "my_custom_artist": {
+            "label": "My Custom Artist",
+            "category": "photography",
+            "aliases": ["nickname"],
+            "descriptor": "a one-line description of what their work actually looks like."
+        }
+    },
+    "modifiers": {
+        "my_custom_modifier": {
+            "label": "My Custom Modifier",
+            "axis": "lighting",
+            "aliases": ["nickname"],
+            "tags": "your custom, keyword form",
+            "prose": "A sentence describing the tilt this modifier applies.",
+            "negative": ""
+        }
+    }
 }

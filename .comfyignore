@@ -7,6 +7,9 @@ tests/
 scripts/
 examples/
 user_styles.example.json
+package.json
+package-lock.json
+node_modules/
 
 # docs/ is NOT excluded: the only tracked thing in it is docs/images,
 # which the README links to. docs/worklog is gitignored, so it never

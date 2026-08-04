@@ -73,25 +73,24 @@ for _sid, _rec in STYLES.items():
     STYLES_BY_CATEGORY.setdefault(_cat, []).append(_sid)
 
 
-def get_style_ids(category: str | None = None, tag_filter: str | None = None) -> list[str]:
-    """Return style ids, optionally filtered by category and/or tag substring.
+def get_style_ids(category: str | None = None) -> list[str]:
+    """Return style ids, optionally filtered by category.
 
-    When *category* is ``None``, all categories are included. When
-    *tag_filter* is given, only styles whose ``tags`` or ``prose``
-    contains the substring (case-insensitive) are returned.
+    When *category* is ``None``, all categories are included.
+
+    Tag filtering deliberately does not live here. It used to, as a second
+    implementation with different (and once-buggy) semantics from
+    ``stylebook_core.filter_pool``: this one matched the whole raw string
+    as a single substring, so any filter containing a comma matched
+    nothing -- the exact bug already fixed once in ``filter_pool``, which
+    splits on commas and requires every term to match. Rather than
+    reimplement that fix a second time, the parameter was removed. There
+    is exactly one tag-filter implementation in this pack:
+    ``stylebook_core.filter_pool``.
     """
-    ids: list[str] = []
-    filter_lower = tag_filter.lower().strip() if tag_filter else ""
-    for sid, rec in STYLES.items():
-        cat = rec.get("category", "")
-        if category is not None and cat != category:
-            continue
-        if filter_lower:
-            haystack = (rec.get("tags", "") + " " + rec.get("prose", "")).lower()
-            if filter_lower not in haystack:
-                continue
-        ids.append(sid)
-    return ids
+    if category is None:
+        return list(STYLES)
+    return [sid for sid, rec in STYLES.items() if rec.get("category") == category]
 
 
 #: Exact lookup keys: every id and every label, lowercased. Built once,

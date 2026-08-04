@@ -12,7 +12,7 @@ from __future__ import annotations
 try:
     from ..data.styles import STYLES, resolve_style_name
     from . import schema_options as opt
-    from .node_support import report, show_readout
+    from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
         parse_chain, render_negative, render_prompt, resolve_meta,
         sheet_style_ids,
@@ -20,7 +20,7 @@ try:
 except ImportError:  # pragma: no cover - standalone/test context
     from data.styles import STYLES, resolve_style_name
     from stylebook_nodes import schema_options as opt
-    from stylebook_nodes.node_support import report, show_readout
+    from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
         parse_chain, render_negative, render_prompt, resolve_meta,
         sheet_style_ids,
@@ -299,5 +299,11 @@ if _COMFY_AVAILABLE:
             report(warnings)
             summary = (f"{len(prompts)} styles: " + ", ".join(labels)
                        if prompts else "no styles matched the filter")
-            show_readout(cls.hidden.unique_id, summary, warnings)
+            show_readout(cls.hidden.unique_id, summary, warnings=warnings)
+            # One prompt per line: currently the only way to read every
+            # entry without wiring a preview node onto a list output, and
+            # exactly what "Copy resolved prompt" puts on the clipboard.
+            # No style/artist/modifier: Sheet resolves N styles, not one,
+            # so it has no Pin menu item -- see js/stylebook_readout.js.
+            send_resolved_event(cls.hidden.unique_id, "\n".join(prompts))
             return io.NodeOutput(prompts, negatives, labels)

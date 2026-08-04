@@ -1,0 +1,353 @@
+{
+  "__generated__": "scripts/dump_frontend_fixtures.py -- do not edit by hand",
+  "StylebookStyle": [
+    {
+      "name": "mode",
+      "type": "combo",
+      "value": "Random",
+      "options": [
+        "Pick",
+        "Random",
+        "Cycle"
+      ]
+    },
+    {
+      "name": "style",
+      "type": "combo",
+      "value": "None",
+      "optionCount": 434
+    },
+    {
+      "name": "category",
+      "type": "combo",
+      "value": "All categories",
+      "options": [
+        "All categories",
+        "Photography",
+        "Illustration",
+        "Comics",
+        "Film & Cinema",
+        "Painting",
+        "Art Movements",
+        "Anime & Manga",
+        "3D & Digital",
+        "Print & Graphic",
+        "Object & Artifact",
+        "Craft & Material",
+        "Collage & Mixed"
+      ]
+    },
+    {
+      "name": "tag_filter",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "name": "seed",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "control_after_generate",
+      "type": "combo",
+      "value": "randomize",
+      "options": [
+        "fixed",
+        "increment",
+        "decrement",
+        "randomize"
+      ]
+    },
+    {
+      "name": "cycle_index",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "format",
+      "type": "combo",
+      "value": "prose",
+      "options": [
+        "prose",
+        "tags"
+      ]
+    },
+    {
+      "name": "strength",
+      "type": "combo",
+      "value": "normal",
+      "options": [
+        "subtle",
+        "normal",
+        "strong"
+      ]
+    },
+    {
+      "name": "placement",
+      "type": "combo",
+      "value": "append",
+      "options": [
+        "append",
+        "prepend"
+      ]
+    },
+    {
+      "name": "user_prompt",
+      "type": "string",
+      "value": ""
+    }
+  ],
+  "StylebookArtist": [
+    {
+      "name": "mode",
+      "type": "combo",
+      "value": "Random",
+      "options": [
+        "Pick",
+        "Random",
+        "Cycle"
+      ]
+    },
+    {
+      "name": "artist",
+      "type": "combo",
+      "value": "None",
+      "optionCount": 660
+    },
+    {
+      "name": "category",
+      "type": "combo",
+      "value": "All artists",
+      "options": [
+        "All artists",
+        "Photography",
+        "Fine Art",
+        "Illustration",
+        "Comics & Manga",
+        "Digital & Concept",
+        "Film & Animation"
+      ]
+    },
+    {
+      "name": "tag_filter",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "name": "seed",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "control_after_generate",
+      "type": "combo",
+      "value": "randomize",
+      "options": [
+        "fixed",
+        "increment",
+        "decrement",
+        "randomize"
+      ]
+    },
+    {
+      "name": "cycle_index",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "artist_detail",
+      "type": "combo",
+      "value": "Name + descriptor",
+      "options": [
+        "Name + descriptor",
+        "Names + lead descriptor",
+        "Names only",
+        "Descriptor only"
+      ]
+    }
+  ],
+  "StylebookModifier": [
+    {
+      "name": "axis",
+      "type": "combo",
+      "value": "lighting",
+      "options": [
+        "lighting",
+        "color_grade",
+        "era",
+        "finish",
+        "mood"
+      ]
+    },
+    {
+      "name": "mode",
+      "type": "combo",
+      "value": "Pick",
+      "options": [
+        "Pick",
+        "Random",
+        "Cycle"
+      ]
+    },
+    {
+      "name": "modifier",
+      "type": "combo",
+      "value": "Off",
+      "options": [
+        "Off",
+        "Backlit Silhouette",
+        "Blue Hour",
+        "Candlelight",
+        "Chiaroscuro",
+        "Golden Hour",
+        "Hard Noon Sun",
+        "Moonlight",
+        "Neon Noir",
+        "Overcast Soft",
+        "Practical Glow",
+        "Rim Lighting",
+        "Split Lighting",
+        "Studio Softbox",
+        "Underwater Caustics",
+        "Black & White",
+        "Bleach Bypass",
+        "Cool Blue",
+        "Cross-Process",
+        "Duotone",
+        "Faded Film",
+        "High Saturation",
+        "Muted Earth",
+        "Pastel Wash",
+        "Sepia",
+        "Split Tone",
+        "Teal & Orange",
+        "Warm Amber",
+        "Ancient Classical",
+        "Medieval",
+        "Victorian",
+        "Edwardian",
+        "1920s",
+        "1950s",
+        "1960s",
+        "1970s",
+        "1980s",
+        "1990s",
+        "2000s",
+        "Near Future",
+        "Far Future",
+        "Bloom / Glow",
+        "Chromatic Aberration",
+        "Distressed & Damaged",
+        "Dithered",
+        "Film Grain",
+        "Glossy Lacquer",
+        "Halftone Dots",
+        "Matte Flat",
+        "Paper Texture",
+        "Posterized",
+        "Scan Lines",
+        "Soft Diffusion",
+        "Vignette",
+        "Awe",
+        "Chaotic",
+        "Dreamlike",
+        "Intimate",
+        "Joyful",
+        "Lonely",
+        "Melancholic",
+        "Nostalgic",
+        "Oppressive",
+        "Serene",
+        "Sinister",
+        "Tense",
+        "Whimsical"
+      ]
+    },
+    {
+      "name": "seed",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "control_after_generate",
+      "type": "combo",
+      "value": "randomize",
+      "options": [
+        "fixed",
+        "increment",
+        "decrement",
+        "randomize"
+      ]
+    },
+    {
+      "name": "cycle_index",
+      "type": "int",
+      "value": 0
+    }
+  ],
+  "StylebookSheet": [
+    {
+      "name": "count",
+      "type": "int",
+      "value": 4
+    },
+    {
+      "name": "category",
+      "type": "combo",
+      "value": "All categories",
+      "options": [
+        "All categories",
+        "Photography",
+        "Illustration",
+        "Comics",
+        "Film & Cinema",
+        "Painting",
+        "Art Movements",
+        "Anime & Manga",
+        "3D & Digital",
+        "Print & Graphic",
+        "Object & Artifact",
+        "Craft & Material",
+        "Collage & Mixed"
+      ]
+    },
+    {
+      "name": "tag_filter",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "name": "seed",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "control_after_generate",
+      "type": "combo",
+      "value": "randomize",
+      "options": [
+        "fixed",
+        "increment",
+        "decrement",
+        "randomize"
+      ]
+    },
+    {
+      "name": "user_prompt",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "name": "styles",
+      "type": "string",
+      "value": ""
+    }
+  ],
+  "StylebookBlend": [
+    {
+      "name": "ratio",
+      "type": "float",
+      "value": 0.5
+    }
+  ]
+}

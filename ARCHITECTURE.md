@@ -16,10 +16,13 @@ data/
   styles/                 One module per category, each a dict of style records.
   artists.py              Artist records, keyed by id.
   modifiers.py            Modifier records grouped onto five axes.
-  user_data.py            Merges an optional user_styles.json over the built-ins.
+  user_data.py            Validates and merges an optional user_styles.json.
 stylebook_nodes/
   stylebook_core.py       The engine. Pure functions, no ComfyUI import.
-  schema_options.py       Dropdown option lists, sentinels and defaults.
+  schema_options.py       Dropdown option lists, sentinels, defaults, WIDGET_ORDER.
+  node_support.py         Node-face readout and the stylebook.resolved event.
+  routes.py                /stylebook/user_data HTTP route (needs server/aiohttp).
+  user_data_payload.py    That route's payload shape. No ComfyUI import.
   stylebook_style.py      Style node   - exclusive medium axis.
   stylebook_artist.py     Artist node  - additive, chainable.
   stylebook_modifier.py   Modifier node - one per axis.
@@ -27,15 +30,21 @@ stylebook_nodes/
   stylebook_sheet.py      Sheet node   - one subject, many styles, as a list.
 js/
   stylebook_data.js       Generated. Never edit by hand.
+  stylebook_shared.js     Helpers shared by every frontend module below.
   stylebook_gallery.js    Hand-written frontend. The generator never touches it.
   stylebook_recreate.js   A working "Fix node (recreate)". See below.
+  stylebook_readout.js    "Copy resolved prompt" / "Pin this pick" menu items.
   stylebook_gallery.css   Themed against ComfyUI's CSS custom properties.
   previews/               Sprite atlases plus index.json, served statically.
 previews/
   src/                    Full-size renders (gitignored, rebuildable).
   manifest.json           Content hash per tile. Drives incremental rebuilds.
 scripts/                  Build and validation tooling. Not shipped to the registry.
-tests/                    unittest suite plus the data-layer validator.
+docs/
+  custom-styles.md         Field reference for user_styles.json.
+tests/                    unittest suite, the data-layer validator, and:
+  comfy_stub/               A stand-in comfy_api.latest.io. See "Testing the frontend" below.
+  frontend/                 jsdom smoke tests for js/*.js. Run via `npm run test:frontend`.
 ```
 
 ## The chain protocol
@@ -277,6 +286,146 @@ frontend changes in a browser and measure the DOM.
   by one from there, which is how a recreated node loses its links. Set
   `widget.serialize = false` on the widget itself as well.
 
+## The node-face readout and `stylebook.resolved`
+
+Every node shows two lines on its own face: `stylebook_core.resolved_summary`
+(a short "Style · Artist · Modifier (axis)" line, never truncated) and
+`readout_detail` (the rendered style/artist/modifier text, with the user's
+own subject collapsed to a literal `[subject]` marker). Both are built in
+`node_support.show_readout`.
+
+This replaced a single-line readout that showed the rendered prompt
+truncated from the front. With `placement=append` (the default) the
+subject leads, so every node in a chain showed the same opening of the
+user's own text, and the style — the one thing the node actually added —
+was always past the 300-character cut. Worse, Random mode had no readout
+at all: nothing named what got picked. `readout_detail` renders with an
+empty subject specifically to dodge `render_prompt`'s framing connectives
+(see "Two cases deliberately get no frame" above), which leaves exactly
+the style/artist/modifier text with no half-sentence around it — the part
+of the prompt this node is actually responsible for, which is also the
+part worth spending the truncation budget on.
+
+Alongside the readout, `node_support.send_resolved_event` sends a
+`stylebook.resolved` PromptServer event: `{node_id, prompt, style, artist,
+modifier, axis}`, with `prompt` full and untruncated. `js/stylebook_readout.js`
+listens for it and adds two context-menu items:
+
+- **Copy resolved prompt**, on all five nodes: the clipboard gets `prompt`
+  from the event, not the capped node-face text.
+- **Pin this pick**, on Style/Artist/Modifier only: writes the resolved
+  label into that node's own pick widget (plus `axis` on Modifier) and
+  flips `mode` to Pick. Blend's style is a synthetic merged composite and
+  Sheet resolves N styles, so neither has a single pick to pin — both
+  still get Copy, just not Pin.
+
+A listener is registered per node instance and unsubscribed from
+`node.onRemoved` (chained the same way `getExtraMenuOptions` is, below).
+Skipping that is a real, if slow, memory leak: every node ever created
+would keep a live `api` listener forever, even after being deleted from
+the graph.
+
+## `WIDGET_ORDER`: one source of truth
+
+`schema_options.WIDGET_ORDER` is the serialised widget order per node, as
+ComfyUI actually writes `widgets_values` — read off a live node with
+`serialize()`, not inferred. Two things about it are not obvious from
+`define_schema`: a seed with `control_after_generate` contributes two
+entries, and a DOM-backed multiline widget (`user_prompt`, `styles`) always
+sorts after every plain widget regardless of its position in the schema.
+
+Three things read this one constant, so they cannot drift apart:
+`tests/test_engine.py`'s `ExampleWorkflowTests` (checks the shipped example
+workflows against it), `tests/test_schemas.py`'s
+`WidgetOrderDerivationTests` (checks it is still derivable from the live
+`define_schema()` output), and `scripts/dump_frontend_fixtures.py` (feeds it
+to the jsdom tests below). A schema change that forgets to update this
+constant now fails on the Python side before it ever reaches a saved
+workflow.
+
+## Testing the frontend without a browser
+
+Six bugs — including the CI gate that had never once run and the Artist
+node silently losing its picker button — shipped through a fully green
+Python suite, because nothing in the pipeline ever opened the page. Two
+layers close that gap.
+
+**The Python side: a stand-in for `comfy_api.latest.io`.** Every node
+module does `try: from comfy_api.latest import io / except ImportError`
+and only defines its class when that succeeds, so `NodeSchemaTests` used
+to `raise unittest.SkipTest("ComfyUI not installed")` in CI and never ran
+there at all. `tests/comfy_stub/comfy_api/latest/io.py` is a record-only
+implementation of exactly the surface this pack uses. `tests/__init__.py`
+registers it on `sys.path` **only if the real package is not importable**
+— real-first, stub-fallback, so this repo's own dev machine (with ComfyUI
+installed) always exercises the genuine API and the stub only covers a
+runner that has neither.
+
+That registration has to happen in `tests/__init__.py`, and every
+`unittest discover` invocation in this repo needs `-t .`
+(`python -m unittest discover -s tests -t . -v`). Reason, found the hard
+way: a module only runs its top-level code once per process, so if
+`test_engine.py` imports `stylebook_nodes.*` before the stub is
+registered, `_COMFY_AVAILABLE` is permanently `False` for that module for
+the rest of the run, and no later registration undoes it. `-t .` makes
+`tests` a genuine subpackage of the repo root, which is what forces
+Python's import system — not `unittest`'s own directory-walk, which does
+not give this guarantee on its own — to run `tests/__init__.py` before any
+`test_*.py` file in it.
+
+**The JS side: `tests/frontend/`, run via `npm run test:frontend`.**
+`hooks.mjs` registers a `node:module` resolve hook
+(`module.registerHooks`, not the deprecated `module.register`) that
+redirects any specifier ending `/scripts/app.js` or `/scripts/api.js` to
+`stubs/`, by suffix rather than exact path so it survives `js/` files at
+different relative depths. That is what lets the real, unmodified
+`js/stylebook_gallery.js` (etc.) be imported outside ComfyUI at all.
+`fake_node.mjs` builds a LiteGraph-shaped node from
+`fixtures/nodes.json` — generated by `scripts/dump_frontend_fixtures.py`
+from `WIDGET_ORDER` and the live schemas, `--check`-gated the same way
+`generate_js_data.py` is, so a Python rename breaks the JS fixture lookup
+instead of silently drifting from it.
+
+Honest limit: jsdom has no layout engine, so `clientWidth` reads 0 and
+anything depending on real layout, CSS or drag/drop cannot be exercised
+here. This catches wiring, visibility, serialization and dialog logic —
+the class of bug that has actually shipped — not painting. It does not
+replace opening the page before a release.
+
+## `/stylebook/user_data` and the "Yours" tab
+
+`stylebook_nodes/routes.py` registers a read-only route on the shared
+`PromptServer.instance.routes`, imported from `__init__.py` inside
+`try/except ImportError` so the pack (and the test suite) still load
+without `server`/`aiohttp`. It has no parameters and does no filesystem
+access at request time — it serialises `USER_ADDED_STYLES`/`_ARTISTS`/
+`_MODIFIERS`, which are already resident in process memory from the merge
+that ran at import. The payload shape itself lives in the ComfyUI-free
+`user_data_payload.py`, which is what `tests/test_user_data.py` actually
+exercises.
+
+`js/stylebook_gallery.js` fetches this once in `setup()` and merges the
+results into `styleItems()`/`artistItems()`/`modifierItems()`. A custom
+entry keeps its real category/axis as `group`, so it shows up under "All"
+and its own category exactly like a built-in; a synthetic `GROUP_YOURS`
+tab is added only once there is something to put in it, filtered by
+`item.isCustom` rather than by group. A missing route, a failed fetch or a
+malformed response all leave the module-level `userData` at its empty
+default — every picker degrades to exactly the built-ins-only behaviour
+from before this existed, never a broken tab.
+
+Two environment variables, read once by `data/user_data.py` at import:
+
+- `STYLEBOOK_IGNORE_USER_STYLES=1` makes every `apply_user_*` a no-op.
+  `scripts/generate_js_data.py`, `scripts/dump_frontend_fixtures.py`,
+  `scripts/build_previews.py` and `tests/validate_data.py` all set this
+  before importing `data`, because without it a maintainer's own local
+  `user_styles.json` gets baked into a shipped artifact and makes
+  `--check` pass or fail depending on whose machine ran it.
+- `STYLEBOOK_USER_STYLES=/path/to/file.json` moves the file outside the
+  pack directory, so a Manager reinstall or `git clean` cannot take it
+  with it.
+
 ## The three picker nodes are one design
 
 Style, Artist and Modifier all do the same job on different axes, so they
@@ -318,6 +467,22 @@ label elsewhere in the pack and 6 are claimed by two styles at once:
 
 Both lookups go through dicts built once at import. A linear scan per
 name meant resolving a list of eight cost eight passes over every record.
+
+### Tag filtering has exactly one implementation
+
+`stylebook_core.filter_pool` (and `filter_artist_pool`) is it: comma-
+separated terms, every one must match, checked against tags, prose, label
+and aliases. `data/styles/get_style_ids` and `data/artists.get_artist_ids`
+take a `category` only and nothing else.
+
+There used to be a second, narrower one on `get_style_ids` itself:
+whole-string substring matching against `tags + prose`. Under it, any
+filter containing a comma matched nothing at all — the exact bug already
+fixed once in `filter_pool`. It was removed rather than fixed a second
+time, because the real problem was having two implementations with
+different semantics reachable from the same layer. If you need to filter
+the data layer by tag, use `filter_pool`; do not add the parameter back to
+`get_style_ids`.
 
 ## Seed stability, stated honestly
 
@@ -406,12 +571,15 @@ Run all of these before committing:
 ```
 python -m ruff check .
 python tests/validate_data.py
-python -m unittest discover -s tests -v
+python -m unittest discover -s tests -t . -v
 python scripts/generate_js_data.py --check
+python scripts/dump_frontend_fixtures.py --check
 python scripts/build_previews.py --check
+npm ci && npm run test:frontend
 ```
 
-Or `python scripts/pre_commit_check.py`, which runs the lot.
+Or `python scripts/pre_commit_check.py`, which runs the Python half of the
+lot (everything except the frontend suite, which needs Node).
 
 The data validator is not decoration. It fails the build on duplicate
 labels, ids that disagree with their key, records claiming a reserved

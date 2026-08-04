@@ -28,11 +28,31 @@ jobs:
       - name: Validate data integrity
         run: python tests/validate_data.py
       - name: Run the test suite
-        run: python -m unittest discover -s tests -v
+        run: python -m unittest discover -s tests -t . -v
       - name: Check generated frontend data is current
         run: python scripts/generate_js_data.py --check
+      - name: Check frontend test fixtures are current
+        run: python scripts/dump_frontend_fixtures.py --check
       - name: Check preview manifest is current
         run: python scripts/build_previews.py --check
+
+  frontend:
+    name: Frontend smoke tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          # hooks.mjs uses node:module's registerHooks(), added in 23.5.0 and
+          # backported to the 22.15.0 LTS line. Pinning to the 24 LTS line
+          # keeps a comfortable margin above that floor.
+          node-version: "24"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run frontend smoke tests
+        run: npm run test:frontend
 
   lint:
     name: Lint

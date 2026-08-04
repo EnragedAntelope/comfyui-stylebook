@@ -14,6 +14,14 @@ import {
   PREVIEW_INDEX,
   STYLE_DATA_BY_CATEGORY,
 } from "./stylebook_data.js";
+import {
+  MIN_NODE_WIDTH,
+  isStylebookNode,
+  makeWarn,
+  resizeNode,
+  setWidgetValue,
+  widgetsByName,
+} from "./stylebook_shared.js";
 
 /*
  * Stylebook frontend.
@@ -55,25 +63,29 @@ const SENTINEL_OFF = "Off";
 // and 400-plus tiles scroll perfectly well.
 const GROUP_ALL = "__all__";
 
+// Pseudo-group shown as the last tab, only once a local user_styles.json
+// has actually added something. A custom entry still carries its real
+// category/axis as `group`, so it shows up under "All" and its own
+// category exactly like a built-in; this tab is purely a shortcut to "the
+// things I added", filtered by `item.isCustom` rather than by group.
+const GROUP_YOURS = "__yours__";
+
+//: Fetched once in setup(). Read as {styles:[],artists:[],modifiers:[]}
+//: even before the fetch resolves, so every item-source function below
+//: can merge it in unconditionally with no extra null-checking.
+let userData = { styles: [], artists: [], modifiers: [] };
+
 // Artist category tabs. The list used to be flat, which made 590 entries
 // searchable but not browsable: with no way to say "show me the
 // photographers", the only route in was already knowing a name.
 const ARTIST_GROUPS = [GROUP_ALL].concat(ARTIST_CATEGORY_ORDER || []);
 const HIDDEN_TYPE = "stylebook_hidden";
 
-// Every node reports its resolved prompt on its own face. At LiteGraph's
-// default width that lands in a two-line sliver you have to scroll, which
-// makes the most useful output on the node the hardest thing to read. A
-// wider default costs nothing on an empty canvas and is still freely
-// resizable.
-const MIN_NODE_WIDTH = 420;
 const TILE_DISPLAY_PX = 168;
 
 // --- small helpers --------------------------------------------------------
 
-function warn(message, error) {
-  console.warn("[" + EXT_NAME + "] " + message, error || "");
-}
+const warn = makeWarn(EXT_NAME);
 
 function assetURL(relative) {
   try {
@@ -81,6 +93,28 @@ function assetURL(relative) {
   } catch (_) {
     return relative;
   }
+}
+
+/**
+ * Fetch what a local user_styles.json added, for the "Yours" picker tab.
+ *
+ * A plain server-root path, not assetURL()'d: this pack's HTTP route
+ * (stylebook_nodes/routes.py) is registered on the shared PromptServer
+ * instance, not served relative to this file's own /extensions/... path.
+ * A missing route, a network failure or a malformed response all leave
+ * `userData` at its empty default -- every picker degrades to exactly
+ * today's built-ins-only behaviour, never a broken tab.
+ */
+async function loadUserData() {
+  const response = await fetch("/stylebook/user_data");
+  if (!response.ok) return;
+  const data = await response.json();
+  if (!data || typeof data !== "object") return;
+  userData = {
+    styles: Array.isArray(data.styles) ? data.styles : [],
+    artists: Array.isArray(data.artists) ? data.artists : [],
+    modifiers: Array.isArray(data.modifiers) ? data.modifiers : [],
+  };
 }
 
 /**
@@ -92,6 +126,7 @@ function assetURL(relative) {
  */
 function groupName(key) {
   if (key === GROUP_ALL) return "All";
+  if (key === GROUP_YOURS) return "Yours";
   if (CATEGORY_LABELS && CATEGORY_LABELS[key]) return CATEGORY_LABELS[key];
   if (ARTIST_CATEGORY_LABELS && ARTIST_CATEGORY_LABELS[key]) {
     return ARTIST_CATEGORY_LABELS[key];
@@ -203,46 +238,6 @@ function setSeedVisible(widgets, visible) {
   setVisible(widgets.control_after_generate, visible);
 }
 
-function resizeNode(node) {
-  if (!node) return;
-  try {
-    if (typeof node.computeSize === "function") {
-      const computed = node.computeSize();
-      const width = (node.size && node.size[0]) || 0;
-      // Never shrink below the user's own width, and never below the
-      // width the readout needs to be readable.
-      node.setSize([
-        Math.max(width, computed[0], MIN_NODE_WIDTH),
-        computed[1],
-      ]);
-    }
-    if (typeof node.setDirtyCanvas === "function") node.setDirtyCanvas(true, true);
-  } catch (error) {
-    warn("resize failed", error);
-  }
-}
-
-function setWidgetValue(node, widget, value) {
-  if (!widget) return;
-  widget.value = value;
-  if (typeof widget.callback === "function") {
-    try {
-      widget.callback(value, app.canvas, node);
-    } catch (error) {
-      warn("widget callback failed", error);
-    }
-  }
-}
-
-function widgetsByName(node) {
-  const map = {};
-  if (!node || !Array.isArray(node.widgets)) return map;
-  for (const widget of node.widgets) {
-    if (widget && widget.name) map[widget.name] = widget;
-  }
-  return map;
-}
-
 // --- preview sprite lookup ------------------------------------------------
 
 function previewFor(category, styleId) {
@@ -294,6 +289,19 @@ function styleItems() {
       });
     }
   }
+  // A custom style keeps its own category as `group`, so it appears under
+  // "All" and its real category exactly like a built-in; isCustom is only
+  // what the "Yours" tab filters on. It has no preview atlas entry, so the
+  // tile falls back to the existing lettered-initials glyph automatically.
+  for (const entry of userData.styles) {
+    items.push({
+      id: entry.id,
+      label: entry.label,
+      group: entry.category,
+      aliases: [],
+      isCustom: true,
+    });
+  }
   return items;
 }
 
@@ -308,17 +316,38 @@ function artistItems() {
       detail: ARTIST_DESCRIPTORS[i] || "",
     });
   }
+  for (const entry of userData.artists) {
+    items.push({
+      id: entry.label,
+      label: entry.label,
+      group: entry.category || "artist",
+      aliases: [],
+      detail: entry.detail || "",
+      isCustom: true,
+    });
+  }
   return items;
 }
 
 function modifierItems() {
-  return MODIFIER_RECORDS.map((rec) => ({
+  const items = MODIFIER_RECORDS.map((rec) => ({
     id: rec.label,
     label: rec.label,
     group: rec.axis,
     aliases: rec.aliases || [],
     detail: rec.detail || "",
   }));
+  for (const entry of userData.modifiers) {
+    items.push({
+      id: entry.label,
+      label: entry.label,
+      group: entry.category,
+      aliases: [],
+      detail: entry.detail || "",
+      isCustom: true,
+    });
+  }
+  return items;
 }
 
 function matches(item, query) {
@@ -578,7 +607,9 @@ class StylebookPicker {
     this.visible = this.query
       ? all.filter((item) => matches(item, this.query))
       : this.config.groups && this.activeGroup !== GROUP_ALL
-        ? all.filter((item) => item.group === this.activeGroup)
+        ? this.activeGroup === GROUP_YOURS
+          ? all.filter((item) => item.isCustom)
+          : all.filter((item) => item.group === this.activeGroup)
         : all;
 
     if (this.tabs) this.renderTabs();
@@ -802,7 +833,14 @@ function setupStyleNode(node) {
     title: "Stylebook style gallery",
     searchPlaceholder: "Search styles by name, alias or category",
     items: styleItems,
-    groups: [GROUP_ALL].concat(CATEGORIES),
+    // A getter, not a fixed array: userData.styles fills in asynchronously
+    // in setup(), possibly after this node's picker was already
+    // constructed, and this is read fresh every time the dialog renders.
+    get groups() {
+      return userData.styles.length
+        ? [GROUP_ALL].concat(CATEGORIES, [GROUP_YOURS])
+        : [GROUP_ALL].concat(CATEGORIES);
+    },
     showPreviews: true,
   }, "Open style gallery");
 
@@ -824,7 +862,9 @@ function setupArtistNode(node) {
     searchPlaceholder: "Search " + ARTIST_LABELS.length +
       " artists by name, movement, or what their work looks like",
     items: artistItems,
-    groups: ARTIST_GROUPS,
+    get groups() {
+      return userData.artists.length ? ARTIST_GROUPS.concat([GROUP_YOURS]) : ARTIST_GROUPS;
+    },
     showPreviews: false,
     layout: "list",
   }, "Open artist reference");
@@ -843,7 +883,11 @@ function setupModifierNode(node) {
     title: "Stylebook modifier reference",
     searchPlaceholder: "Search modifiers by name or by what they do",
     items: modifierItems,
-    groups: [GROUP_ALL].concat(MODIFIER_AXES),
+    get groups() {
+      return userData.modifiers.length
+        ? [GROUP_ALL].concat(MODIFIER_AXES, [GROUP_YOURS])
+        : [GROUP_ALL].concat(MODIFIER_AXES);
+    },
     showPreviews: false,
     layout: "list",
     // Picking a modifier implies its axis, and the dropdown has to be
@@ -883,7 +927,11 @@ function setupSheetNode(node) {
     title: "Choose styles for the sheet",
     searchPlaceholder: "Search styles by name, alias or category",
     items: styleItems,
-    groups: [GROUP_ALL].concat(CATEGORIES),
+    get groups() {
+      return userData.styles.length
+        ? [GROUP_ALL].concat(CATEGORIES, [GROUP_YOURS])
+        : [GROUP_ALL].concat(CATEGORIES);
+    },
     showPreviews: true,
     multi: true,
     currentValues: () => parseStyleList(widgetsByName(node).styles),
@@ -1091,12 +1139,17 @@ app.registerExtension({
     } catch (error) {
       warn("stylesheet injection failed", error);
     }
+    try {
+      await loadUserData();
+    } catch (error) {
+      warn("could not load custom styles from user_styles.json", error);
+    }
   },
 
   async nodeCreated(node) {
     try {
+      if (!isStylebookNode(node)) return;
       const type = node.comfyClass || (node.constructor && node.constructor.type);
-      if (!type || !String(type).startsWith("Stylebook")) return;
       if (configured.has(node)) return;
       configured.add(node);
       // Blend and Sheet have no widget logic but still show a readout,

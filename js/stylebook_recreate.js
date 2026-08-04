@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { isStylebookNode, makeWarn } from "./stylebook_shared.js";
 
 /*
  * A working "Fix node (recreate)" for Stylebook nodes.
@@ -48,14 +49,7 @@ import { app } from "../../scripts/app.js";
 const EXT_NAME = "stylebook.recreate";
 const MENU_LABEL = "Fix node (recreate)";
 
-function warn(message, error) {
-  console.warn("[" + EXT_NAME + "] " + message, error || "");
-}
-
-function isStylebookNode(node) {
-  const type = node && (node.comfyClass || (node.constructor && node.constructor.type));
-  return Boolean(type) && String(type).startsWith("Stylebook");
-}
+const warn = makeWarn(EXT_NAME);
 
 /** Resolve a link id to its link record across frontend versions. */
 function getLink(graph, linkId) {

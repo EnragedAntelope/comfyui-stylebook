@@ -242,6 +242,40 @@ def modifier_options_by_axis() -> dict[str, list[str]]:
 # Defaults
 # ---------------------------------------------------------------------------
 
+#: Widget order per node, as the frontend actually serialises it into
+#: ``widgets_values``. Two rules matter and neither is obvious from
+#: ``define_schema``:
+#:
+#:   - a seed with ``control_after_generate`` contributes two entries,
+#:     value then control;
+#:   - a multiline string is a DOM-backed widget and sorts after every
+#:     plain one, whatever position it holds in the schema. That is why
+#:     ``user_prompt`` trails on Style, and why both text boxes trail on
+#:     Sheet.
+#:
+#: These were read off a live node with ``serialize()``, not inferred. This
+#: is the single source of truth: ``tests/test_engine.py`` checks the shipped
+#: example workflows against it, and ``tests/test_schemas.py`` checks it is
+#: still derivable from the live ``define_schema()`` output under the two
+#: rules above, so a schema change that forgets to update this dict fails on
+#: the Python side *and* on the JS fixture generated from it
+#: (``scripts/dump_frontend_fixtures.py``) before it ever reaches a saved
+#: workflow.
+WIDGET_ORDER: dict[str, list[str]] = {
+    "StylebookStyle": ["mode", "style", "category", "tag_filter", "seed",
+                       "control_after_generate", "cycle_index", "format",
+                       "strength", "placement", "user_prompt"],
+    "StylebookArtist": ["mode", "artist", "category", "tag_filter", "seed",
+                        "control_after_generate", "cycle_index",
+                        "artist_detail"],
+    "StylebookModifier": ["axis", "mode", "modifier", "seed",
+                          "control_after_generate", "cycle_index"],
+    "StylebookSheet": ["count", "category", "tag_filter", "seed",
+                       "control_after_generate", "user_prompt", "styles"],
+    "StylebookBlend": ["ratio"],
+}
+
+
 #: Widget defaults, kept here so the tests can assert every default is a
 #: member of its own option list.
 DEFAULTS: dict[str, str] = {

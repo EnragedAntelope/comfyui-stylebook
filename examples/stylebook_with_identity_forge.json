@@ -1,163 +1,22 @@
 {
   "id": "stylebook-identity-forge",
   "revision": 0,
-  "last_node_id": 20,
-  "last_link_id": 30,
+  "last_node_id": 32,
+  "last_link_id": 32,
   "nodes": [
-    {
-      "id": 20,
-      "type": "IdentityForge",
-      "pos": [
-        20,
-        60
-      ],
-      "size": [
-        315,
-        500
-      ],
-      "flags": {},
-      "order": 0,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "seed",
-          "type": "INT",
-          "widget": {
-            "name": "seed"
-          },
-          "link": null
-        },
-        {
-          "name": "gender",
-          "type": "COMBO",
-          "widget": {
-            "name": "gender"
-          },
-          "link": null
-        },
-        {
-          "name": "wardrobe",
-          "type": "COMBO",
-          "widget": {
-            "name": "wardrobe"
-          },
-          "link": null
-        },
-        {
-          "name": "set_all_fields",
-          "type": "COMBO",
-          "widget": {
-            "name": "set_all_fields"
-          },
-          "link": null
-        },
-        {
-          "name": "archetype_json",
-          "type": "STRING",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "prose",
-          "type": "STRING",
-          "links": [
-            30
-          ],
-          "slot_index": 0
-        },
-        {
-          "name": "character_json",
-          "type": "STRING",
-          "links": null,
-          "slot_index": 1
-        }
-      ],
-      "widgets_values": [
-        0,
-        "randomize",
-        "Any",
-        "Match gender",
-        "Off",
-        "",
-        "Any",
-        "",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "None",
-        "Random",
-        "None",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random",
-        "Random"
-      ],
-      "title": "Identity Forge (the subject)"
-    },
     {
       "id": 1,
       "type": "StylebookStyle",
       "pos": [
-        460,
-        60
+        975,
+        0
       ],
       "size": [
-        340,
-        300
+        250,
+        367
       ],
       "flags": {},
-      "order": 1,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -168,7 +27,7 @@
         {
           "name": "user_prompt",
           "type": "STRING",
-          "link": 30,
+          "link": 31,
           "widget": {
             "name": "user_prompt"
           }
@@ -178,13 +37,13 @@
         {
           "name": "prompt",
           "type": "STRING",
-          "links": null,
+          "links": [],
           "slot_index": 0
         },
         {
           "name": "negative",
           "type": "STRING",
-          "links": null,
+          "links": [],
           "slot_index": 0
         },
         {
@@ -218,15 +77,15 @@
       "id": 2,
       "type": "StylebookArtist",
       "pos": [
-        460,
-        400
+        1270,
+        0
       ],
       "size": [
-        340,
-        180
+        250,
+        295
       ],
       "flags": {},
-      "order": 2,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {
@@ -239,13 +98,13 @@
         {
           "name": "prompt",
           "type": "STRING",
-          "links": null,
+          "links": [],
           "slot_index": 0
         },
         {
           "name": "negative",
           "type": "STRING",
-          "links": null,
+          "links": [],
           "slot_index": 0
         },
         {
@@ -275,15 +134,15 @@
       "id": 3,
       "type": "StylebookModifier",
       "pos": [
-        460,
-        620
+        1565,
+        0
       ],
       "size": [
-        340,
-        180
+        250,
+        247
       ],
       "flags": {},
-      "order": 3,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {
@@ -297,7 +156,8 @@
           "name": "prompt",
           "type": "STRING",
           "links": [
-            12
+            12,
+            32
           ],
           "slot_index": 0
         },
@@ -312,7 +172,7 @@
         {
           "name": "style_chain",
           "type": "STYLEBOOK_CHAIN",
-          "links": null,
+          "links": [],
           "slot_index": 0
         }
       ],
@@ -333,15 +193,15 @@
       "id": 4,
       "type": "UNETLoader",
       "pos": [
-        850,
-        60
+        340,
+        0
       ],
       "size": [
-        340,
-        82
+        250,
+        109
       ],
       "flags": {},
-      "order": 4,
+      "order": 1,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -360,21 +220,22 @@
       "widgets_values": [
         "Chroma\\Chroma1-HD.safetensors",
         "default"
-      ]
+      ],
+      "title": "Load Diffusion Model: Chroma1-HD"
     },
     {
       "id": 5,
       "type": "CLIPLoader",
       "pos": [
-        850,
-        190
+        340,
+        149
       ],
       "size": [
-        340,
-        106
+        250,
+        133
       ],
       "flags": {},
-      "order": 5,
+      "order": 2,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -395,21 +256,22 @@
         "t5xxl_fp16.safetensors",
         "chroma",
         "default"
-      ]
+      ],
+      "title": "Load CLIP: t5xxl_fp16"
     },
     {
       "id": 6,
       "type": "VAELoader",
       "pos": [
-        850,
-        340
+        340,
+        322
       ],
       "size": [
-        340,
-        58
+        250,
+        85
       ],
       "flags": {},
-      "order": 6,
+      "order": 3,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -427,21 +289,22 @@
       },
       "widgets_values": [
         "ae.safetensors"
-      ]
+      ],
+      "title": "Load VAE: ae"
     },
     {
       "id": 7,
       "type": "CLIPTextEncode",
       "pos": [
-        1230,
-        60
+        2010,
+        0
       ],
       "size": [
-        380,
-        100
+        400,
+        165
       ],
       "flags": {},
-      "order": 7,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
@@ -477,15 +340,15 @@
       "id": 8,
       "type": "CLIPTextEncode",
       "pos": [
-        1230,
-        210
+        2010,
+        205
       ],
       "size": [
-        380,
-        100
+        400,
+        165
       ],
       "flags": {},
-      "order": 8,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {
@@ -521,15 +384,15 @@
       "id": 9,
       "type": "EmptySD3LatentImage",
       "pos": [
-        1230,
-        360
+        0,
+        0
       ],
       "size": [
-        380,
-        106
+        250,
+        133
       ],
       "flags": {},
-      "order": 9,
+      "order": 0,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -549,21 +412,23 @@
         1024,
         1024,
         1
-      ]
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
     },
     {
       "id": 10,
       "type": "KSampler",
       "pos": [
-        1660,
-        60
+        2500,
+        0
       ],
       "size": [
-        320,
-        262
+        250,
+        292
       ],
       "flags": {},
-      "order": 10,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
@@ -607,22 +472,22 @@
         3.5,
         "euler",
         "beta",
-        1.0
+        1
       ]
     },
     {
       "id": 11,
       "type": "VAEDecode",
       "pos": [
-        1660,
-        360
+        2795,
+        0
       ],
       "size": [
-        320,
-        46
+        250,
+        82
       ],
       "flags": {},
-      "order": 11,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
@@ -655,15 +520,15 @@
       "id": 12,
       "type": "SaveImage",
       "pos": [
-        1660,
-        450
+        3135,
+        0
       ],
       "size": [
-        380,
-        300
+        340,
+        405
       ],
       "flags": {},
-      "order": 12,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
@@ -679,6 +544,290 @@
       "widgets_values": [
         "stylebook"
       ]
+    },
+    {
+      "id": 21,
+      "type": "IdentityForge",
+      "pos": [
+        680,
+        0
+      ],
+      "size": [
+        250,
+        1882
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "archetype_json",
+          "type": "STRING",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt_text",
+          "type": "STRING",
+          "links": [
+            31
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "prompt_json",
+          "type": "STRING",
+          "links": [],
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "IdentityForge"
+      },
+      "widgets_values": [
+        0,
+        "fixed",
+        "Any",
+        "Match gender",
+        "Auto",
+        "Natural only",
+        "Balanced",
+        "Any indoor/outdoor",
+        "Off",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "None",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "Random",
+        "None",
+        "Random",
+        "Random"
+      ],
+      "title": "Identity Forge (the subject)"
+    },
+    {
+      "id": 27,
+      "type": "ShowText|pysssss",
+      "pos": [
+        1565,
+        287
+      ],
+      "size": [
+        400,
+        211
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 32
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [],
+      "title": "Preview: Stylebook prompt"
+    },
+    {
+      "id": 28,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        -144
+      ],
+      "size": [
+        300,
+        104
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### 📐 Image Size\n\n👇 Set the image size (width / height / batch) here."
+      ],
+      "title": "📐 Image Size",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 29,
+      "type": "MarkdownNote",
+      "pos": [
+        340,
+        -144
+      ],
+      "size": [
+        300,
+        104
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### 🧠 Models\n\n👇 Swap models here to change the whole look."
+      ],
+      "title": "🧠 Models",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 30,
+      "type": "MarkdownNote",
+      "pos": [
+        680,
+        -246
+      ],
+      "size": [
+        380,
+        206
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### ✍️ Prompts\n\n✍️ The prompt text here is built automatically from the\nupstream green string nodes — edit those (word banks /\ninputs) to change the result, not the prompt box (it's\nwired, so it can't be typed into).\n\nChroma uses real CFG (unlike distilled FLUX), so negative\nprompts DO work. Natural-language prompts, optionally with\ntag emphasis."
+      ],
+      "title": "✍️ Prompts",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 31,
+      "type": "MarkdownNote",
+      "pos": [
+        2500,
+        -229
+      ],
+      "size": [
+        380,
+        189
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### 🎛️ Sampling\n\n⚙️ Tuned for Chroma: steps=26, cfg=3.5,\nsampler_name=euler, scheduler=beta — leave these alone.\n\nCFG ~4, ~30 steps, euler/beta. Chroma is FLUX-schnell-\nderived but de-distilled - do not copy FLUX's CFG 1.0\nhere.\n\nSafe ranges: CFG 3.0-5.0, steps 26-40."
+      ],
+      "title": "🎛️ Sampling",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 32,
+      "type": "MarkdownNote",
+      "pos": [
+        3135,
+        -144
+      ],
+      "size": [
+        340,
+        104
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### 💾 Output\n\n💾 Finished images land here (check the filename prefix)."
+      ],
+      "title": "💾 Output",
+      "color": "#432",
+      "bgcolor": "#653"
     }
   ],
   "links": [
@@ -787,16 +936,92 @@
       "IMAGE"
     ],
     [
-      30,
-      20,
+      31,
+      21,
       0,
       1,
       1,
       "STRING"
+    ],
+    [
+      32,
+      3,
+      0,
+      27,
+      0,
+      "STRING"
     ]
   ],
-  "groups": [],
+  "groups": [
+    {
+      "id": 1,
+      "title": "📐 Image Size",
+      "bounding": [
+        -30,
+        -214,
+        360,
+        367
+      ],
+      "color": "#88553d",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "🧠 Models",
+      "bounding": [
+        310,
+        -214,
+        360,
+        641
+      ],
+      "color": "#3f5159",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "✍️ Prompts",
+      "bounding": [
+        650,
+        -316,
+        1790,
+        2218
+      ],
+      "color": "#335c33",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "🎛️ Sampling",
+      "bounding": [
+        2470,
+        -299,
+        605,
+        611
+      ],
+      "color": "#42425c",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "💾 Output",
+      "bounding": [
+        3105,
+        -214,
+        400,
+        639
+      ],
+      "color": "#653d3d",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
   "config": {},
-  "extra": {},
-  "version": 0.4
+  "version": 0.4,
+  "extra": {
+    "built_against": "comfyui-identity-forge 0.85.0 (output slots prompt_text/prompt_json, 75 widgets incl. composition)"
+  }
 }

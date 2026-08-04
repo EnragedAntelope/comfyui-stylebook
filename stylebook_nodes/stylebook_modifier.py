@@ -9,18 +9,20 @@ from __future__ import annotations
 try:
     from ..data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS, get_modifier
     from . import schema_options as opt
-    from .node_support import report, show_readout
+    from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
-        dump_chain, get_blocked_axes, parse_chain, render_negative,
-        render_prompt, resolve_meta, stable_choice,
+        dump_chain, get_blocked_axes, parse_chain, readout_detail,
+        render_negative, render_prompt, resolve_meta, resolved_summary,
+        stable_choice,
     )
 except ImportError:  # pragma: no cover - standalone/test context
     from data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS, get_modifier
     from stylebook_nodes import schema_options as opt
-    from stylebook_nodes.node_support import report, show_readout
+    from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
-        dump_chain, get_blocked_axes, parse_chain, render_negative,
-        render_prompt, resolve_meta, stable_choice,
+        dump_chain, get_blocked_axes, parse_chain, readout_detail,
+        render_negative, render_prompt, resolve_meta, resolved_summary,
+        stable_choice,
     )
 
 try:
@@ -208,8 +210,22 @@ if _COMFY_AVAILABLE:
             report(warnings)
 
             meta = resolve_meta(chain)
-            prompt = render_prompt(
-                chain, meta, chain["_meta"].get("user_prompt", "")
+            subject = chain["_meta"].get("user_prompt", "")
+            prompt = render_prompt(chain, meta, subject)
+            show_readout(
+                cls.hidden.unique_id,
+                resolved_summary(chain),
+                readout_detail(chain, meta, subject),
+                warnings,
             )
-            show_readout(cls.hidden.unique_id, prompt, warnings)
+            on_axis = next(
+                (m for m in chain.get("modifiers", []) if m.get("axis") == axis),
+                None,
+            )
+            send_resolved_event(
+                cls.hidden.unique_id,
+                prompt,
+                modifier=on_axis["label"] if on_axis else None,
+                axis=axis,
+            )
             return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))

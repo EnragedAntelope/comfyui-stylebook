@@ -1,22 +1,22 @@
 {
   "id": "stylebook-basic",
   "revision": 0,
-  "last_node_id": 12,
-  "last_link_id": 22,
+  "last_node_id": 23,
+  "last_link_id": 23,
   "nodes": [
     {
       "id": 1,
       "type": "StylebookStyle",
       "pos": [
-        40,
-        60
+        680,
+        0
       ],
       "size": [
-        340,
-        300
+        250,
+        367
       ],
       "flags": {},
-      "order": 1,
+      "order": 4,
       "mode": 0,
       "inputs": [
         {
@@ -29,13 +29,13 @@
         {
           "name": "prompt",
           "type": "STRING",
-          "links": null,
+          "links": [],
           "slot_index": 0
         },
         {
           "name": "negative",
           "type": "STRING",
-          "links": null,
+          "links": [],
           "slot_index": 0
         },
         {
@@ -69,15 +69,15 @@
       "id": 2,
       "type": "StylebookArtist",
       "pos": [
-        40,
-        400
+        975,
+        0
       ],
       "size": [
-        340,
-        180
+        250,
+        295
       ],
       "flags": {},
-      "order": 2,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -90,13 +90,13 @@
         {
           "name": "prompt",
           "type": "STRING",
-          "links": null,
+          "links": [],
           "slot_index": 0
         },
         {
           "name": "negative",
           "type": "STRING",
-          "links": null,
+          "links": [],
           "slot_index": 0
         },
         {
@@ -126,15 +126,15 @@
       "id": 3,
       "type": "StylebookModifier",
       "pos": [
-        40,
-        620
+        1270,
+        0
       ],
       "size": [
-        340,
-        180
+        250,
+        247
       ],
       "flags": {},
-      "order": 3,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {
@@ -148,7 +148,8 @@
           "name": "prompt",
           "type": "STRING",
           "links": [
-            12
+            12,
+            23
           ],
           "slot_index": 0
         },
@@ -163,7 +164,7 @@
         {
           "name": "style_chain",
           "type": "STYLEBOOK_CHAIN",
-          "links": null,
+          "links": [],
           "slot_index": 0
         }
       ],
@@ -184,15 +185,15 @@
       "id": 4,
       "type": "UNETLoader",
       "pos": [
-        430,
-        60
+        340,
+        0
       ],
       "size": [
-        340,
-        82
+        250,
+        109
       ],
       "flags": {},
-      "order": 4,
+      "order": 1,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -211,21 +212,22 @@
       "widgets_values": [
         "Chroma\\Chroma1-HD.safetensors",
         "default"
-      ]
+      ],
+      "title": "Load Diffusion Model: Chroma1-HD"
     },
     {
       "id": 5,
       "type": "CLIPLoader",
       "pos": [
-        430,
-        190
+        340,
+        149
       ],
       "size": [
-        340,
-        106
+        250,
+        133
       ],
       "flags": {},
-      "order": 5,
+      "order": 2,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -246,21 +248,22 @@
         "t5xxl_fp16.safetensors",
         "chroma",
         "default"
-      ]
+      ],
+      "title": "Load CLIP: t5xxl_fp16"
     },
     {
       "id": 6,
       "type": "VAELoader",
       "pos": [
-        430,
-        340
+        340,
+        322
       ],
       "size": [
-        340,
-        58
+        250,
+        85
       ],
       "flags": {},
-      "order": 6,
+      "order": 3,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -278,21 +281,22 @@
       },
       "widgets_values": [
         "ae.safetensors"
-      ]
+      ],
+      "title": "Load VAE: ae"
     },
     {
       "id": 7,
       "type": "CLIPTextEncode",
       "pos": [
-        810,
-        60
+        1715,
+        0
       ],
       "size": [
-        380,
-        100
+        400,
+        165
       ],
       "flags": {},
-      "order": 7,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -328,15 +332,15 @@
       "id": 8,
       "type": "CLIPTextEncode",
       "pos": [
-        810,
-        210
+        1715,
+        205
       ],
       "size": [
-        380,
-        100
+        400,
+        165
       ],
       "flags": {},
-      "order": 8,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
@@ -372,15 +376,15 @@
       "id": 9,
       "type": "EmptySD3LatentImage",
       "pos": [
-        810,
-        360
+        0,
+        0
       ],
       "size": [
-        380,
-        106
+        250,
+        133
       ],
       "flags": {},
-      "order": 9,
+      "order": 0,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -400,18 +404,20 @@
         1024,
         1024,
         1
-      ]
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
     },
     {
       "id": 10,
       "type": "KSampler",
       "pos": [
-        1240,
-        60
+        2205,
+        0
       ],
       "size": [
-        320,
-        262
+        250,
+        292
       ],
       "flags": {},
       "order": 10,
@@ -458,19 +464,19 @@
         3.5,
         "euler",
         "beta",
-        1.0
+        1
       ]
     },
     {
       "id": 11,
       "type": "VAEDecode",
       "pos": [
-        1240,
-        360
+        2500,
+        0
       ],
       "size": [
-        320,
-        46
+        250,
+        82
       ],
       "flags": {},
       "order": 11,
@@ -506,12 +512,12 @@
       "id": 12,
       "type": "SaveImage",
       "pos": [
-        1240,
-        450
+        2840,
+        0
       ],
       "size": [
-        380,
-        300
+        340,
+        405
       ],
       "flags": {},
       "order": 12,
@@ -530,6 +536,171 @@
       "widgets_values": [
         "stylebook"
       ]
+    },
+    {
+      "id": 18,
+      "type": "ShowText|pysssss",
+      "pos": [
+        1270,
+        287
+      ],
+      "size": [
+        400,
+        211
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 23
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [],
+      "title": "Preview: Stylebook prompt"
+    },
+    {
+      "id": 19,
+      "type": "MarkdownNote",
+      "pos": [
+        0,
+        -144
+      ],
+      "size": [
+        300,
+        104
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### 📐 Image Size\n\n👇 Set the image size (width / height / batch) here."
+      ],
+      "title": "📐 Image Size",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 20,
+      "type": "MarkdownNote",
+      "pos": [
+        340,
+        -144
+      ],
+      "size": [
+        300,
+        104
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### 🧠 Models\n\n👇 Swap models here to change the whole look."
+      ],
+      "title": "🧠 Models",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 21,
+      "type": "MarkdownNote",
+      "pos": [
+        680,
+        -246
+      ],
+      "size": [
+        380,
+        206
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### ✍️ Prompts\n\n✍️ The prompt text here is built automatically from the\nupstream green string nodes — edit those (word banks /\ninputs) to change the result, not the prompt box (it's\nwired, so it can't be typed into).\n\nChroma uses real CFG (unlike distilled FLUX), so negative\nprompts DO work. Natural-language prompts, optionally with\ntag emphasis."
+      ],
+      "title": "✍️ Prompts",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 22,
+      "type": "MarkdownNote",
+      "pos": [
+        2205,
+        -229
+      ],
+      "size": [
+        380,
+        189
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### 🎛️ Sampling\n\n⚙️ Tuned for Chroma: steps=26, cfg=3.5,\nsampler_name=euler, scheduler=beta — leave these alone.\n\nCFG ~4, ~30 steps, euler/beta. Chroma is FLUX-schnell-\nderived but de-distilled - do not copy FLUX's CFG 1.0\nhere.\n\nSafe ranges: CFG 3.0-5.0, steps 26-40."
+      ],
+      "title": "🎛️ Sampling",
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 23,
+      "type": "MarkdownNote",
+      "pos": [
+        2840,
+        -144
+      ],
+      "size": [
+        340,
+        104
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "draftsman": "comfy-draftsman"
+      },
+      "widgets_values": [
+        "### 💾 Output\n\n💾 Finished images land here (check the filename prefix)."
+      ],
+      "title": "💾 Output",
+      "color": "#432",
+      "bgcolor": "#653"
     }
   ],
   "links": [
@@ -636,10 +807,84 @@
       12,
       0,
       "IMAGE"
+    ],
+    [
+      23,
+      3,
+      0,
+      18,
+      0,
+      "STRING"
     ]
   ],
-  "groups": [],
+  "groups": [
+    {
+      "id": 1,
+      "title": "📐 Image Size",
+      "bounding": [
+        -30,
+        -214,
+        360,
+        367
+      ],
+      "color": "#88553d",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "🧠 Models",
+      "bounding": [
+        310,
+        -214,
+        360,
+        641
+      ],
+      "color": "#3f5159",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "✍️ Prompts",
+      "bounding": [
+        650,
+        -316,
+        1495,
+        834
+      ],
+      "color": "#335c33",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "🎛️ Sampling",
+      "bounding": [
+        2175,
+        -299,
+        605,
+        611
+      ],
+      "color": "#42425c",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "💾 Output",
+      "bounding": [
+        2810,
+        -214,
+        400,
+        639
+      ],
+      "color": "#653d3d",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
   "config": {},
-  "extra": {},
-  "version": 0.4
+  "version": 0.4,
+  "extra": {}
 }

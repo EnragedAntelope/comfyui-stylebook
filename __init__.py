@@ -37,6 +37,11 @@ from .stylebook_nodes.stylebook_modifier import StylebookModifier
 from .stylebook_nodes.stylebook_sheet import StylebookSheet
 from .stylebook_nodes.stylebook_style import StylebookStyle
 
+try:
+    from .stylebook_nodes import routes  # noqa: F401
+except ImportError:  # pragma: no cover - no server/aiohttp in the test env
+    pass
+
 #: Where ComfyUI finds this pack's frontend assets.
 WEB_DIRECTORY = "./js"
 

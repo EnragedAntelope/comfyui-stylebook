@@ -9,20 +9,20 @@ from __future__ import annotations
 try:
     from ..data.styles import STYLES, get_style
     from . import schema_options as opt
-    from .node_support import report, show_readout
+    from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
         cycle_style_id, dump_chain, filter_modifiers, get_blocked_axes,
-        parse_chain, random_style_id, render_negative, render_prompt,
-        resolve_meta,
+        parse_chain, random_style_id, readout_detail, render_negative,
+        render_prompt, resolve_meta, resolved_summary,
     )
 except ImportError:  # pragma: no cover - standalone/test context
     from data.styles import STYLES, get_style
     from stylebook_nodes import schema_options as opt
-    from stylebook_nodes.node_support import report, show_readout
+    from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
         cycle_style_id, dump_chain, filter_modifiers, get_blocked_axes,
-        parse_chain, random_style_id, render_negative, render_prompt,
-        resolve_meta,
+        parse_chain, random_style_id, readout_detail, render_negative,
+        render_prompt, resolve_meta, resolved_summary,
     )
 
 try:
@@ -308,8 +308,17 @@ if _COMFY_AVAILABLE:
             report(warnings)
 
             meta = resolve_meta(chain)
-            prompt = render_prompt(
-                chain, meta, chain["_meta"].get("user_prompt", "")
+            subject = chain["_meta"].get("user_prompt", "")
+            prompt = render_prompt(chain, meta, subject)
+            show_readout(
+                cls.hidden.unique_id,
+                resolved_summary(chain),
+                readout_detail(chain, meta, subject),
+                warnings,
             )
-            show_readout(cls.hidden.unique_id, prompt, warnings)
+            send_resolved_event(
+                cls.hidden.unique_id,
+                prompt,
+                style=(chain.get("style") or {}).get("label"),
+            )
             return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))

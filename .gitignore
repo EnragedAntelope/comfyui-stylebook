@@ -6,6 +6,9 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
+# Node (frontend smoke tests only; see tests/frontend/)
+node_modules/
+
 # User-supplied styles (keep local; survives git pull)
 user_styles.json
 

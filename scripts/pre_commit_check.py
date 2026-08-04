@@ -1,8 +1,10 @@
-"""Run every gate the CI runs, in the same order, before you commit.
+"""Run the Python half of what CI runs, in the same order, before you commit.
 
     python scripts/pre_commit_check.py
 
-Exit 0 means clean. Anything else names what to fix.
+Exit 0 means clean. Anything else names what to fix. Does not run
+`npm run test:frontend` -- that needs Node/npm, which this script does not
+assume are installed; run it yourself alongside this one.
 """
 
 from __future__ import annotations
@@ -16,8 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 CHECKS: list[tuple[str, list[str]]] = [
     ("Lint (ruff)", [sys.executable, "-m", "ruff", "check", "."]),
     ("Data integrity", [sys.executable, "tests/validate_data.py"]),
-    ("Unit tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests"]),
+    ("Unit tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-t", "."]),
     ("Generated JS data", [sys.executable, "scripts/generate_js_data.py", "--check"]),
+    ("Frontend test fixtures", [sys.executable, "scripts/dump_frontend_fixtures.py", "--check"]),
     ("Preview manifest", [sys.executable, "scripts/build_previews.py", "--check"]),
 ]
 

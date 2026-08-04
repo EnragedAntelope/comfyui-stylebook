@@ -7,12 +7,17 @@ Exits non-zero on any failure.
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+# A maintainer's own local user_styles.json must not change what this
+# validator checks. Set before the `data` import directly below.
+os.environ.setdefault("STYLEBOOK_IGNORE_USER_STYLES", "1")
 
 from data.styles import STYLES, CATEGORIES, CATEGORY_LABELS
 from data.modifiers import MODIFIERS, AXES, MODIFIERS_BY_AXIS

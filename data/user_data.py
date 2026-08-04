@@ -1,7 +1,8 @@
 """Optional user-supplied styles (survive ``git pull``).
 
 Drop a ``user_styles.json`` in the pack root to add styles, artists, or
-modifiers without editing the source - so updates won't clobber them.
+modifiers without editing the source - so updates won't clobber them. See
+``docs/custom-styles.md`` for the full field reference.
 
 The file is parsed as plain JSON - no code is executed.
 """
@@ -9,11 +10,31 @@ The file is parsed as plain JSON - no code is executed.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
-#: Default location of the user file: the pack root.
-USER_STYLES_PATH = Path(__file__).resolve().parents[1] / "user_styles.json"
+#: Default location of the user file: the pack root, unless overridden so the
+#: file can live outside the pack and survive a Manager reinstall.
+USER_STYLES_PATH = Path(
+    os.environ.get("STYLEBOOK_USER_STYLES")
+    or (Path(__file__).resolve().parents[1] / "user_styles.json")
+)
+
+#: When set, every ``apply_user_*`` below is a no-op, regardless of whether
+#: a user file exists. The build/check scripts (generate_js_data.py,
+#: dump_frontend_fixtures.py, build_previews.py, validate_data.py) set this
+#: before importing ``data`` so a maintainer's own local user_styles.json can
+#: never be baked into a shipped artifact or make ``--check`` machine-
+#: dependent. See ARCHITECTURE.md for the incident this closes.
+_IGNORE_ENV_VAR = "STYLEBOOK_IGNORE_USER_STYLES"
+
+#: Labels no record may claim, mirrored from stylebook_nodes.schema_options
+#: rather than imported from it: that module imports the data layer, and
+#: the data layer's styles/artists/modifiers packages import this module at
+#: their own top level, so importing stylebook_nodes here would be a real
+#: import cycle, not just a style preference.
+_SENTINELS = frozenset({"None", "Off", "Random"})
 
 #: What the user file added, recorded as it merges.
 USER_ADDED_STYLES: set[str] = set()
@@ -21,11 +42,8 @@ USER_ADDED_ARTISTS: set[str] = set()
 USER_ADDED_MODIFIERS: set[str] = set()
 
 
-def _clean_strings(value: Any) -> list[str]:
-    """Return usable, sentinel-free strings from a JSON list (else [])."""
-    if not isinstance(value, list):
-        return []
-    return [v for v in value if isinstance(v, str) and v]
+def _ignoring_user_styles() -> bool:
+    return os.environ.get(_IGNORE_ENV_VAR, "") not in ("", "0")
 
 
 def _load_section(section: str, path: Path | None = None) -> dict[str, Any]:
@@ -42,6 +60,86 @@ def _load_section(section: str, path: Path | None = None) -> dict[str, Any]:
     return block if isinstance(block, dict) else {}
 
 
+def _existing_labels(records: dict[str, dict]) -> set[str]:
+    """Lower-cased labels already in use, built-in or already merged."""
+    return {
+        rec["label"].strip().lower()
+        for rec in records.values()
+        if isinstance(rec.get("label"), str) and rec["label"].strip()
+    }
+
+
+def _known_values(records: dict[str, dict], field: str) -> set[str]:
+    """Values *field* actually takes among built-ins, e.g. every category
+    a shipped style uses. Read off the live built-in data rather than a
+    hardcoded list, so this never drifts from the pack it is validating
+    against -- and because importing the canonical CATEGORIES/AXES tuples
+    from their owning modules here would be the same import cycle
+    ``_SENTINELS`` above is avoiding."""
+    return {rec[field] for rec in records.values() if rec.get(field)}
+
+
+def validate_user_record(
+    kind: str,
+    record: Any,
+    *,
+    existing_labels: set[str],
+    required_fields: tuple[str, ...] = ("label",),
+    string_fields: tuple[str, ...] = (),
+    list_fields: tuple[str, ...] = (),
+    category_field: str | None = None,
+    known_categories: set[str] | None = None,
+) -> str | None:
+    """Return a rejection reason for *record*, or ``None`` if it is usable.
+
+    Checked in the order a user is most likely to hit it: wrong shape,
+    a required field missing, a reserved label, a field of the wrong
+    type, an unrecognised category/axis, then a label collision -- each
+    one a real failure mode this used to hit late and far from the cause
+    (a sentinel label produced two identical-looking dropdown entries; a
+    non-string ``tags`` value raised inside ``_split_items`` at render
+    time with a traceback that named neither the file nor the record).
+    """
+    if not isinstance(record, dict):
+        return f"a {kind} entry must be a JSON object"
+
+    for field in required_fields:
+        if field not in record:
+            return f"missing required field '{field}'"
+
+    label = record.get("label")
+    if not isinstance(label, str) or not label.strip():
+        return "'label' must be non-empty text"
+    label = label.strip()
+    if label in _SENTINELS:
+        return f"label '{label}' is reserved (None, Off and Random are not usable names)"
+
+    for field in string_fields:
+        if field in record and not isinstance(record[field], str):
+            return f"'{field}' must be text, not {type(record[field]).__name__}"
+
+    for field in list_fields:
+        if field in record:
+            value = record[field]
+            if not isinstance(value, list):
+                return f"'{field}' must be a list of text, not {type(value).__name__}"
+            if not all(isinstance(v, str) for v in value):
+                return f"'{field}' must be a list of text; it has a non-text entry"
+
+    if category_field and known_categories is not None:
+        category = record.get(category_field)
+        if category and category not in known_categories:
+            return (
+                f"{category_field} '{category}' is not one the pack ships "
+                f"(known: {', '.join(sorted(known_categories))})"
+            )
+
+    if label.lower() in existing_labels:
+        return f"label '{label}' duplicates an existing {kind}"
+
+    return None
+
+
 def apply_user_styles(
     styles: dict[str, dict],
     path: Path | None = None,
@@ -51,18 +149,43 @@ def apply_user_styles(
     Each entry is a full style record (same shape as built-ins). A user
     entry whose id matches a built-in overrides it. Returns the count.
     """
+    if _ignoring_user_styles():
+        return 0
     path = path or USER_STYLES_PATH
+    known_categories = _known_values(styles, "category")
+    labels_in_use = _existing_labels(styles)
     added = 0
+    rejected = 0
     for style_id, record in _load_section("styles", path).items():
-        if not isinstance(style_id, str) or not style_id or not isinstance(record, dict):
+        if not isinstance(style_id, str) or not style_id:
             continue
-        if "label" not in record or "category" not in record:
+        reason = validate_user_record(
+            "style",
+            record,
+            existing_labels=labels_in_use,
+            required_fields=("label", "category"),
+            string_fields=("label", "tags", "prose", "negative", "preview"),
+            list_fields=("aliases", "blocks"),
+            category_field="category",
+            known_categories=known_categories,
+        )
+        if reason:
+            print(f"[Stylebook] Ignoring style '{style_id}' in {path.name}: {reason}")
+            rejected += 1
             continue
+        # A style record must carry a self-referencing "id" matching its
+        # own dict key -- stylebook_style.py and stylebook_sheet.py both
+        # read record["id"] directly, the same way every built-in style
+        # does. The JSON key already is that id, so set it here rather
+        # than asking the user to duplicate it (and silently drop a
+        # mismatch): omitting it used to raise ``KeyError: 'id'`` deep
+        # inside execute(), far from a user_styles.json that looked fine.
+        record["id"] = style_id
         styles[style_id] = record
         USER_ADDED_STYLES.add(style_id)
+        labels_in_use.add(record["label"].strip().lower())
         added += 1
-    if added:
-        print(f"[Stylebook] Loaded {added} custom style(s) from {path.name}.")
+    _report(path, "style", added, rejected)
     return added
 
 
@@ -71,18 +194,35 @@ def apply_user_artists(
     path: Path | None = None,
 ) -> int:
     """Merge the ``artists`` section of ``user_styles.json`` in place."""
+    if _ignoring_user_styles():
+        return 0
     path = path or USER_STYLES_PATH
+    known_categories = _known_values(artists, "category")
+    labels_in_use = _existing_labels(artists)
     added = 0
+    rejected = 0
     for artist_id, record in _load_section("artists", path).items():
-        if not isinstance(artist_id, str) or not artist_id or not isinstance(record, dict):
+        if not isinstance(artist_id, str) or not artist_id:
             continue
-        if "label" not in record:
+        reason = validate_user_record(
+            "artist",
+            record,
+            existing_labels=labels_in_use,
+            required_fields=("label",),
+            string_fields=("label", "descriptor", "category"),
+            list_fields=("aliases",),
+            category_field="category",
+            known_categories=known_categories,
+        )
+        if reason:
+            print(f"[Stylebook] Ignoring artist '{artist_id}' in {path.name}: {reason}")
+            rejected += 1
             continue
         artists[artist_id] = record
         USER_ADDED_ARTISTS.add(artist_id)
+        labels_in_use.add(record["label"].strip().lower())
         added += 1
-    if added:
-        print(f"[Stylebook] Loaded {added} custom artist(s) from {path.name}.")
+    _report(path, "artist", added, rejected)
     return added
 
 
@@ -91,16 +231,42 @@ def apply_user_modifiers(
     path: Path | None = None,
 ) -> int:
     """Merge the ``modifiers`` section of ``user_styles.json`` in place."""
+    if _ignoring_user_styles():
+        return 0
     path = path or USER_STYLES_PATH
+    known_axes = _known_values(modifiers, "axis")
+    labels_in_use = _existing_labels(modifiers)
     added = 0
+    rejected = 0
     for mod_id, record in _load_section("modifiers", path).items():
-        if not isinstance(mod_id, str) or not mod_id or not isinstance(record, dict):
+        if not isinstance(mod_id, str) or not mod_id:
             continue
-        if "label" not in record or "axis" not in record:
+        reason = validate_user_record(
+            "modifier",
+            record,
+            existing_labels=labels_in_use,
+            required_fields=("label", "axis"),
+            string_fields=("label", "tags", "prose", "negative"),
+            list_fields=("aliases",),
+            category_field="axis",
+            known_categories=known_axes,
+        )
+        if reason:
+            print(f"[Stylebook] Ignoring modifier '{mod_id}' in {path.name}: {reason}")
+            rejected += 1
             continue
         modifiers[mod_id] = record
         USER_ADDED_MODIFIERS.add(mod_id)
+        labels_in_use.add(record["label"].strip().lower())
         added += 1
-    if added:
-        print(f"[Stylebook] Loaded {added} custom modifier(s) from {path.name}.")
+    _report(path, "modifier", added, rejected)
     return added
+
+
+def _report(path: Path, kind: str, added: int, rejected: int) -> None:
+    if not added and not rejected:
+        return
+    parts = [f"Loaded {added} custom {kind}(s) from {path.name}."]
+    if rejected:
+        parts.append(f"Rejected {rejected} (see above).")
+    print(f"[Stylebook] {' '.join(parts)}")
