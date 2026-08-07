@@ -331,17 +331,6 @@ ART_MOVEMENTS_DATA: dict[str, dict] = {
         "preview": "art_movements#30",
         "blocks": [],
     },
-    "tkachenko": {
-        "id": "tkachenko",
-        "label": "Tkachenko Style",
-        "category": "art_movements",
-        "aliases": ["bradhamel art style", "bradhamel", "kreatkachenko", "tkachenko style"],
-        "tags": "naive outsider rendering, elongated almond-eyed faces, cubist-influenced face geometry, patchwork color blocks across the figure, muted earth tones set against saturated jewel colour fields, decorative folk-art motifs, dreamlike mythological atmosphere, raw expressive brushwork, textured painted surface, frontal portrait composition, asymmetric patchwork palette",
-        "prose": "Painted in Tkachenko style: naive outsider rendering where elongated almond-eyed faces are built from cubist-influenced geometric planes and patchwork color blocks, muted earth tones set against saturated jewel colour fields, decorative folk-art motifs woven through the surface, dreamlike mythological atmosphere carried on raw expressive brushwork and a textured painted ground, every figure composed in a frontal portrait framing.",
-        "negative": "photorealistic rendering, smooth digital finish, single viewpoint, naturalistic proportion, photographic lighting",
-        "preview": "art_movements#31",
-        "blocks": [],
-    },
 }
 
 ART_MOVEMENTS_STYLES = ART_MOVEMENTS_DATA
