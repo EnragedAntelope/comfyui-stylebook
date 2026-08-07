@@ -4056,6 +4056,128 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["art nouveau", "dream comic"],
         "descriptor": "art-nouveau newspaper fantasy in exact ink, vertiginous architectural perspective, dreamlike shifts of scale",
     },
+
+    "friedensreich_hundertwasser": {
+        "label": "Friedensreich Hundertwasser",
+        "category": "fine-art",
+        "aliases": ["Hundertwasser", "austrian vienna secession descendant", "anti-straight-line"],
+        "descriptor": "Austrian painter of winding organic lines, vibrant mosaic colour fields, irregular spirals and decorative facades rejecting the grid in favor of natural irregularity",
+    },
+    "nikolai_sapunov": {
+        "label": "Nikolai Sapunov",
+        "category": "fine-art",
+        "aliases": ["Sapunov", "russian symbolist", "pre-revolutionary mystic"],
+        "descriptor": "Russian symbolist painter of elongated almond-eyed figures, dreamlike allegorical scenes, ornamental decorative line and a muted earth palette carrying a lyrical mystical atmosphere",
+    },
+    "aleksandra_ekster": {
+        "label": "Aleksandra Ekster",
+        "category": "fine-art",
+        "aliases": ["Alexandra Exter", "Ekster", "ukrainian Cubo-Futurist"],
+        "descriptor": "Ukrainian Cubo-Futurist painter of faceted geometric figures, vibrant colour planes, Constructivist stage designs and bold decorative costume illustrations",
+    },
+    "beauford_delany": {
+        "label": "Beauford Delany",
+        "category": "fine-art",
+        "aliases": ["Delany", "harlem modernist", "mid-century portraitist"],
+        "descriptor": "American Harlem modernist painter of thick impasto portraits, vivid saturated colour, expressive psychological likeness and bold gestural brushwork capturing mid-century Black artistic life",
+    },
+    "horace_pippin": {
+        "label": "Horace Pippin",
+        "category": "fine-art",
+        "aliases": ["Pippin", "self-taught american", "outsider modernist"],
+        "descriptor": "Self-taught African American modernist painter of naive figurative subjects, biblical scenes and wartime memories rendered in vivid oil colour with flattened perspective and decorative rhythmic patterning",
+    },
+
+    "cecil_collins": {
+        "label": "Cecil Collins",
+        "category": "fine-art",
+        "aliases": ["Collins", "british visionary", "the vision of the fool"],
+        "descriptor": "British visionary painter of symbolic dreamlike figures, archetypal landscapes, egg tempera on board, luminous pale palette and poetic mystical atmosphere",
+    },
+    "filippo_marinetti": {
+        "label": "Filippo Tommaso Marinetti",
+        "category": "fine-art",
+        "aliases": ["Marinetti", "futurist founder", "futurist manifesto author"],
+        "descriptor": "Italian poet and painter, founder of Futurism, dynamic typographic compositions celebrating speed, machine age and industrial modernity",
+    },
+    "albert_pinkham_ryder": {
+        "label": "Albert Pinkham Ryder",
+        "category": "fine-art",
+        "aliases": ["Pinkham Ryder", "Ryder", "american dream painter"],
+        "descriptor": "American painter of small dreamlike moonlit marine and landscape scenes, thick glazed luminous surface, mysterious romantic atmosphere",
+    },
+    "friedrich_schroder_sonnenstern": {
+        "label": "Friedrich Schröder-Sonnenstern",
+        "category": "fine-art",
+        "aliases": ["Schroder-Sonnenstern", "art brut visionary", "outsider painter"],
+        "descriptor": "German Art Brut visionary painter of dense symbolic figure drawings, staring faces and bordered notation rendered in obsessive symmetrical pattern",
+    },
+    "charles_filiger": {
+        "label": "Charles Filiger",
+        "category": "fine-art",
+        "aliases": ["Filiger", "french symbolist", "naive mystic"],
+        "descriptor": "French symbolist painter of naive mystical figures, flat decorative pattern, soft luminous pastel palette and sacred Breton atmosphere",
+    },
+    "suzanne_valadon": {
+        "label": "Suzanne Valadon",
+        "category": "fine-art",
+        "aliases": ["Valadon", "french post-impressionist", "bold figurative"],
+        "descriptor": "French Post-Impressionist painter of bold unidealized female nudes, strong outline and vigorous brushwork in rich saturated colour",
+    },
+    "sofonisba_anguissola": {
+        "label": "Sofonisba Anguissola",
+        "category": "fine-art",
+        "aliases": ["Anguissola", "italian renaissance", "milanese portraitist"],
+        "descriptor": "Italian Renaissance portraitist of dignified courtly sitters, soft sfumato modelling, dark warm palette and elegant compositional restraint",
+    },
+    "elisabeth_vigee_le_brun": {
+        "label": "Élisabeth Vigée Le Brun",
+        "category": "fine-art",
+        "aliases": ["Vigée Le Brun", "french rococo portraitist", "Marie Antoinette painter"],
+        "descriptor": "French Rococo-to-Neoclassical portraitist of aristocratic sitters, luminous pearl palette, soft flowing brushwork and graceful refined elegance",
+    },
+    "marguerite_zorach": {
+        "label": "Marguerite Zorach",
+        "category": "fine-art",
+        "aliases": ["Zorach", "early american modernist", "fauvist colorist"],
+        "descriptor": "American early modernist painter of bold fauvist colour, vibrant expressionist landscape and decorative tapestry design",
+    },
+    "aaron_douglas": {
+        "label": "Aaron Douglas",
+        "category": "fine-art",
+        "aliases": ["Douglas", "harlem renaissance muralist", "art deco modernist"],
+        "descriptor": "American Harlem Renaissance muralist of Art Deco stylization, flat silhouette figures, rhythmic circular pattern, warm earth and jewel palette",
+    },
+    "archibald_motley": {
+        "label": "Archibald J. Motley Jr.",
+        "category": "fine-art",
+        "aliases": ["Motley", "harlem renaissance portraitist", "jazz age colorist"],
+        "descriptor": "American Harlem Renaissance painter of Jazz Age portraits, vivid saturated colour, witty caricatural figural composition and brown earth palette",
+    },
+    "william_h_johnson": {
+        "label": "William H. Johnson",
+        "category": "fine-art",
+        "aliases": ["William Johnson", "folk modernist", "african american painter"],
+        "descriptor": "American folk modernist painter of naive flat figure scenes, vibrant saturated colour, folk memory subject and bold simplified silhouette",
+    },
+    "augusta_savage": {
+        "label": "Augusta Savage",
+        "category": "fine-art",
+        "aliases": ["Savage", "harlem renaissance sculptor", "african american sculptor"],
+        "descriptor": "American Harlem Renaissance sculptor of dignified Black figures in clay, bronze and plaster, expressive volume and gentle classical poise",
+    },
+    "elizabeth_catlett": {
+        "label": "Elizabeth Catlett",
+        "category": "fine-art",
+        "aliases": ["Catlett", "mexican-american sculptor", "black feminist modernist"],
+        "descriptor": "American-Mexican modernist sculptor and printmaker of dignified Black women figures, smooth carved wood and lino cut in warm earth palette",
+    },
+    "lois_mailou_jones": {
+        "label": "Loïs Mailou Jones",
+        "category": "fine-art",
+        "aliases": ["Mailou Jones", "harlem renaissance painter", "african diaspora painter"],
+        "descriptor": "American Harlem Renaissance painter of African and African-American subjects, vibrant saturated palette, bold flat pattern and rhythmic decorative composition",
+    },
 }
 
 # Merge user-supplied artists so they survive a git pull.

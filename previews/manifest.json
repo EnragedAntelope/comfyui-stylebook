@@ -70,11 +70,20 @@
     "architectural_sketch": {
       "hash": "79dbaf07368c7604"
     },
+    "art_brut": {
+      "hash": "63767391a5009347"
+    },
     "art_deco": {
       "hash": "3747f9e362179ea1"
     },
     "art_nouveau": {
       "hash": "3095b0a3c863a578"
+    },
+    "arts_and_crafts": {
+      "hash": "836a288ce85c9bcc"
+    },
+    "ashcan_school": {
+      "hash": "b3848cc91449d854"
     },
     "assemblage": {
       "hash": "e053551a29f5e9ea"
@@ -145,6 +154,9 @@
     "button_art": {
       "hash": "fe4119e5114356f8"
     },
+    "byzantine": {
+      "hash": "cae8e14df3b88e5b"
+    },
     "c_print": {
       "hash": "522ab03bdfc712e5"
     },
@@ -174,6 +186,9 @@
     },
     "cel_shaded_3d": {
       "hash": "ee1ac73d6eec1e5e"
+    },
+    "celtic_art": {
+      "hash": "dedfdd98eba00145"
     },
     "ceramic_glazing": {
       "hash": "7b6372c655dd14ea"
@@ -214,6 +229,9 @@
     "cmyk_misregistration": {
       "hash": "6c0d94dfb4957d9f"
     },
+    "cobra": {
+      "hash": "82f1af412efb84a7"
+    },
     "coin_face": {
       "hash": "ce13abebdf4a0f6b"
     },
@@ -234,6 +252,9 @@
     },
     "concert_ticket_stub": {
       "hash": "26cbd96668fc763f"
+    },
+    "constructivism": {
+      "hash": "dfa1ccb47621ce47"
     },
     "cooking_manga": {
       "hash": "77d99c9d58168eef"
@@ -511,6 +532,9 @@
     "harem_romcom": {
       "hash": "5d59fd0e6c7f47e4"
     },
+    "harlem_renaissance": {
+      "hash": "bf3d3b523e85be5c"
+    },
     "hdri_environment_lighting": {
       "hash": "b8934384e19ee9bb"
     },
@@ -525,6 +549,12 @@
     },
     "holographic_sticker": {
       "hash": "4b95b70d0ce4e9e6"
+    },
+    "hudson_river_school": {
+      "hash": "ba153887ab8927eb"
+    },
+    "hyperrealism": {
+      "hash": "74a0bbb41307038a"
     },
     "ikebana": {
       "hash": "358d4875e13d714a"
@@ -549,6 +579,9 @@
     },
     "inio_asano_realism": {
       "hash": "29a2413e0f39ba70"
+    },
+    "intimism": {
+      "hash": "172f35c23f8b267f"
     },
     "iris_shot": {
       "hash": "ebdf83f4a5cdae0e"
@@ -634,6 +667,9 @@
     "low_poly": {
       "hash": "ec5f109daae37862"
     },
+    "luminism": {
+      "hash": "3fe4a5b1f268f255"
+    },
     "luminogram_photogram": {
       "hash": "b2bca721db20c2c3"
     },
@@ -697,6 +733,9 @@
     "mimeograph": {
       "hash": "ae0ef36de872f4d2"
     },
+    "mingei": {
+      "hash": "993cfeb7a34477a7"
+    },
     "miniature_forced_perspective": {
       "hash": "aea9e254e7309301"
     },
@@ -718,11 +757,20 @@
     "motion_graphics_3d": {
       "hash": "e53a043b0ee9387e"
     },
+    "muralism": {
+      "hash": "86f64cb783836b21"
+    },
     "museum_diorama": {
       "hash": "8286bd82a5f48764"
     },
     "music_manga_band": {
       "hash": "2b0eda51bae08457"
+    },
+    "nabis": {
+      "hash": "081b9561be5d0811"
+    },
+    "naive_art": {
+      "hash": "63e448502a70ebf2"
     },
     "needle_felted": {
       "hash": "4f03d143fd43f891"
@@ -777,6 +825,9 @@
     },
     "one_piece_oda": {
       "hash": "245ee54d64a487ac"
+    },
+    "op_art": {
+      "hash": "6af06d4add8788c7"
     },
     "origami": {
       "hash": "df80a534e5557c14"
@@ -849,6 +900,9 @@
     },
     "photoreal_3d": {
       "hash": "04966639a803b249"
+    },
+    "photorealism": {
+      "hash": "e37f9ef4c067141d"
     },
     "pinball_backglass": {
       "hash": "4510d1d753e3ad8b"
@@ -1090,6 +1144,9 @@
     "superflat": {
       "hash": "ef813a1e7cc718c1"
     },
+    "suprematism": {
+      "hash": "054da4d5a53b2391"
+    },
     "surrealism": {
       "hash": "34d4aa90191e58dc"
     },
@@ -1155,6 +1212,9 @@
     },
     "tokusatsu_henshin_hero": {
       "hash": "81677c3dc81958dc"
+    },
+    "tonalism": {
+      "hash": "b9f3e2e39781e253"
     },
     "trading_card_foil_holo": {
       "hash": "385a5d51e71e462b"
@@ -1254,6 +1314,9 @@
     },
     "whip_pan": {
       "hash": "9035d6e166510681"
+    },
+    "wiener_werkstatte": {
+      "hash": "c283e6e34ef0c458"
     },
     "wire_wrapping_jewelry": {
       "hash": "a02e3c0cde5dbb42"
