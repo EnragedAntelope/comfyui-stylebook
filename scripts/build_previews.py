@@ -122,6 +122,15 @@ STYLE_SUBJECT = {
     # about the style.
     "subsurface_scattering": "a backlit marble bust and a translucent wax candle",
     "hdri_environment_lighting": "a chrome sphere and a matte sphere side by side",
+    # Styles whose subject is a place, not a person. The category subject
+    # puts a figure front and centre, which is the one thing each of these
+    # is defined by not having. Worded affirmatively for the same reason
+    # the data validator forbids negation in a positive prompt: "no
+    # people" is the most reliable way to get people.
+    "liminal_space": "a deserted carpeted corridor lined with closed doors",
+    "googie": "a roadside coffee shop with an upswept roof and a tall neon sign",
+    "metaphysical_art": "a deserted arcaded town square with a distant tower",
+    "vaporwave": "a marble bust on a checkerboard floor beside a potted palm",
 }
 
 # Applied on top of each style's own negative, never instead of it. The

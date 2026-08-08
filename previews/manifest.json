@@ -502,6 +502,9 @@
     "goldsmithing_filigree": {
       "hash": "e31ed1a94335d1ba"
     },
+    "googie": {
+      "hash": "e18c6df292142aee"
+    },
     "gothic_aristocrat": {
       "hash": "879fc17dd9871ac6"
     },
@@ -643,6 +646,9 @@
     "ligne_claire": {
       "hash": "1d406a293cdfb081"
     },
+    "liminal_space": {
+      "hash": "a79a096c1f128de0"
+    },
     "line_art": {
       "hash": "890185a29eb10f3e"
     },
@@ -724,8 +730,14 @@
     "mecha_pilot_drama": {
       "hash": "31ea85153c7b845b"
     },
+    "memphis_design": {
+      "hash": "8b5a865eae0df7ce"
+    },
     "metal_embossing_repousse": {
       "hash": "9e5178fc6c2c8aae"
+    },
+    "metaphysical_art": {
+      "hash": "28e5234411fe904d"
     },
     "mezzotint": {
       "hash": "7dd314617d70239b"
@@ -795,6 +807,9 @@
     },
     "night": {
       "hash": "b6b18d85c8650c6a"
+    },
+    "nihonga": {
+      "hash": "d3da3c0770fbfa96"
     },
     "nineties_cel_anime": {
       "hash": "5f7ee52270903958"
@@ -967,6 +982,9 @@
     "product_design_render": {
       "hash": "41420acc13c8f7cd"
     },
+    "psychedelic_poster": {
+      "hash": "a922e4bb30c119ab"
+    },
     "psychological_thriller_anime": {
       "hash": "eb67fbf80225bccb"
     },
@@ -1053,6 +1071,9 @@
     },
     "shadow_box_frame": {
       "hash": "5583360e5dd6c0f8"
+    },
+    "shin_hanga": {
+      "hash": "ce1f6bbde9637ebd"
     },
     "shoujo_takeuchi": {
       "hash": "80da2db505272418"
@@ -1150,8 +1171,14 @@
     "surrealism": {
       "hash": "34d4aa90191e58dc"
     },
+    "swiss_style": {
+      "hash": "1688b38fd40eb827"
+    },
     "synchromism": {
       "hash": "3021f28c7f98b4a4"
+    },
+    "synthwave": {
+      "hash": "732d3d97b5052b66"
     },
     "tachisme": {
       "hash": "65075c67ec545236"
@@ -1225,6 +1252,9 @@
     "transfer_print": {
       "hash": "4a3dba93fab26a56"
     },
+    "trompe_loeil": {
+      "hash": "4194bd01c6a1ed9e"
+    },
     "typographic_collage": {
       "hash": "b9e6155a305a0666"
     },
@@ -1245,6 +1275,12 @@
     },
     "value_study": {
       "hash": "b88cf6bb8b59a819"
+    },
+    "vanitas": {
+      "hash": "105c6d2b187890e0"
+    },
+    "vaporwave": {
+      "hash": "a670adfa409eb191"
     },
     "vector_flat": {
       "hash": "a40066f50d5e6014"

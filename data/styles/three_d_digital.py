@@ -386,6 +386,17 @@ THREE_D_DIGITAL_ENTRIES: dict[str, dict] = {
         "preview": "three_d_digital#45",
         "blocks": [],
     },
+    "synthwave": {
+        "id": "synthwave",
+        "label": "Synthwave",
+        "category": "three_d_digital",
+        "aliases": ["outrun", "retrowave", "retro-futurism 80s", "neon grid"],
+        "tags": "synthwave render, glowing magenta and cyan neon, perspective grid floor running to the horizon, huge banded setting sun, chrome reflective surfaces, purple gradient sky with scattered stars, volumetric haze and lens glow, wireframe mountains, 1980s retro-futurist styling, hard rim lighting in saturated neon, dark foreground silhouette, deep one-point perspective",
+        "prose": "Rendered as synthwave: a perspective grid floor running to the horizon beneath a huge banded setting sun, glowing magenta and cyan neon reflecting off chrome surfaces, a purple gradient sky scattered with stars behind wireframe mountains, volumetric haze and lens glow with hard rim lighting picking a dark silhouette out of the foreground in deep one-point perspective.",
+        "negative": "natural daylight, muted earth palette, matte unlit surfaces, documentary realism, cluttered detail",
+        "preview": "three_d_digital#46",
+        "blocks": [],
+    },
 }
 
 THREE_D_DIGITAL_STYLES = THREE_D_DIGITAL_ENTRIES

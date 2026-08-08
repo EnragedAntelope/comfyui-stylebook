@@ -226,6 +226,32 @@ Two details worth preserving:
 Rendering needs Pillow for the packing step. That is a build-time tool
 only; the node pack itself has no runtime dependencies.
 
+A style whose subject is a place rather than a person needs an entry in
+`STYLE_SUBJECT`. The category subject puts a figure front and centre,
+which is the one thing Liminal Space, Googie and Metaphysical Art are
+defined by not having. Word those overrides affirmatively for the same
+reason the data validator forbids negation in a positive prompt: "no
+people" is the most reliable way to get people.
+
+## The public gallery page
+
+`scripts/build_gallery_page.py` renders every style to a single static
+page at `docs/gallery/index.html`, which GitHub Pages serves from `main`.
+The pack's pitch is "look at it before you commit", and until this existed
+the only way to look was to install it first.
+
+It reuses rather than duplicates: the committed WebP atlases, and
+`generate_js_data._preview_sprites` for the sprite arithmetic. Pages
+serves the whole repository, so the page reaches the atlases at
+`../../js/previews/` and nothing is copied. `--check` is a CI gate, like
+every other generator here.
+
+One deliberate difference from the in-app gallery: this page shows each
+style's prose, keywords and negative. Shipping 460-odd prose blocks in
+`stylebook_data.js` would roughly double the payload every ComfyUI user
+downloads, but on a page somebody chose to open it is the most useful
+thing on it.
+
 ## Frontend
 
 `stylebook_data.js` is generated in full from the Python data layer.

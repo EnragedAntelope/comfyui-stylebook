@@ -331,6 +331,17 @@ _COLLAGE_MIXED_ENTRIES: dict[str, dict] = {
         "preview": "collage_mixed#35",
         "blocks": [],
     },
+    "vaporwave": {
+        "id": "vaporwave",
+        "label": "Vaporwave",
+        "category": "collage_mixed",
+        "aliases": ["vapourwave", "aesthetic", "a e s t h e t i c", "mallsoft"],
+        "tags": "vaporwave collage, cyan and hot pink gradient wash, classical marble bust fragment, glitched VHS scanlines and chromatic fringing, japanese katakana overlay, checkerboard floor receding to a wireframe horizon, palm silhouette and low sun, early-computer window frames, dolphin and roman column motif, washed pastel haze, flat layered cutout composition",
+        "prose": "Assembled as a vaporwave collage: a classical marble bust fragment and roman column cut out and layered over a cyan and hot pink gradient wash, glitched VHS scanlines and chromatic fringing across japanese katakana overlays and early-computer window frames, a checkerboard floor receding to a wireframe horizon under a palm silhouette and low sun, everything flattened into washed pastel haze.",
+        "negative": "natural daylight, earthy palette, photographic continuity, hand-painted texture, unified perspective",
+        "preview": "collage_mixed#36",
+        "blocks": [],
+    },
 }
 
 COLLAGE_MIXED_STYLES = _COLLAGE_MIXED_ENTRIES

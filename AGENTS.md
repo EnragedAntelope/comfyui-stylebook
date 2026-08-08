@@ -29,6 +29,7 @@
 | `scripts/` | Build and validation tooling (not shipped to registry) |
 | `tests/` | unittest suite, data-layer validator, comfy_stub, jsdom frontend tests |
 | `docs/` | custom-styles.md (user_styles.json field reference) |
+| `docs/gallery/` | Generated public style gallery, served by GitHub Pages from `main` |
 
 ## Build / test / run
 
@@ -45,6 +46,7 @@ python -m unittest discover -s tests -t .   # -t . is required
 python scripts/generate_js_data.py --check
 python scripts/dump_frontend_fixtures.py --check
 python scripts/build_previews.py --check    # no GPU needed for --check
+python scripts/build_gallery_page.py --check
 npm run test:frontend
 python -m ruff check .
 ```
@@ -56,7 +58,7 @@ and a Chroma checkpoint; `--check` needs neither.
 
 - Zero dependencies. Python ≥3.10. Drops into ComfyUI's `custom_nodes/` — no pip install.
 - The chain socket type (`STYLEBOOK_CHAIN`) is distinct from STRING by design — prevents silent miswiring when connecting prompt to style_chain.
-- `js/stylebook_data.js` is generated. Never edit by hand.
+- `js/stylebook_data.js` and `docs/gallery/index.html` are generated. Never edit by hand.
 - `js/stylebook_gallery.js` is hand-written. The generator never touches it.
 - One ordering rule, `data/ordering.py`, mirrored in the gallery by `Intl.Collator`
   and bound to it by a cross-check test. Modifier axes are exempt on purpose.

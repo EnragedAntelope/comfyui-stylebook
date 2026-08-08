@@ -6,6 +6,10 @@ browse before you commit.**
 Stop guessing whether "wet plate collodion" or "risograph" will do what you
 want. Open the gallery, look at it, click it.
 
+**[Browse every style in your browser →](https://enragedantelope.github.io/comfyui-stylebook/gallery/)**
+— all of them, with the preview each one ships and the exact prompt text it
+emits. No install needed.
+
 ![Style, Artist and Modifier chained together](docs/images/chain.png)
 
 <img src="docs/images/example-output.png" width="420" align="right" alt="Cyanotype example output">

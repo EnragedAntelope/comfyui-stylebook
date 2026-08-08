@@ -35,6 +35,8 @@ jobs:
         run: python scripts/dump_frontend_fixtures.py --check
       - name: Check preview manifest is current
         run: python scripts/build_previews.py --check
+      - name: Check the public gallery page is current
+        run: python scripts/build_gallery_page.py --check
 
   frontend:
     name: Frontend smoke tests

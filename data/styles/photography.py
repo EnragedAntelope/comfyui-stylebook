@@ -550,6 +550,17 @@ PHOTOGRAPHY_STYLES: dict[str, dict] = {
         "preview": "photography#51",
         "blocks": [],
     },
+    "liminal_space": {
+        "id": "liminal_space",
+        "label": "Liminal Space",
+        "category": "photography",
+        "aliases": ["backrooms", "empty transitional space", "dreamcore interior"],
+        "tags": "liminal space photograph, deserted transitional interior, patterned corridor carpet, flat overhead fluorescent light, sickly yellow-green cast, wide symmetrical one-point corridor, low consumer-camera sharpness with mild noise, vacant unoccupied space, doors receding into distance, drop ceiling tiles, uneasy stillness, flat even exposure",
+        "prose": "Photographed as a liminal space: a deserted transitional interior of patterned corridor carpet and drop ceiling tiles under flat overhead fluorescent light, a sickly yellow-green cast across a wide symmetrical one-point corridor with doors receding into the distance, the low consumer-camera sharpness and mild noise of a snapshot, flat even exposure and an uneasy stillness.",
+        "negative": "crowds, warm golden light, shallow depth of field, dramatic composition, polished commercial finish",
+        "preview": "photography#52",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = PHOTOGRAPHY_STYLES
