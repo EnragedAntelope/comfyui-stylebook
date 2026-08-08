@@ -112,7 +112,7 @@
       "name": "artist",
       "type": "combo",
       "value": "None",
-      "optionCount": 680
+      "optionCount": 701
     },
     {
       "name": "category",

@@ -507,6 +507,13 @@ ARTISTS: dict[str, dict] = {
         "descriptor": "bird's-eye panoramic landscapes crowded with peasant figures, earthy palette of brown green and grey, meticulous small-scale detail, winter skies heavy with snow over frozen villages",
     },
 
+    "arcimboldo": {
+        "label": "Giuseppe Arcimboldo",
+        "category": "fine-art",
+        "aliases": ["composite heads", "Mannerist", "fruit portrait"],
+        "descriptor": "portrait heads assembled entirely from fruit vegetables and flowers, each object rendered in botanical detail, Mannerist wit turning a still life into a face against a dark ground",
+    },
+
     # --- Fine Art: 18th-19th Century ---
     "watteau": {
         "label": "Jean-Antoine Watteau",
@@ -567,6 +574,31 @@ ARTISTS: dict[str, dict] = {
         "category": "fine-art",
         "aliases": ["Barbizon school", "peasant painter"],
         "descriptor": "monumental earth-toned figures bent in labour across golden fields, warm dusky light on rustic gestures, dignity of rural work in heavy quiet brushwork",
+    },
+
+    "bouguereau": {
+        "label": "William-Adolphe Bouguereau",
+        "category": "fine-art",
+        "aliases": ["academic painting", "Salon", "French academicism"],
+        "descriptor": "flawless porcelain flesh rendered in invisible brushwork, idealised nymphs and peasant girls in soft diffused daylight, academic finish with every edge smoothed to polish",
+    },
+    "cabanel": {
+        "label": "Alexandre Cabanel",
+        "category": "fine-art",
+        "aliases": ["academic painting", "Salon", "Birth of Venus"],
+        "descriptor": "languid mythological nudes on foaming sea or silk drapery, cool pearlescent flesh against hazy blue atmosphere, Salon academicism at its most sensuous and highly finished",
+    },
+    "gerome": {
+        "label": "Jean-Leon Gerome",
+        "category": "fine-art",
+        "aliases": ["academic painting", "Orientalism", "history painting"],
+        "descriptor": "photographic academic precision in archaeological historical scenes, hard raking sunlight across marble and sand, every tile and textile rendered with cool documentary exactitude",
+    },
+    "alma_tadema": {
+        "label": "Lawrence Alma-Tadema",
+        "category": "fine-art",
+        "aliases": ["Victorian classicism", "marble painter", "Roman scenes"],
+        "descriptor": "sunlit Roman marble terraces above a brilliant blue Mediterranean, languid figures in white drapery among flowers, obsessive rendering of polished stone and reflected light",
     },
 
     # --- Fine Art: Impressionism and Post-Impressionism ---
@@ -829,6 +861,31 @@ ARTISTS: dict[str, dict] = {
         "category": "fine-art",
         "aliases": ["Mexican Muralist", "social realism"],
         "descriptor": "monumental fresco compositions of workers and indigenous history, solid volumetric figures in earthy Mexican palette, narrative density and political purpose in every wall-sized scene",
+    },
+
+    "wayne_thiebaud": {
+        "label": "Wayne Thiebaud",
+        "category": "fine-art",
+        "aliases": ["cake painter", "Bay Area", "confections"],
+        "descriptor": "rows of cakes and pies in thick buttery impasto, pastel confection colours edged with vibrating complementary halos, deadpan display-case arrangement under bright even light",
+    },
+    "richard_diebenkorn": {
+        "label": "Richard Diebenkorn",
+        "category": "fine-art",
+        "aliases": ["Ocean Park", "Bay Area Figurative", "abstract landscape"],
+        "descriptor": "large flat planes of bleached blue and ochre divided by ruled drifting lines, aerial landscape abstracted to geometry, scraped and repainted surfaces holding their own history",
+    },
+    "philip_guston": {
+        "label": "Philip Guston",
+        "category": "fine-art",
+        "aliases": ["late figurative", "cartoon grotesque", "pink and red"],
+        "descriptor": "lumpen cartoon forms in dirty pink cadmium red and black, thick clumsy brushwork piling up shoes light bulbs and hooded figures, comic bluntness carrying real dread",
+    },
+    "grace_hartigan": {
+        "label": "Grace Hartigan",
+        "category": "fine-art",
+        "aliases": ["second generation Abstract Expressionist", "New York School"],
+        "descriptor": "slashing gestural brushwork that half-dissolves shop windows and brides into abstraction, hot saturated colour laid in broad strokes, urban imagery surfacing through painterly attack",
     },
 
     # --- Fine Art: Pop and Contemporary ---
@@ -1257,6 +1314,13 @@ ARTISTS: dict[str, dict] = {
         "descriptor": "playful curving ink lines with flat colour fills, impossible architecture and impossible creatures, whimsical perspective distortions and bouncy rhythmic compositions",
     },
 
+    "ernst_haeckel": {
+        "label": "Ernst Haeckel",
+        "category": "illustration",
+        "aliases": ["Art Forms in Nature", "scientific illustration", "radiolaria"],
+        "descriptor": "symmetrical plates of radiolarians jellyfish and orchids arranged like ornament, obsessive lithographic linework, biological structure drawn as Art Nouveau decoration on a plain ground",
+    },
+
     # --- Modern Illustration ---
     "shaun_tan": {
         "label": "Shaun Tan",
@@ -1373,6 +1437,12 @@ ARTISTS: dict[str, dict] = {
         "category": "digital",
         "aliases": ["dynamic sci-fi", "mechanical design"],
         "descriptor": "dynamic sci-fi concept art with strong perspective, detailed mechanical design, dramatic lighting and cinematic composition",
+    },
+    "ralph_mcquarrie": {
+        "label": "Ralph McQuarrie",
+        "category": "digital",
+        "aliases": ["Star Wars concept", "production painting", "retro sci-fi"],
+        "descriptor": "airbrushed production paintings of chrome starships over desert horizons, matte muted palette with hazy atmospheric depth, lone figures dwarfed by vast retro-futurist machinery",
     },
 
     # --- Comics ---
@@ -1867,6 +1937,19 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["book cover design", "literary jackets"],
         "descriptor": "iconic book cover design with bold typographic concepts, striking photographic manipulation, literary jackets that capture a book essence in one powerful visual idea",
     },
+    "milton_glaser": {
+        "label": "Milton Glaser",
+        "category": "illustration",
+        "aliases": ["I Love NY", "psychedelic poster", "Push Pin Studios"],
+        "descriptor": "flat silhouette profiles trailing rainbow bands of saturated colour, warm poster palette with hand-drawn geometric lettering, one clear idea carried by a single graphic gesture",
+    },
+    "paul_rand": {
+        "label": "Paul Rand",
+        "category": "illustration",
+        "aliases": ["corporate identity", "modernist logo", "IBM"],
+        "descriptor": "reductive modernist marks built from simple geometry and torn-paper collage, primary colour on generous white space, playful wit inside strict rational structure",
+    },
+
     # --- Pop and Constructivist Artists ---
     "corita_kent": {
         "label": "Corita Kent",
@@ -1971,6 +2054,13 @@ ARTISTS: dict[str, dict] = {
         "category": "fine-art",
         "aliases": ["realist painter", "Edo period"],
         "descriptor": "naturalistic paintings with careful observation of light and shadow, peacocks and cherry blossoms in soft colour, Western-influenced realism merged with Japanese decorative tradition",
+    },
+
+    "kuniyoshi": {
+        "label": "Utagawa Kuniyoshi",
+        "category": "fine-art",
+        "aliases": ["ukiyo-e", "warrior prints", "musha-e"],
+        "descriptor": "turbulent woodblock scenes of armoured warriors and giant skeletons, bold diagonal composition and churning waves, saturated indigo and vermilion with crisp keyblock outline",
     },
 
     # --- Chinese Traditional and Modern ---
@@ -3146,6 +3236,36 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["Arte Povera", "live animals"],
         "descriptor": "raw industrial materials and live animals installed in gallery space, horses and fire and burlap sacks, Arte Povera merging primal material with poetic theatrical installation",
     },
+    "alighiero_boetti": {
+        "label": "Alighiero Boetti",
+        "category": "fine-art",
+        "aliases": ["Arte Povera", "Mappa", "embroidered maps"],
+        "descriptor": "embroidered world maps with each country filled by its own flag, dense hand-stitched colour edged in script, systematic concept executed in patient craft",
+    },
+    "lucio_fontana": {
+        "label": "Lucio Fontana",
+        "category": "fine-art",
+        "aliases": ["Spatialism", "slashed canvas", "Concetto Spaziale"],
+        "descriptor": "flat monochrome canvas cut open by clean vertical slashes, darkness behind the surface reading as real depth, austere single-colour field broken by one decisive gesture",
+    },
+    "yves_klein": {
+        "label": "Yves Klein",
+        "category": "fine-art",
+        "aliases": ["IKB", "International Klein Blue", "monochrome"],
+        "descriptor": "saturated ultramarine monochrome fields in velvety powdered pigment, body-print silhouettes in raw blue on white, one colour pushed to total immersive intensity",
+    },
+    "piero_manzoni": {
+        "label": "Piero Manzoni",
+        "category": "fine-art",
+        "aliases": ["Achrome", "white surface", "conceptual"],
+        "descriptor": "colourless white surfaces of gathered kaolin-soaked canvas and puckered fabric folds, texture and shadow doing all the work, deadpan conceptual reduction to material alone",
+    },
+    "arnaldo_pomodoro": {
+        "label": "Arnaldo Pomodoro",
+        "category": "fine-art",
+        "aliases": ["Sphere Within Sphere", "bronze sculpture", "ruptured form"],
+        "descriptor": "polished bronze spheres and columns torn open to reveal intricate corroded machinery within, mirror-smooth gold surface against jagged interior gearwork, monumental and gleaming",
+    },
 
     "harry_clarke": {
         "label": "Harry Clarke",
@@ -4177,6 +4297,28 @@ ARTISTS: dict[str, dict] = {
         "category": "fine-art",
         "aliases": ["Mailou Jones", "harlem renaissance painter", "african diaspora painter"],
         "descriptor": "American Harlem Renaissance painter of African and African-American subjects, vibrant saturated palette, bold flat pattern and rhythmic decorative composition",
+    },
+
+    # --- Popular and commercial painting ---
+    #
+    # A deliberate, bounded exception to this pack's usual bar ("would a
+    # museum, gallery or art history textbook recognise this name?").
+    # Both of these are absent, visually very specific, and among the
+    # names people most often reach for. Ross is in the Smithsonian
+    # collection, so the bar is arguably met anyway. Kept in their own
+    # section so the exception stays an exception: a candidate that
+    # exists only as a LoRA still does not enter the pack.
+    "bob_ross": {
+        "label": "Bob Ross",
+        "category": "fine-art",
+        "aliases": ["happy little trees", "wet-on-wet", "Joy of Painting"],
+        "descriptor": "wet-on-wet oil landscapes worked in one sitting, phthalo blue skies over backlit evergreen treelines, palette-knife mountain peaks and a still lake, cheerful and softly lit",
+    },
+    "thomas_kinkade": {
+        "label": "Thomas Kinkade",
+        "category": "fine-art",
+        "aliases": ["painter of light", "glowing cottage", "sentimental landscape"],
+        "descriptor": "storybook cottages with windows glowing amber against blue twilight, cobblestone lanes wet with reflected light, blooming gardens and warm impasto highlight bloom everywhere",
     },
 }
 

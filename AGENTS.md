@@ -1,6 +1,6 @@
 # AGENTS.md — comfyui-stylebook
 
-450+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list, a matching negative prompt, plus 650+ artists with descriptors. Zero dependencies, fully offline. Built on ComfyUI V3 API, category: `conditioning/stylebook`.
+450+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list, a matching negative prompt, plus 700+ artists with descriptors. Zero dependencies, fully offline. Built on ComfyUI V3 API, category: `conditioning/stylebook`.
 
 **Deep references:**
 - `ARCHITECTURE.md` (chain protocol, layout, design rationale — read before engine changes)
@@ -10,7 +10,7 @@
 
 - **Chain protocol.** Every node takes an optional `style_chain` and emits one on a dedicated `STYLEBOOK_CHAIN` socket type (not STRING — prevents silent miswiring). Carries JSON: style + modifiers + artists + user_prompt metadata.
 - **Five nodes.** Style (exclusive medium axis), Artist (additive, chainable), Modifier (one per axis), Blend (two styles at a ratio), Sheet (one subject, many styles as a list).
-- **Gallery-first UX.** Each style ships a rendered preview image. Open gallery → look → click. 650+ artists each have a written descriptor so the look lands even when the model doesn't know the name.
+- **Gallery-first UX.** Each style ships a rendered preview image. Open gallery → look → click. 700+ artists each have a written descriptor so the look lands even when the model doesn't know the name.
 - **Three composition rules** (differ on purpose): style = exclusive replacement; modifiers = per-axis additive; artists = chainable additive.
 - **Plain Python + plain JavaScript.** No OS-specific calls, paths via `pathlib`, nothing shells out. Runs the same on Windows/macOS/Linux. Test suite runs on a machine with no ComfyUI installed.
 - **Generated JS data.** `js/stylebook_data.js` is generated — never edit by hand. `js/stylebook_gallery.js` is hand-written and the generator never touches it.
