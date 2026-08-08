@@ -231,3 +231,134 @@ for (const [comfyClass, names] of Object.entries(NAMES_READ_BY_NAME)) {
     }
   });
 }
+
+// --- 10. ordering: one rule, implemented in two languages ------------------
+
+/**
+ * The comparator the gallery uses, rebuilt here rather than exported.
+ *
+ * Keeping it private to the module under test is the point: if
+ * stylebook_gallery.js changes its collator options, this copy stops
+ * matching and the cross-check below fails, which is exactly the alarm
+ * we want. An exported comparator shared with the test would prove only
+ * that a function equals itself.
+ */
+const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
+const compare = (a, b) => collator.compare(a, b) || (a < b ? -1 : a > b ? 1 : 0);
+
+test("Python and JS agree on order: re-sorting ALL_STYLE_LABELS with the JS comparator is a no-op", async () => {
+  // ALL_STYLE_LABELS is emitted by scripts/generate_js_data.py in
+  // data/ordering.py's order. If label_sort_key and Intl.Collator ever
+  // disagree on a shipped label, this is where it surfaces -- otherwise
+  // the dropdown and the gallery would quietly diverge.
+  const { ALL_STYLE_LABELS } = await import("../../js/stylebook_data.js");
+  assert.ok(ALL_STYLE_LABELS.length > 100, "generated data looks empty");
+  const resorted = ALL_STYLE_LABELS.slice().sort(compare);
+  const drift = ALL_STYLE_LABELS.findIndex((label, i) => label !== resorted[i]);
+  assert.equal(
+    drift, -1,
+    drift === -1
+      ? ""
+      : `data/ordering.py and Intl.Collator disagree at index ${drift}: ` +
+        `Python put "${ALL_STYLE_LABELS[drift]}" there, JS wants "${resorted[drift]}"`
+  );
+});
+
+async function openStyleGallery() {
+  const node = makeNode("StylebookStyle");
+  await getExtension().nodeCreated(node);
+  widgetByName(node, "Open style gallery").callback();
+  const overlay = document.querySelector(".stylebook-overlay");
+  assert.ok(overlay, "picker did not open");
+  return overlay;
+}
+
+const tileLabels = () =>
+  Array.from(document.querySelectorAll(".stylebook-tile-label > span"))
+    .map((el) => el.textContent);
+
+const clickTab = (overlay, name) => {
+  const tab = Array.from(overlay.querySelectorAll(".stylebook-tab"))
+    .find((t) => t.textContent === name);
+  assert.ok(tab, `no "${name}" tab`);
+  tab.click();
+};
+
+test("the All tab lists every style alphabetically, not grouped by category", async () => {
+  await openStyleGallery();
+  const labels = tileLabels();
+  assert.ok(labels.length > 100, "All tab rendered almost nothing");
+  assert.deepEqual(labels, labels.slice().sort(compare));
+  // Data order used to put "Aerial Photography" (photography, first
+  // category) ahead of "3D Matte Painting"; numeric-leading names now
+  // lead the list.
+  assert.equal(labels[0], "3D Matte Painting");
+});
+
+test("a category tab lists its own styles alphabetically", async () => {
+  const overlay = await openStyleGallery();
+  clickTab(overlay, "Art Movements");
+  const labels = tileLabels();
+  assert.ok(labels.length > 20, "Art Movements tab rendered almost nothing");
+  assert.deepEqual(labels, labels.slice().sort(compare));
+});
+
+test("the artist reference is alphabetical too", async () => {
+  const node = makeNode("StylebookArtist");
+  await getExtension().nodeCreated(node);
+  widgetByName(node, "Open artist reference").callback();
+  const names = Array.from(document.querySelectorAll(".stylebook-row-name"))
+    .map((el) => el.textContent);
+  assert.ok(names.length > 100, "artist reference rendered almost nothing");
+  assert.deepEqual(names, names.slice().sort(compare));
+});
+
+test("the modifier reference stays in data order, so the era axis reads chronologically", async () => {
+  const node = makeNode("StylebookModifier");
+  await getExtension().nodeCreated(node);
+  widgetByName(node, "Open modifier reference").callback();
+  const names = Array.from(document.querySelectorAll(".stylebook-row-name"))
+    .map((el) => el.textContent);
+  assert.ok(names.length > 20, "modifier reference rendered almost nothing");
+  assert.notDeepEqual(
+    names, names.slice().sort(compare),
+    "modifiers must NOT be alphabetical -- the era axis is chronological"
+  );
+});
+
+// --- 11. the category chip appears only where the tab strip does not -------
+
+test("the category chip shows in All, in search results, and not in a category tab", async () => {
+  const overlay = await openStyleGallery();
+  const chips = () => document.querySelectorAll(".stylebook-tile-cat");
+
+  assert.ok(chips().length > 100, "All tab should caption every tile with its category");
+  assert.ok(
+    document.querySelector(".stylebook-grid").classList.contains("with-category"),
+    "the grid must carry .with-category, or the fixed row height clips the chip"
+  );
+  const first = chips()[0];
+  assert.equal(first.getAttribute("aria-hidden"), "true",
+    "the chip duplicates the tile's accessible name and must not be announced");
+  assert.ok(first.textContent.length > 0, "chip rendered empty");
+
+  clickTab(overlay, "Art Movements");
+  assert.equal(chips().length, 0, "a category tab already names the category");
+  assert.ok(
+    !document.querySelector(".stylebook-grid").classList.contains("with-category"),
+    "the row height must shrink back when the chip is gone"
+  );
+
+  const search = overlay.querySelector(".stylebook-search");
+  search.value = "print";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  assert.ok(chips().length > 0,
+    "a search spans every category, so results need the caption back");
+});
+
+test("the artist reference gets no category chip -- its rows already carry a descriptor", async () => {
+  const node = makeNode("StylebookArtist");
+  await getExtension().nodeCreated(node);
+  widgetByName(node, "Open artist reference").callback();
+  assert.equal(document.querySelectorAll(".stylebook-tile-cat").length, 0);
+});

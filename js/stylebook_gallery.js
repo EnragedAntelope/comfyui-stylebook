@@ -157,6 +157,47 @@ function initials(label) {
   return parts.slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join("") || "?";
 }
 
+/**
+ * Compare two labels the way data/ordering.py does.
+ *
+ * Accents and case folded away, runs of digits compared as numbers, so
+ * "8-Bit" precedes "16-Bit" and "Naïve Art" lands next to "Nabis"
+ * instead of after "Needlepoint".
+ *
+ * The gallery cannot simply read the generator's order: it interleaves
+ * entries from a user's own user_styles.json, which the generator never
+ * saw. That makes the same rule exist in two languages, so a frontend
+ * test asserts that re-sorting ALL_STYLE_LABELS with this comparator is
+ * a no-op. If Python and JS ever disagree, CI says so.
+ *
+ * Built inside a try, because a frontend failure has to degrade the node
+ * rather than break it: without Intl the gallery falls back to code-point
+ * order, which is merely the ordering we had before.
+ */
+const compareLabels = (() => {
+  try {
+    const collator = new Intl.Collator(undefined, {
+      sensitivity: "base",
+      numeric: true,
+    });
+    return (a, b) => collator.compare(a, b);
+  } catch (_) {
+    return (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  }
+})();
+
+/**
+ * Sort comparator for picker items.
+ *
+ * The collator reports equality for anything differing only by accent or
+ * case, so the raw label breaks the tie and the order stays stable.
+ */
+function byLabel(a, b) {
+  const label = compareLabels(a.label, b.label);
+  if (label !== 0) return label;
+  return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+}
+
 // --- widget show/hide -----------------------------------------------------
 // Swapping `type` and zeroing `computeSize` keeps the widget's value in the
 // saved workflow, which simply removing it would not.
@@ -302,7 +343,10 @@ function styleItems() {
       isCustom: true,
     });
   }
-  return items;
+  // Sorted here rather than per tab, so "All", each category, "Yours"
+  // and every search result come out alphabetical from one line -- and
+  // a custom style lands among the built-ins rather than after them.
+  return items.sort(byLabel);
 }
 
 function artistItems() {
@@ -326,9 +370,14 @@ function artistItems() {
       isCustom: true,
     });
   }
-  return items;
+  return items.sort(byLabel);
 }
 
+// Deliberately unsorted, unlike styles and artists. Modifiers are grouped
+// by axis and the `era` axis reads chronologically -- Ancient Classical,
+// Edwardian, 1920s, 1950s. Alphabetising would scatter the decades to the
+// top of the list. schema_options.modifier_options() makes the same call
+// on the backend, and the two have to agree.
 function modifierItems() {
   const items = MODIFIER_RECORDS.map((rec) => ({
     id: rec.label,
@@ -614,6 +663,21 @@ class StylebookPicker {
 
     if (this.tabs) this.renderTabs();
 
+    // The tile shows its category only where the tab strip does not
+    // already say it. Sorting alphabetically dropped the grouping cue
+    // that category-ordered tiles used to give for free, and in "All",
+    // "Yours" or a search result there is otherwise nothing to say
+    // whether a tile is a photography style or a craft one.
+    this._showCategory = Boolean(
+      this.config.showCategory &&
+        (this.query ||
+          this.activeGroup === GROUP_ALL ||
+          this.activeGroup === GROUP_YOURS)
+    );
+    // The row height is fixed in CSS and cannot grow from its contents,
+    // so the chip's line box has to be added to it deliberately.
+    this.grid.classList.toggle("with-category", this._showCategory);
+
     if (this.count) {
       this.count.textContent =
         this.visible.length + (this.visible.length === 1 ? " result" : " results");
@@ -714,6 +778,18 @@ class StylebookPicker {
     label.appendChild(labelText);
 
     tile.append(art, label);
+
+    if (this._showCategory && item.group) {
+      const category = document.createElement("div");
+      category.className = "stylebook-tile-cat";
+      category.textContent = groupName(item.group);
+      // Hidden from assistive tech on purpose. The tile's accessible
+      // name already comes from its label and title; having a screen
+      // reader read "Art Brut, Art Movements" for each of 450-plus
+      // options is worse than saying nothing.
+      category.setAttribute("aria-hidden", "true");
+      tile.appendChild(category);
+    }
     tile.addEventListener("click", () => this.select(item));
     tile.addEventListener("mouseenter", () => {
       this.focusIndex = index;
@@ -842,6 +918,7 @@ function setupStyleNode(node) {
         : [GROUP_ALL].concat(CATEGORIES);
     },
     showPreviews: true,
+    showCategory: true,
   }, "Open style gallery");
 
   syncOnChange(node, ["mode"], (fresh) => updateModeVisibility(fresh, "style"));
@@ -933,6 +1010,7 @@ function setupSheetNode(node) {
         : [GROUP_ALL].concat(CATEGORIES);
     },
     showPreviews: true,
+    showCategory: true,
     multi: true,
     currentValues: () => parseStyleList(widgetsByName(node).styles),
     onDone: (labels) => {

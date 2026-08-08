@@ -1,6 +1,6 @@
 # AGENTS.md — comfyui-stylebook
 
-430+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list, a matching negative prompt, plus 650+ artists with descriptors. Zero dependencies, fully offline. Built on ComfyUI V3 API, category: `conditioning/stylebook`.
+450+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list, a matching negative prompt, plus 650+ artists with descriptors. Zero dependencies, fully offline. Built on ComfyUI V3 API, category: `conditioning/stylebook`.
 
 **Deep references:**
 - `ARCHITECTURE.md` (chain protocol, layout, design rationale — read before engine changes)
@@ -36,15 +36,21 @@
 # Install (drop into ComfyUI/custom_nodes/)
 # No pip install needed — zero dependencies
 
-# Python tests
-python -m unittest discover tests
+# Regenerate JS data after any change under data/
+python scripts/generate_js_data.py
 
-# Frontend tests (jsdom smoke tests)
+# The full gate, in the order CI runs it (.github/workflows/ci.yml)
+python tests/validate_data.py
+python -m unittest discover -s tests -t .   # -t . is required
+python scripts/generate_js_data.py --check
+python scripts/dump_frontend_fixtures.py --check
+python scripts/build_previews.py --check    # no GPU needed for --check
 npm run test:frontend
-
-# Regenerate JS data after style/artist/modifier changes
-# (see scripts/ for exact command — varies by generator version)
+python -m ruff check .
 ```
+
+Rendering new preview tiles (`build_previews.py --build`) needs a running ComfyUI
+and a Chroma checkpoint; `--check` needs neither.
 
 ## Conventions & gotchas
 
@@ -52,6 +58,9 @@ npm run test:frontend
 - The chain socket type (`STYLEBOOK_CHAIN`) is distinct from STRING by design — prevents silent miswiring when connecting prompt to style_chain.
 - `js/stylebook_data.js` is generated. Never edit by hand.
 - `js/stylebook_gallery.js` is hand-written. The generator never touches it.
+- One ordering rule, `data/ordering.py`, mirrored in the gallery by `Intl.Collator`
+  and bound to it by a cross-check test. Modifier axes are exempt on purpose.
+  Rationale in `ARCHITECTURE.md`.
 - Sprite atlases: `previews/src/` is gitignored (rebuildable); `previews/manifest.json` drives incremental rebuilds.
 - `user_styles.json` is optional — `data/user_data.py` validates and merges it.
 - Tests run without ComfyUI installed (comfy_stub provides a stand-in `comfy_api.latest.io`).
@@ -60,7 +69,9 @@ npm run test:frontend
 
 This file is **public-safe by default**. Never add local paths, credentials, API keys, personal data, infrastructure details, or subscription info.
 
-Before pushing: `pwsh scripts/check-agents-md.ps1 AGENTS.md CLAUDE.md` — must exit 0.
+Before pushing a change to this file or CLAUDE.md, run the maintainer's denylist
+checker over both. It lives outside this repo (it is shared across repos, not
+shipped here), so use the path from your own environment notes; it must exit 0.
 
 Deep architecture, chain protocol, and design rationale: `ARCHITECTURE.md`. Custom style field reference: `docs/custom-styles.md`.
 

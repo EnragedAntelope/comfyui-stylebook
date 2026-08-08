@@ -14,10 +14,12 @@ The data layer forbids any record from claiming one of these labels
 from __future__ import annotations
 
 try:
+    from ..data.ordering import label_sort_key
     from ..data.styles import STYLES, CATEGORIES, CATEGORY_LABELS
     from ..data.modifiers import MODIFIERS, AXES, MODIFIERS_BY_AXIS
     from ..data.artists import ARTISTS, ARTIST_CATEGORIES, ARTIST_CATEGORY_LABELS
 except ImportError:  # pragma: no cover - standalone/test context
+    from data.ordering import label_sort_key
     from data.styles import STYLES, CATEGORIES, CATEGORY_LABELS
     from data.modifiers import MODIFIERS, AXES, MODIFIERS_BY_AXIS
     from data.artists import ARTISTS, ARTIST_CATEGORIES, ARTIST_CATEGORY_LABELS
@@ -142,8 +144,14 @@ def style_options() -> list[str]:
     "Random" is deliberately absent. It used to sit in this list and
     silently resolved to no style at all, which made a freshly dropped
     node a no-op. Randomising is what ``mode`` is for.
+
+    Ordered by :func:`~data.ordering.label_sort_key`, the same rule the
+    gallery uses, so the dropdown and the picker agree on where an
+    accented or number-leading name belongs.
     """
-    return [NONE] + sorted(rec["label"] for rec in STYLES.values())
+    return [NONE] + sorted(
+        (rec["label"] for rec in STYLES.values()), key=label_sort_key
+    )
 
 
 def category_options() -> list[str]:
@@ -174,8 +182,15 @@ def category_id(label: str) -> str | None:
 
 
 def artist_options() -> list[str]:
-    """Labels for the artist dropdown, with ``None`` first."""
-    return [NONE] + sorted(rec["label"] for rec in ARTISTS.values())
+    """Labels for the artist dropdown, with ``None`` first.
+
+    Same ordering rule as :func:`style_options`. A bare ``sorted()`` here
+    stranded "Élisabeth Vigée Le Brun" at the very end of the list, after
+    "Zhang Xiaogang", because É outranks Z by code point.
+    """
+    return [NONE] + sorted(
+        (rec["label"] for rec in ARTISTS.values()), key=label_sort_key
+    )
 
 
 def artist_category_options() -> list[str]:
@@ -223,6 +238,9 @@ def modifier_options(axis: str | None = None) -> list[str]:
         ids = list(MODIFIERS_BY_AXIS.get(axis, []))
     # Data order, not alphabetical: era reads chronologically, so sorting
     # here would drop 1920s in between Ancient Classical and Edwardian.
+    # Styles and artists do sort, by data.ordering.label_sort_key. This
+    # axis is the one deliberate exemption, and the gallery's
+    # modifierItems() matches it.
     seen: set[str] = set()
     labels: list[str] = []
     for mid in ids:

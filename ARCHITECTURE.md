@@ -484,6 +484,43 @@ different semantics reachable from the same layer. If you need to filter
 the data layer by tag, use `filter_pool`; do not add the parameter back to
 `get_style_ids`.
 
+## Ordering: one rule, two languages
+
+Every list a person reads is ordered by `data/ordering.py`'s
+`label_sort_key`: accents and case folded away, runs of digits compared as
+numbers. It exists because a bare `sorted()` ranks by code point, and that
+got two things visibly wrong. Accented names sorted past Z, so
+`Élisabeth Vigée Le Brun` was the **last** entry in the artist dropdown,
+after `ZBrush Sculpt Render`. And digits ranked as text, so
+`16-Bit Pixel Art` came before `8-Bit Pixel Art`.
+
+The gallery cannot just read the generator's order. It interleaves entries
+from a user's own `user_styles.json`, which the generator never saw, so it
+needs a live comparator — `Intl.Collator(undefined, {sensitivity: "base",
+numeric: true})` in `js/stylebook_gallery.js`. That puts the same rule in
+two languages, which is a drift risk, so `tests/frontend/gallery.test.mjs`
+asserts that re-sorting `ALL_STYLE_LABELS` (ordered by the Python key)
+with the JS comparator changes nothing. One assertion, and the two cannot
+silently diverge.
+
+Styles and artists sort. **Modifier axes deliberately do not**: the `era`
+axis reads chronologically — Ancient Classical, Edwardian, 1920s, 1950s —
+and alphabetising would drag the decades to the top and scatter them.
+`schema_options.modifier_options()` and the gallery's `modifierItems()`
+both leave that list in data order, and they have to agree.
+
+The gallery's tiles gained a category chip at the same time. Sorting
+alphabetically is much easier to scan but throws away the grouping cue
+that category-ordered tiles gave for free, so the chip puts it back — only
+in "All", "Yours" and search results, where the tab strip does not already
+name the category. Its height feeds `--sb-cat`, which `grid-auto-rows`
+adds to the row: the grid row height is explicit (see **Frontend**), so a
+line added inside a tile has to be added to the row too, or it is clipped.
+jsdom does not lay out CSS grid and will not catch that.
+
+Ordering is presentation only. Nothing the engine does depends on it — see
+**Seed stability** below for why.
+
 ## Seed stability, stated honestly
 
 `Random` is stable and `Cycle` is not, and the tooltips say so.

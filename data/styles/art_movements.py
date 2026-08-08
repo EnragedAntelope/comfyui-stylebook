@@ -546,7 +546,7 @@ ART_MOVEMENTS_DATA: dict[str, dict] = {
         "id": "photorealism",
         "label": "Photorealism",
         "category": "art_movements",
-        "aliases": ["photorealist", "superrealism", "photo-based painting", "close chuck close"],
+        "aliases": ["photorealist", "superrealism", "photo-based painting", "chuck close"],
         "tags": "photorealist painting, photographic precision, smooth blended surface, hyper-detailed rendering, neutral cool palette, even studio lighting, soft diffused illumination, sharp focus, frontal close-up composition, shallow depth of field, oil on canvas, slick impersonal finish, hyper realistic detail",
         "prose": "Painted in photorealist manner: photographic precision rendered as smooth blended surface with hyper-detailed rendering, the late-20th-century movement of neutral cool palette and even studio lighting, every element bathed in soft diffused illumination and sharp focus across the fully visible figure, centered eye level composition with controlled depth of field, slick impersonal finish carrying hyper realistic detail across an oil on canvas ground.",
         "negative": "loose brushwork, expressive distortion, visible paint texture, abstract form, painterly gesture",

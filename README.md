@@ -1,6 +1,6 @@
 # Stylebook
 
-**430+ visual styles for ComfyUI, every one with a rendered preview you can
+**450+ visual styles for ComfyUI, every one with a rendered preview you can
 browse before you commit.**
 
 Stop guessing whether "wet plate collodion" or "risograph" will do what you
@@ -63,7 +63,7 @@ something you landed on without setting up a `user_styles.json`.
 | Node | What it does |
 |---|---|
 | **Style** | The medium. Pick from the gallery, draw a seeded Random from a filtered pool, or Cycle a whole category by index. Exclusive: a second Style node replaces the first. |
-| **Artist** | Layers one artist. Chain up to five. Pick, Random or Cycle, same as Style. Search 650+ by name, movement, category, or by what their work actually looks like. |
+| **Artist** | Layers one artist. Chain up to five. Pick, Random or Cycle, same as Style. Search 650+ artists by name, movement, category, or by what their work actually looks like. |
 | **Modifier** | Tilts one axis: lighting, colour grade, era, finish or mood. 65+ modifiers, each with a description you can browse. One per axis. |
 | **Blend** | Mixes two styles at a ratio that genuinely shifts the balance, not just the endpoints. |
 | **Sheet** | One subject rendered across many styles as a batch. Choose them yourself from the gallery, or leave the list empty and let a seeded draw fill it. |

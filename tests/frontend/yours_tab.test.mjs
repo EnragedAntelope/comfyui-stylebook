@@ -123,3 +123,28 @@ test("a custom style also appears under its own real category, not only under Yo
     .some((tile) => tile.textContent.includes("My Style"));
   assert.ok(found, "a custom style should still be reachable from its real category tab");
 });
+
+test("a custom style is filed alphabetically among the built-ins, not appended after them", async () => {
+  // The picker sorts the merged list rather than reading the generator's
+  // order, precisely so an entry the generator never saw lands in the
+  // right place. A custom style tacked onto the end would be as buried
+  // as the data-order additions this release stopped producing.
+  stubFetch(jsonResponse({
+    styles: [{ id: "aaa_custom", label: "Aaa Custom Look", category: "photography", detail: "" }],
+    artists: [],
+    modifiers: [],
+  }));
+  await app.__getExtension("stylebook.gallery").setup();
+
+  await openStylePicker();
+  const labels = Array.from(document.querySelectorAll(".stylebook-tile-label > span"))
+    .map((el) => el.textContent);
+  const index = labels.indexOf("Aaa Custom Look");
+  assert.ok(index >= 0, "the custom style should be in the All tab");
+  assert.ok(
+    index < labels.length - 1,
+    "a custom style must not be pinned to the end of the list"
+  );
+  const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
+  assert.deepEqual(labels, labels.slice().sort((a, b) => collator.compare(a, b) || (a < b ? -1 : a > b ? 1 : 0)));
+});

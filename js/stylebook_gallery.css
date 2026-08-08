@@ -39,6 +39,12 @@
     /* One place to change the thumbnail size. */
     --sb-tile: 168px;
     --sb-label: 38px;
+    /* Height the category chip adds to a tile. Zero by default: the chip
+       only appears in "All", "Yours" and search results, where the tab
+       strip does not already name the category. The grid row height is
+       explicit (see .stylebook-grid), so a line added inside the tile
+       has to be added to the row too or it is simply clipped. */
+    --sb-cat: 0px;
     display: flex;
     flex-direction: column;
     width: min(92vw, 1180px);
@@ -199,7 +205,7 @@
        square plus a fixed two-line label. Everything is deterministic,
        which is also what makes the gallery look the same on every
        display regardless of resolution or scaling. */
-    grid-auto-rows: calc(var(--sb-tile) + var(--sb-label));
+    grid-auto-rows: calc(var(--sb-tile) + var(--sb-label) + var(--sb-cat));
     justify-content: center;
     align-content: start;
     gap: 14px;
@@ -295,6 +301,38 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/*
+ * Which category a tile belongs to.
+ *
+ * Tiles used to arrive grouped by category, so their neighbours said
+ * what they were. Sorting alphabetically is far easier to scan but
+ * throws that away, and in "All" a craft style and a photography style
+ * look identical. This says it, quietly enough not to compete with the
+ * name.
+ *
+ * Set on the grid, not the tile: --sb-cat has to reach grid-auto-rows,
+ * which is declared on the grid itself.
+ */
+.stylebook-grid.with-category {
+    --sb-cat: 14px;
+}
+
+.stylebook-tile-cat {
+    height: var(--sb-cat);
+    margin-top: -2px;
+    padding: 0 6px 2px;
+    overflow: hidden;
+    color: var(--descrip-text, inherit);
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    opacity: 0.55;
 }
 
 /* ---- empty state and footer ---- */

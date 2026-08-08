@@ -94,11 +94,18 @@ def generate() -> str:
         ARTIST_CATEGORIES, ARTIST_CATEGORY_LABELS, ARTISTS,
     )
     from data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS
+    from data.ordering import label_sort_key
     from data.styles import CATEGORIES, CATEGORY_LABELS, STYLES
 
     styles_by_category: dict[str, dict[str, list]] = {}
     for category in CATEGORIES:
-        ids = [sid for sid, rec in STYLES.items() if rec.get("category") == category]
+        # Alphabetical, not data order. Data order buried each release's
+        # additions at the bottom of their category, and made the "All"
+        # tab a concatenation of categories rather than a browsable list.
+        ids = sorted(
+            (sid for sid, rec in STYLES.items() if rec.get("category") == category),
+            key=lambda sid: label_sort_key(STYLES[sid]["label"]),
+        )
         styles_by_category[category] = {
             "ids": ids,
             "labels": [STYLES[sid]["label"] for sid in ids],
@@ -107,7 +114,7 @@ def generate() -> str:
             "aliases": [list(STYLES[sid].get("aliases", [])) for sid in ids],
         }
 
-    artists = sorted(ARTISTS.values(), key=lambda rec: rec["label"])
+    artists = sorted(ARTISTS.values(), key=lambda rec: label_sort_key(rec["label"]))
     modifiers_by_axis = {
         axis: [MODIFIERS[mid]["label"]
                for mid in MODIFIERS_BY_AXIS.get(axis, []) if mid in MODIFIERS]
@@ -129,7 +136,9 @@ def generate() -> str:
 
     preview_index = _preview_sprites()
 
-    all_labels = sorted(rec["label"] for rec in STYLES.values())
+    all_labels = sorted(
+        (rec["label"] for rec in STYLES.values()), key=label_sort_key
+    )
 
     lines = [
         HEADER,
@@ -143,7 +152,12 @@ def generate() -> str:
         "// Per-category ids, labels and aliases as parallel arrays.",
         f"export const STYLE_DATA_BY_CATEGORY = {_js(styles_by_category)};",
         "",
-        "// Flat label list for the style dropdown, in the node's own order.",
+        "// Every style label, in data/ordering.py's order -- the same order",
+        "// the node's own dropdown uses. The gallery sorts with Intl.Collator",
+        "// rather than reading this, because it also has to place entries from",
+        "// a user_styles.json this generator never saw. That makes one rule in",
+        "// two languages, so tests/frontend/gallery.test.mjs asserts that",
+        "// re-sorting this list with the JS comparator changes nothing.",
         f"export const ALL_STYLE_LABELS = {_js(all_labels)};",
         "",
         f"export const ARTIST_LABELS = {_js([r['label'] for r in artists])};",
