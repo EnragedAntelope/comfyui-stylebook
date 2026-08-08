@@ -11,9 +11,14 @@ package.json
 package-lock.json
 node_modules/
 
-# docs/ is NOT excluded: the only tracked thing in it is docs/images,
-# which the README links to. docs/worklog is gitignored, so it never
-# reaches the package anyway.
+# docs/ is NOT excluded wholesale: docs/images is what the README links
+# to. docs/worklog is gitignored, so it never reaches the package anyway.
+#
+# docs/gallery IS excluded. It is the public web gallery, generated for
+# GitHub Pages, and it is nearly 400 KB of duplicated style text that a
+# ComfyUI install has no use for -- the in-app picker reads the same data
+# from js/stylebook_data.js.
+docs/gallery/
 
 # js/previews/ is deliberately NOT excluded. Those atlases are what the
 # style gallery draws its thumbnails from, so a registry install without

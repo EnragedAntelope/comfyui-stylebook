@@ -41,9 +41,20 @@ os.environ.setdefault("STYLEBOOK_IGNORE_USER_STYLES", "1")
 
 TARGET = ROOT / "docs" / "gallery" / "index.html"
 
-#: Where the atlases sit relative to the built page. Pages serves the
-#: whole repository, so the committed atlases are reachable as-is and
-#: nothing has to be copied or duplicated into docs/.
+#: Where the atlases sit relative to the built page.
+#:
+#: This only works because Pages is configured to serve the repository
+#: ROOT, not ``/docs``. With ``/docs`` as the source, Pages publishes that
+#: folder *as the site root*, so this path escapes above it and every
+#: atlas 404s -- which is exactly what shipped the first time. Serving the
+#: root instead keeps the committed atlases reachable and duplicates
+#: nothing; the alternative was a second 4.4 MB copy under docs/.
+#:
+#: To verify locally you must reproduce the deployed layout, and a plain
+#: ``python -m http.server`` from the repo root does NOT: it serves the
+#: page at /docs/gallery/ with the repo above it, which is the one
+#: arrangement in which a wrong prefix still works. Check the live URL, or
+#: serve the repo under a path prefix that matches Pages.
 ASSET_PREFIX = "../../js/previews/"
 
 
