@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stylebook — every style, with a preview</title>
 <meta name="description" content="Browse all 520 visual styles in the Stylebook node pack for ComfyUI. Every one ships a rendered preview, a written description, a keyword list and a matching negative prompt.">
+<!-- Inline SVG, so the page stops requesting /favicon.ico from the site root
+     and 404ing. Four swatches on a dark rounded tile: reads as a palette at
+     16px and holds up against both light and dark browser chrome. `#` is
+     percent-encoded because it would otherwise open a URI fragment. -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230f1115'/><rect x='5' y='5' width='10' height='10' rx='2' fill='%232b6fd4'/><rect x='17' y='5' width='10' height='10' rx='2' fill='%23e8543f'/><rect x='5' y='17' width='10' height='10' rx='2' fill='%23f0b429'/><rect x='17' y='17' width='10' height='10' rx='2' fill='%232f9e63'/></svg>">
 <style>
 :root {
   color-scheme: light dark;
