@@ -6,6 +6,16 @@
 - `ARCHITECTURE.md` (chain protocol, layout, design rationale — read before engine changes)
 - `docs/custom-styles.md` (field reference for `user_styles.json`)
 
+## Current state
+
+_Last verified: 2026-08-08_
+
+- **Status:** in active development, released at v0.7.0 (`pyproject.toml`). Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships (`.comfyignore` excludes `scripts/`, `tests/`, `examples/`) needs no bump.
+- **Works:** all five nodes (Style, Artist, Modifier, Blend, Sheet) over the `STYLEBOOK_CHAIN` protocol; every style ships a rendered preview tile packed into WebP sprite atlases; the two-line node-face readout plus Copy-resolved-prompt and Pin-this-pick context items; optional `user_styles.json` validated and merged at load; a public browsable gallery served by GitHub Pages from the repo root; the full CI gate including a jsdom frontend suite and a no-GPU preview `--check`.
+- **In progress:** style and artist curation is the steady-state work rather than a milestone — each release adds entries and re-renders the affected tiles.
+- **Known gaps / next steps:** rendering new preview tiles needs a running ComfyUI and a Chroma checkpoint, and a full run takes hours — always pass `--model` explicitly, because substring model resolution has silently grabbed a Turbo merge and produced plausible-but-wrong tiles; ComfyUI caches the Python data layer at startup, so a newly added style or artist is rejected by node validation until it is restarted; there is no CONDITIONING-output node and that is a settled decision, not a gap (see `ARCHITECTURE.md`).
+- **Deep docs:** `ARCHITECTURE.md` (chain protocol, ordering rule, seed stability, design rationale — read before engine changes), `docs/custom-styles.md` (field reference for `user_styles.json`).
+
 ## Architecture in 60 seconds
 
 - **Chain protocol.** Every node takes an optional `style_chain` and emits one on a dedicated `STYLEBOOK_CHAIN` socket type (not STRING — prevents silent miswiring). Carries JSON: style + modifiers + artists + user_prompt metadata.
