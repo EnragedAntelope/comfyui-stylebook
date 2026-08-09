@@ -112,6 +112,10 @@ def generate() -> str:
             # Aliases power gallery search. The search box has always
             # claimed to match them; now it actually can.
             "aliases": [list(STYLES[sid].get("aliases", [])) for sid in ids],
+            # The setting a style imposes on your subject, or "" for the
+            # great majority that only change how it is rendered. Drives
+            # the gallery's scene badge.
+            "scenes": [STYLES[sid].get("scene", "") for sid in ids],
         }
 
     artists = sorted(ARTISTS.values(), key=lambda rec: label_sort_key(rec["label"]))

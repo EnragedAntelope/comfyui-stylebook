@@ -1,6 +1,6 @@
 # Stylebook
 
-**450+ visual styles for ComfyUI, every one with a rendered preview you can
+**500+ visual styles for ComfyUI, every one with a rendered preview you can
 browse before you commit.**
 
 Stop guessing whether "wet plate collodion" or "risograph" will do what you
@@ -68,7 +68,7 @@ something you landed on without setting up a `user_styles.json`.
 |---|---|
 | **Style** | The medium. Pick from the gallery, draw a seeded Random from a filtered pool, or Cycle a whole category by index. Exclusive: a second Style node replaces the first. |
 | **Artist** | Layers one artist. Chain up to five. Pick, Random or Cycle, same as Style. Search 700+ artists by name, movement, category, or by what their work actually looks like. |
-| **Modifier** | Tilts one axis: lighting, colour grade, era, finish or mood. 65+ modifiers, each with a description you can browse. One per axis. |
+| **Modifier** | Tilts one axis: lighting, colour grade, era, finish or mood. 75+ modifiers, each with a description you can browse. One per axis. |
 | **Blend** | Mixes two styles at a ratio that genuinely shifts the balance, not just the endpoints. |
 | **Sheet** | One subject rendered across many styles as a batch. Choose them yourself from the gallery, or leave the list empty and let a seeded draw fill it. |
 
@@ -160,6 +160,16 @@ what their work looks like rather than needing to know who they are.
 Searching `ink` returns 86 of them.
 
 ![The artist picker](docs/images/artist-picker.png)
+
+**A few styles carry a `scene` badge.** Almost every style only changes how
+your subject is drawn. A handful also decide *where* it is, because that is
+what they are: Liminal Space is a transitional place emptied of people, and
+Vanitas is an arrangement of skull, candle and hourglass. Take the setting
+away and there is no style left. Those tiles are badged in the gallery and
+the tooltip spells it out — "Places your subject in a deserted transitional
+interior" — so you know before you render, rather than wondering why your
+portrait moved into a corridor. Everything unbadged leaves your subject
+where you put it.
 
 **Random keeps its meaning across updates. Cycle does not, by design.**
 

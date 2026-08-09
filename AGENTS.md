@@ -1,6 +1,6 @@
 # AGENTS.md — comfyui-stylebook
 
-450+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list, a matching negative prompt, plus 700+ artists with descriptors. Zero dependencies, fully offline. Built on ComfyUI V3 API, category: `conditioning/stylebook`.
+500+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list, a matching negative prompt, plus 700+ artists with descriptors. Zero dependencies, fully offline. Built on ComfyUI V3 API, category: `conditioning/stylebook`.
 
 **Deep references:**
 - `ARCHITECTURE.md` (chain protocol, layout, design rationale — read before engine changes)
@@ -10,9 +10,9 @@
 
 _Last verified: 2026-08-08_
 
-- **Status:** in active development, released at v0.7.0 (`pyproject.toml`). Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships (`.comfyignore` excludes `scripts/`, `tests/`, `examples/`) needs no bump.
+- **Status:** in active development, released at v0.8.0 (`pyproject.toml`). Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships (`.comfyignore` excludes `scripts/`, `tests/`, `examples/`) needs no bump.
 - **Works:** all five nodes (Style, Artist, Modifier, Blend, Sheet) over the `STYLEBOOK_CHAIN` protocol; every style ships a rendered preview tile packed into WebP sprite atlases; the two-line node-face readout plus Copy-resolved-prompt and Pin-this-pick context items; optional `user_styles.json` validated and merged at load; a public browsable gallery served by GitHub Pages from the repo root; the full CI gate including a jsdom frontend suite and a no-GPU preview `--check`.
-- **In progress:** style and artist curation is the steady-state work rather than a milestone — each release adds entries and re-renders the affected tiles.
+- **In progress:** style and artist curation is the steady-state work rather than a milestone — each release adds entries and re-renders the affected tiles. 0.8.0 also made the "describe the rendering, not the subject" rule enforceable: styles genuinely defined by a setting declare a `scene` phrase, everything else is rejected by the validator for naming one, and the gallery badges the difference.
 - **Known gaps / next steps:** rendering new preview tiles needs a running ComfyUI and a Chroma checkpoint, and a full run takes hours — always pass `--model` explicitly, because substring model resolution has silently grabbed a Turbo merge and produced plausible-but-wrong tiles; ComfyUI caches the Python data layer at startup, so a newly added style or artist is rejected by node validation until it is restarted; there is no CONDITIONING-output node and that is a settled decision, not a gap (see `ARCHITECTURE.md`).
 - **Deep docs:** `ARCHITECTURE.md` (chain protocol, ordering rule, seed stability, design rationale — read before engine changes), `docs/custom-styles.md` (field reference for `user_styles.json`).
 
@@ -74,6 +74,12 @@ and a Chroma checkpoint; `--check` needs neither.
   and bound to it by a cross-check test. Modifier axes are exempt on purpose.
   Rationale in `ARCHITECTURE.md`.
 - Sprite atlases: `previews/src/` is gitignored (rebuildable); `previews/manifest.json` drives incremental rebuilds.
+- **A style describes the rendering, not the subject.** Naming a place puts
+  that place in the picture whatever the user asked for. A style that is
+  genuinely defined by its setting (Liminal Space, Vanitas, Ikebana)
+  declares an optional `scene` phrase instead; the validator rejects scene
+  nouns in any style that has not, and the gallery badges the ones that
+  have. Full rule and rationale in `ARCHITECTURE.md`.
 - `user_styles.json` is optional — `data/user_data.py` validates and merges it.
 - Tests run without ComfyUI installed (comfy_stub provides a stand-in `comfy_api.latest.io`).
 

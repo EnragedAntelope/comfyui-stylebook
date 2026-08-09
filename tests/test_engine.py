@@ -1274,8 +1274,8 @@ class SchemaOptionTests(unittest.TestCase):
     #: between "Ancient Classical" and "Edwardian", and insertion order
     #: once put 1970s ahead of 1920s.
     ERA_ORDER = ["Ancient Classical", "Medieval", "Victorian", "Edwardian",
-                 "1920s", "1950s", "1960s", "1970s", "1980s", "1990s",
-                 "2000s", "Near Future", "Far Future"]
+                 "1920s", "1930s-40s", "1950s", "1960s", "1970s", "1980s",
+                 "1990s", "2000s", "2010s", "Near Future", "Far Future"]
 
     def test_era_modifiers_are_chronological(self):
         self.assertEqual(opt.modifier_options("era")[1:], self.ERA_ORDER)

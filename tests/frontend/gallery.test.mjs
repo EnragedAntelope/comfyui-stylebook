@@ -356,6 +356,37 @@ test("the category chip shows in All, in search results, and not in a category t
     "a search spans every category, so results need the caption back");
 });
 
+// --- 12. the scene badge ---------------------------------------------------
+
+test("a scene style is badged, and the badge lives inside the art box", async () => {
+  const overlay = await openStyleGallery();
+  const badges = document.querySelectorAll(".stylebook-tile-scene");
+
+  assert.ok(badges.length > 10, "no scene badges rendered at all");
+  // The whole point of the design: it must not occupy a tile row, because
+  // tile height is fixed by grid-auto-rows and a new row clips the label.
+  for (const badge of badges) {
+    assert.ok(
+      badge.parentElement.classList.contains("stylebook-tile-art"),
+      "the badge must be overlaid on the art, not added as a tile row"
+    );
+  }
+  assert.equal(badges[0].getAttribute("aria-hidden"), "true",
+    "the tile title already carries the explanation in words");
+
+  const tile = badges[0].closest(".stylebook-tile");
+  assert.match(tile.title, /Places your subject in /,
+    "a one-word badge needs the tooltip to say what it means");
+});
+
+test("scene badges are the exception, not the rule", async () => {
+  await openStyleGallery();
+  const tiles = document.querySelectorAll(".stylebook-tile").length;
+  const badged = document.querySelectorAll(".stylebook-tile-scene").length;
+  assert.ok(badged * 4 < tiles,
+    "if most styles are badged the badge has stopped meaning anything");
+});
+
 test("the artist reference gets no category chip -- its rows already carry a descriptor", async () => {
   const node = makeNode("StylebookArtist");
   await getExtension().nodeCreated(node);

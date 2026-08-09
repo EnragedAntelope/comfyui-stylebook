@@ -25,6 +25,9 @@
     "action_painting": {
       "hash": "7b870eb167a0d228"
     },
+    "adinkra_stamped": {
+      "hash": "c3827e616abc6408"
+    },
     "aerial": {
       "hash": "2633bc91b324ecf8"
     },
@@ -41,7 +44,7 @@
       "hash": "0ebced8bb15d1032"
     },
     "akira_otomo": {
-      "hash": "ff4a3515149c0b51"
+      "hash": "373c651f77c13bb9"
     },
     "alla_prima": {
       "hash": "060fba6aebf8f778"
@@ -57,6 +60,12 @@
     },
     "ambrotype": {
       "hash": "222b113bf4e51d1e"
+    },
+    "anaglyph_3d": {
+      "hash": "10a978debc16b781"
+    },
+    "anatomical_plate": {
+      "hash": "43fbf0690351926a"
     },
     "aquatint": {
       "hash": "55bf83295c8108b7"
@@ -81,6 +90,9 @@
     },
     "arts_and_crafts": {
       "hash": "836a288ce85c9bcc"
+    },
+    "ascii_art": {
+      "hash": "c3d1681b39ead860"
     },
     "ashcan_school": {
       "hash": "b3848cc91449d854"
@@ -166,6 +178,9 @@
     "calotype_talbotype": {
       "hash": "4ecf801528f4a524"
     },
+    "camaieu": {
+      "hash": "699cfce30ae6aae8"
+    },
     "cameo_brooch": {
       "hash": "fd19b23df8745120"
     },
@@ -204,6 +219,9 @@
     },
     "chiaroscuro": {
       "hash": "7065be2b38fd9b9a"
+    },
+    "chiaroscuro_woodcut": {
+      "hash": "15aa8d8c60e70081"
     },
     "chibi_super_deformed": {
       "hash": "f2d5bddc55bc22b2"
@@ -260,7 +278,10 @@
       "hash": "77d99c9d58168eef"
     },
     "cowboy_bebop": {
-      "hash": "c808f287758227c1"
+      "hash": "67893c8bddd31aab"
+    },
+    "crewelwork": {
+      "hash": "42e24a140004bbdd"
     },
     "crochet": {
       "hash": "839ce0914222e414"
@@ -282,6 +303,9 @@
     },
     "cyberpunk_anime": {
       "hash": "88b14017c050bd8a"
+    },
+    "cymatics": {
+      "hash": "12f218590b10d03f"
     },
     "dada": {
       "hash": "4fdee198a7c4cf6c"
@@ -308,13 +332,16 @@
       "hash": "9c672bf09cb3bd99"
     },
     "decora_harajuku_fashion": {
-      "hash": "67badd6f8e31831a"
+      "hash": "e57ac858819de046"
     },
     "decoupage": {
       "hash": "9f20230c1b450b27"
     },
     "deep_focus": {
       "hash": "5ce873c239de790a"
+    },
+    "delftware_blue": {
+      "hash": "f55301f74c7e6694"
     },
     "die_cut_window": {
       "hash": "443d14e0bb986079"
@@ -419,7 +446,7 @@
       "hash": "08454ef8e1995a81"
     },
     "film_noir": {
-      "hash": "31e1c57e86c83b50"
+      "hash": "b17b07886e23086b"
     },
     "film_strip_frame": {
       "hash": "14873d32ef585ac1"
@@ -432,6 +459,9 @@
     },
     "flexography_package": {
       "hash": "ecdff7358c1c47f2"
+    },
+    "flow_field": {
+      "hash": "3639797a1a6a5644"
     },
     "fluid_simulation": {
       "hash": "7b41baa4c3c32c40"
@@ -446,7 +476,7 @@
       "hash": "20139d2a0fdfe85d"
     },
     "french_bd_noir": {
-      "hash": "6b43003940c3902c"
+      "hash": "24d2e4f54a01536a"
     },
     "french_new_wave": {
       "hash": "719e3a2f6ef18505"
@@ -482,7 +512,7 @@
       "hash": "6109418be9b51aee"
     },
     "ghibli_studio": {
-      "hash": "17a98643e93351dc"
+      "hash": "5610a2085c01e54c"
     },
     "ghost_in_the_shell": {
       "hash": "22a77134bab5cf54"
@@ -501,6 +531,12 @@
     },
     "goldsmithing_filigree": {
       "hash": "e31ed1a94335d1ba"
+    },
+    "gond_art": {
+      "hash": "19a1393b5c6cf178"
+    },
+    "gongbi": {
+      "hash": "6ec960bbcfb67233"
     },
     "googie": {
       "hash": "e18c6df292142aee"
@@ -542,19 +578,25 @@
       "hash": "b8934384e19ee9bb"
     },
     "high_speed": {
-      "hash": "db08479656293aa3"
+      "hash": "16ed6eacd0aee57f"
     },
     "historical_fantasy_anime": {
       "hash": "d61cbde30a290322"
     },
     "hitchcockian": {
-      "hash": "bb99335d1fe43bfc"
+      "hash": "b9c8a5f75f772041"
     },
     "holographic_sticker": {
       "hash": "4b95b70d0ce4e9e6"
     },
+    "hooked_rug": {
+      "hash": "4ec364fc9d4c22b8"
+    },
     "hudson_river_school": {
       "hash": "ba153887ab8927eb"
+    },
+    "huichol_yarn": {
+      "hash": "05519c87995e670a"
     },
     "hyperrealism": {
       "hash": "74a0bbb41307038a"
@@ -578,7 +620,7 @@
       "hash": "47db868ba407526b"
     },
     "infrared": {
-      "hash": "d16bc1cad238d695"
+      "hash": "0c91196690405f2a"
     },
     "inio_asano_realism": {
       "hash": "29a2413e0f39ba70"
@@ -592,8 +634,17 @@
     "isekai_fantasy": {
       "hash": "4df8df83890b75e9"
     },
+    "islamic_geometric": {
+      "hash": "53113e0592ddc047"
+    },
     "isometric_pixel": {
       "hash": "151804374149beb2"
+    },
+    "iznik_ceramic": {
+      "hash": "3a99a7a9d5c2014a"
+    },
+    "jasperware_relief": {
+      "hash": "ff86ad267577ce45"
     },
     "jewelry_design_board": {
       "hash": "e2ed35e5fb33cc78"
@@ -607,8 +658,20 @@
     "junk_journal": {
       "hash": "521d638fcf280277"
     },
+    "kalighat": {
+      "hash": "f8613ed9fa6fe50e"
+    },
     "kemonomimi_animal_ear": {
       "hash": "99177b1c5f3336c5"
+    },
+    "kente_cloth": {
+      "hash": "65455acd3cd1dccc"
+    },
+    "kintsugi_repair": {
+      "hash": "78fd5d31fdb3bb15"
+    },
+    "kirigami_cut": {
+      "hash": "df1d754a50bb4fae"
     },
     "kirlian": {
       "hash": "7e975061bcebf5ac"
@@ -628,6 +691,9 @@
     "lacquerware_urushi": {
       "hash": "7130c1cb077116d3"
     },
+    "latch_hook": {
+      "hash": "d71a81d98d5f8de5"
+    },
     "leather_burning_pyrography": {
       "hash": "223a642337cdffd8"
     },
@@ -637,8 +703,14 @@
     "lens_flare": {
       "hash": "1d47f40f3d5bebe6"
     },
+    "lenticular_print": {
+      "hash": "827a19789359e381"
+    },
     "letterpress": {
       "hash": "232a6070676de8b1"
+    },
+    "light_box_transparency": {
+      "hash": "c93933365ddfa14d"
     },
     "light_painting": {
       "hash": "9f8b18549c0f33a0"
@@ -647,7 +719,7 @@
       "hash": "1d406a293cdfb081"
     },
     "liminal_space": {
-      "hash": "a79a096c1f128de0"
+      "hash": "d86099341868b2cd"
     },
     "line_art": {
       "hash": "890185a29eb10f3e"
@@ -683,7 +755,10 @@
       "hash": "10848400bf06e45b"
     },
     "macro": {
-      "hash": "778152c816662315"
+      "hash": "207aa9e82414105b"
+    },
+    "madhubani": {
+      "hash": "63ef5b9ed6926556"
     },
     "magic_lantern_slide": {
       "hash": "6eb0ca5ba26d9eb7"
@@ -698,7 +773,7 @@
       "hash": "f41d33e19fedb17e"
     },
     "makoto_shinkai": {
-      "hash": "2fed2cc76343850b"
+      "hash": "a30fd8da4ce06404"
     },
     "manga_shonen": {
       "hash": "ce84c7b10997ebac"
@@ -760,6 +835,9 @@
     "modern_digital_anime": {
       "hash": "389f607538ed3724"
     },
+    "mola_applique": {
+      "hash": "08a9689f92aa3c6f"
+    },
     "monotype_print": {
       "hash": "c2a3192c83c72b44"
     },
@@ -768,6 +846,9 @@
     },
     "motion_graphics_3d": {
       "hash": "e53a043b0ee9387e"
+    },
+    "mughal_miniature": {
+      "hash": "9ba1c3ac0c91216c"
     },
     "muralism": {
       "hash": "86f64cb783836b21"
@@ -799,6 +880,12 @@
     "neoclassicism": {
       "hash": "a6a91d886bbf6920"
     },
+    "neon_tube_sign": {
+      "hash": "39eb8939e65678c1"
+    },
+    "netsuke_carving": {
+      "hash": "4caaebdf69637a0c"
+    },
     "newspaper_comic": {
       "hash": "a69d2ae77ad80336"
     },
@@ -806,7 +893,7 @@
       "hash": "7f0970e2c098e3fc"
     },
     "night": {
-      "hash": "b6b18d85c8650c6a"
+      "hash": "79a0c3cefec38f42"
     },
     "nihonga": {
       "hash": "d3da3c0770fbfa96"
@@ -815,7 +902,7 @@
       "hash": "5f7ee52270903958"
     },
     "noir_comic": {
-      "hash": "67a800233fc5b442"
+      "hash": "d4ef336249029aab"
     },
     "nolan_imax": {
       "hash": "d15241ea499a0d3d"
@@ -850,14 +937,17 @@
     "orphism": {
       "hash": "11f8eeb3033653eb"
     },
+    "oscilloscope_trace": {
+      "hash": "5fbb320b4bd8bbe7"
+    },
     "otome_game": {
-      "hash": "ce50fc2c91e04129"
+      "hash": "8e5e7c7d643be13f"
     },
     "otoyomegatari_mori": {
       "hash": "e50b35d949282287"
     },
     "overhead_gods_eye": {
-      "hash": "0417d945643e1a73"
+      "hash": "b3caf6f682fb1724"
     },
     "packaging_label_design_mockup": {
       "hash": "7dfcd97afab776a6"
@@ -870,6 +960,9 @@
     },
     "panoramic": {
       "hash": "72f0827beb12a075"
+    },
+    "papel_picado": {
+      "hash": "c532042297151ff1"
     },
     "paper_collage": {
       "hash": "e210423369e0777f"
@@ -892,8 +985,17 @@
     "pastel_drawing": {
       "hash": "dc2bc80af5ec57e4"
     },
+    "patent_drawing": {
+      "hash": "c8a4380c36f89532"
+    },
     "pen_and_wash": {
       "hash": "4b28f1e9c2c34214"
+    },
+    "penny_dreadful": {
+      "hash": "2ee765d8d9a6ce4f"
+    },
+    "persian_miniature": {
+      "hash": "285b28e85bb1cb92"
     },
     "photobashing": {
       "hash": "c8a2590f170a0858"
@@ -936,6 +1038,9 @@
     },
     "plein_air": {
       "hash": "2fd156bef9d8a184"
+    },
+    "plotter_pen": {
+      "hash": "0b1d24bcf7f267c7"
     },
     "pocket_watch": {
       "hash": "4a4c88ea0d8ff6fd"
@@ -991,17 +1096,29 @@
     "pulp_comic": {
       "hash": "6e6ca4f606fb9842"
     },
+    "punk_collage": {
+      "hash": "6a1cce8e9d8dd160"
+    },
     "puppet_making_marionette": {
       "hash": "63ee5fd9fe934af7"
     },
+    "pysanky_egg": {
+      "hash": "d7e0d263ed9d98ad"
+    },
     "quilted": {
       "hash": "b8fe20d6616e28a9"
+    },
+    "raku_ceramic": {
+      "hash": "e93b2388ac21f71c"
     },
     "ransom_note": {
       "hash": "c43a951943ac1cb9"
     },
     "ray_traced_render": {
       "hash": "b0bfdbc57fc3e40f"
+    },
+    "reaction_diffusion": {
+      "hash": "b6983441daf768a9"
     },
     "real_time_render_game_engine": {
       "hash": "a541db9a22d49eeb"
@@ -1063,6 +1180,9 @@
     "scribble_art": {
       "hash": "c5964d93196cedab"
     },
+    "scrimshaw": {
+      "hash": "9e665b328ebef741"
+    },
     "scumbling": {
       "hash": "a500b2d187bc9655"
     },
@@ -1073,7 +1193,7 @@
       "hash": "5583360e5dd6c0f8"
     },
     "shin_hanga": {
-      "hash": "ce1f6bbde9637ebd"
+      "hash": "c04ec944ca100043"
     },
     "shoujo_takeuchi": {
       "hash": "80da2db505272418"
@@ -1092,6 +1212,9 @@
     },
     "slice_of_life_moe": {
       "hash": "5b9dcde9de73dc53"
+    },
+    "slit_scan": {
+      "hash": "90d840b60947d894"
     },
     "smartphone_computational": {
       "hash": "0168dbdafbe12348"
@@ -1113,6 +1236,9 @@
     },
     "soft_body_dynamics": {
       "hash": "db1203e9fa40ec88"
+    },
+    "sosaku_hanga": {
+      "hash": "e04e131a1ad1b837"
     },
     "spike_lee": {
       "hash": "1f78b37f8df2b9d0"
@@ -1171,6 +1297,9 @@
     "surrealism": {
       "hash": "34d4aa90191e58dc"
     },
+    "suzani_embroidery": {
+      "hash": "ba43b4a5a8d3ec03"
+    },
     "swiss_style": {
       "hash": "1688b38fd40eb827"
     },
@@ -1182,6 +1311,9 @@
     },
     "tachisme": {
       "hash": "65075c67ec545236"
+    },
+    "talavera_ceramic": {
+      "hash": "7d33dbb8b9eafb0b"
     },
     "tape_art": {
       "hash": "e0f625fbc41d6ca4"
@@ -1204,6 +1336,9 @@
     "technicolor": {
       "hash": "eb2828356788d8fd"
     },
+    "teletext_mosaic": {
+      "hash": "124037c3eb187721"
+    },
     "tempera": {
       "hash": "a2b6514b92a8127d"
     },
@@ -1214,7 +1349,7 @@
       "hash": "32a308df0294e9a1"
     },
     "terrence_malick": {
-      "hash": "1aa6aec5ded84fc1"
+      "hash": "41f4427dee3ce5d2"
     },
     "textile_collage": {
       "hash": "e2dc0ba3d3d51b20"
@@ -1255,6 +1390,9 @@
     "trompe_loeil": {
       "hash": "4194bd01c6a1ed9e"
     },
+    "truchet_tiles": {
+      "hash": "5645648809f6b228"
+    },
     "typographic_collage": {
       "hash": "b9e6155a305a0666"
     },
@@ -1265,7 +1403,7 @@
       "hash": "8c4a74500a99ec69"
     },
     "urasawa_monster": {
-      "hash": "6ba15af9aea215ff"
+      "hash": "852e62d4d8c7f6e3"
     },
     "urban_sketching": {
       "hash": "31ac31b94a9c7c24"
@@ -1318,11 +1456,20 @@
     "volumetric_render": {
       "hash": "8dddfd9829c4436e"
     },
+    "voronoi_cells": {
+      "hash": "0159f93145e48c61"
+    },
     "vorticism": {
       "hash": "1744ced2b4734f82"
     },
     "voxel": {
       "hash": "28358500e568961f"
+    },
+    "wanted_poster": {
+      "hash": "004e729d0faf9b83"
+    },
+    "warli": {
+      "hash": "9d6ddbc5b01e5e0f"
     },
     "washi_chiyogami": {
       "hash": "95fe73e519b936f3"
@@ -1335,6 +1482,9 @@
     },
     "wax_seal_on_letter": {
       "hash": "51addc73621e80ec"
+    },
+    "wayang_kulit": {
+      "hash": "0ca64dd6dfde77b1"
     },
     "webcomic_infinite_canvas": {
       "hash": "e362544d3557b009"
@@ -1353,6 +1503,9 @@
     },
     "wiener_werkstatte": {
       "hash": "c283e6e34ef0c458"
+    },
+    "wire_sculpture": {
+      "hash": "fa853333d3a91ba3"
     },
     "wire_wrapping_jewelry": {
       "hash": "a02e3c0cde5dbb42"
@@ -1378,8 +1531,14 @@
     "woven_tapestry": {
       "hash": "b9f6fb5a843729ee"
     },
+    "wpa_poster": {
+      "hash": "707059ce8a9f9ae2"
+    },
     "xerox_art": {
       "hash": "414617349806923c"
+    },
+    "xray_radiograph": {
+      "hash": "008375b4da981e72"
     },
     "yaoi_bl_style": {
       "hash": "15e959ff57dd6e16"
@@ -1398,6 +1557,9 @@
     },
     "zbrush_sculpt_render": {
       "hash": "3cbb880f49071e52"
+    },
+    "zoetrope_strip": {
+      "hash": "62a856dcfce27888"
     }
   },
   "version": 2

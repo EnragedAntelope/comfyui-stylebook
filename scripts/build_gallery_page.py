@@ -77,6 +77,7 @@ def _payload() -> dict:
                 "label": rec["label"],
                 "category": rec.get("category", ""),
                 "aliases": list(rec.get("aliases", [])),
+                "scene": rec.get("scene", ""),
                 "prose": rec.get("prose", ""),
                 "tags": rec.get("tags", ""),
                 "negative": rec.get("negative", ""),
@@ -143,8 +144,17 @@ main { max-width: 1180px; margin: 0 auto; padding: 18px 20px 60px; }
 }
 .tile:hover, .tile:focus-visible { border-color: var(--accent); outline: none; }
 .art {
+  position: relative;
   width: 100%; aspect-ratio: 1; background-repeat: no-repeat;
   background-color: rgba(127,127,127,.12);
+}
+/* Own colours, not theme variables: it sits on an arbitrary photograph
+   and has to stay legible on every one of them. */
+.scene {
+  position: absolute; left: 4px; bottom: 4px; padding: 1px 5px;
+  border-radius: 3px; background: rgba(12,12,12,.72); color: #f2f2f2;
+  font-size: 9px; font-weight: 600; line-height: 1.4; letter-spacing: .06em;
+  text-transform: uppercase;
 }
 .name { padding: 6px 6px 0; font-size: 12px; font-weight: 600; line-height: 1.25; }
 .cat {
@@ -218,7 +228,13 @@ const catSel = document.getElementById("cat");
 const countEl = document.getElementById("count");
 const sheet = document.getElementById("sheet");
 
-document.getElementById("model").textContent = (DATA.sprites && DATA.sprites.model) || "a fixed checkpoint";
+/* The manifest stores the checkpoint exactly as ComfyUI names it, which
+   on Windows is a backslashed subfolder path with a .safetensors suffix.
+   That is build provenance, not something to publish verbatim. */
+document.getElementById("model").textContent =
+  ((DATA.sprites && DATA.sprites.model) || "")
+    .split(/[\\\\/]/).pop().replace(/\\.(safetensors|ckpt|sft)$/i, "")
+  || "a fixed checkpoint";
 
 catSel.append(new Option("All categories", ""));
 for (const c of DATA.categories) catSel.append(new Option(DATA.categoryLabels[c] || c, c));
@@ -242,8 +258,9 @@ function applySprite(el, category, id) {
 
 function matches(s, needle) {
   if (!needle) return true;
-  return (s.label + " " + s.id + " " + s.aliases.join(" ") + " " +
-          (DATA.categoryLabels[s.category] || "") + " " + s.prose + " " + s.tags)
+  return (s.label + " " + s.id + " " + s.aliases.join(" ") + " " + s.scene +
+          " " + (DATA.categoryLabels[s.category] || "") + " " + s.prose +
+          " " + s.tags)
          .toLowerCase().includes(needle);
 }
 
@@ -268,6 +285,14 @@ function render() {
     const art = document.createElement("div");
     art.className = "art";
     applySprite(art, s.category, s.id);
+    /* Overlaid on the art, so it costs no row height. */
+    if (s.scene) {
+      const b = document.createElement("span");
+      b.className = "scene";
+      b.textContent = "scene";
+      art.append(b);
+      tile.title = "Places your subject in " + s.scene + ".";
+    }
     const name = document.createElement("div");
     name.className = "name";
     name.textContent = s.label;
@@ -310,6 +335,12 @@ function open(s) {
   art.className = "art";
   applySprite(art, s.category, s.id);
   body.append(h, where, art);
+  if (s.scene) {
+    body.append(field("Sets the scene",
+      "This style places your subject in " + s.scene +
+      ". Most styles only change how your subject is rendered; this one " +
+      "also decides where it is.", false));
+  }
   if (s.prose) body.append(field("Prose", s.prose, true));
   if (s.tags) body.append(field("Keywords", s.tags, true));
   if (s.negative) body.append(field("Negative prompt", s.negative, true));

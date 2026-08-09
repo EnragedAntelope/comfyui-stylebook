@@ -280,6 +280,7 @@ ILLUSTRATION_STYLES: dict[str, dict] = {
         "id": "urban_sketching",
         "label": "Urban Sketching",
         "category": "illustration",
+        "scene": "an on-location street scene",
         "aliases": ["location sketch", "reportage drawing"],
         "tags": "urban sketching, on-location drawing, spontaneous reportage, ink and watercolour on sketchbook paper, dappled city light, layered texture of weathered surfaces, candid street-level composition, architectural and human elements",
         "prose": "Captured as urban sketching: drawn on location with ink and watercolour on sketchbook paper, dappled city light falling across layered textures of weathered surfaces, the candid street-level composition weaving architectural and human elements into a spontaneous reportage of place.",

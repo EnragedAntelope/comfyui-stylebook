@@ -120,6 +120,12 @@ STYLE_SUBJECT = {
     # Not a hand: hands are the one subject image models reliably deform,
     # and a preview whose main feature is an extra finger teaches nothing
     # about the style.
+    # Pure pattern systems. Against the category's standing figure the
+    # model rendered a particle dissolve for Voronoi and an almost blank
+    # sheet for Truchet - the pattern needs a surface to act on.
+    "voronoi_cells": "a smooth ovoid sculpture, its whole surface divided "
+                     "into irregular cells",
+    "truchet_tiles": "a flat square decorative panel of repeating tiles",
     "subsurface_scattering": "a backlit marble bust and a translucent wax candle",
     "hdri_environment_lighting": "a chrome sphere and a matte sphere side by side",
     # Styles whose subject is a place, not a person. The category subject

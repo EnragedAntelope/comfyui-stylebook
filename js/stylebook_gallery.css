@@ -269,6 +269,28 @@
     background-repeat: no-repeat;
 }
 
+/* Marks a style that puts your subject somewhere, rather than only
+ * changing how it is drawn. Overlaid on the thumbnail on purpose: tile
+ * height is fixed by grid-auto-rows, so a badge that occupied a row would
+ * clip the label instead. Its own colours, not theme variables, because
+ * it sits on an arbitrary photograph and has to stay legible on all of
+ * them. */
+.stylebook-tile-scene {
+    position: absolute;
+    left: 4px;
+    bottom: 4px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(12, 12, 12, 0.72);
+    color: #f2f2f2;
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
 .stylebook-tile-initials {
     position: absolute;
     inset: 0;

@@ -8,6 +8,7 @@ Exits non-zero on any failure.
 from __future__ import annotations
 
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -245,6 +246,11 @@ def validate() -> list[str]:
     # Duplicate *labels* are the real hazard: they make a combo dropdown
     # ambiguous, and label-to-record lookup silently returns whichever
     # entry happens to come first.
+    # --- scene content ---
+    # A style describes rendering. Naming a place renders that place.
+    errors.extend(_check_scene_content(STYLES))
+    errors.extend(_check_scene_field(STYLES))
+
     errors.extend(_check_duplicate_labels("style", STYLES))
     errors.extend(_check_duplicate_labels("artist", ARTISTS))
     errors.extend(_check_duplicate_labels("modifier", MODIFIERS))
@@ -345,6 +351,107 @@ def _check_negation(kind: str, coll: dict[str, dict]) -> list[str]:
                     f"say what is there, not what is missing."
                 )
                 break
+    return errors
+
+
+#: Place, weather and landscape nouns that a *rendering* style has no
+#: business naming. Deliberately narrow and hand-verified against every
+#: style in the pack, because the obvious wide version is mostly false
+#: positives: "paper" is a substrate, "hand" is hand-pulled, "plate" is a
+#: printing plate, "field" is depth of field, "face" is a coin face and
+#: "plane" is the picture plane. A narrow gate that is always right beats
+#: a broad one that trains a maintainer to skim past it. This catches a
+#: regression of a known defect class; it is not an oracle, and adding a
+#: style still needs the judgement described in ARCHITECTURE.md.
+_SCENE_NOUNS = (
+    # Interiors and transitional places
+    "corridor", "hallway", "stairwell", "staircase", "escalator",
+    "carpet", "ceiling tile", "drop ceiling", "cockpit", "jazz club",
+    # Exteriors and settlements
+    "alley", "piazza", "plaza", "courtyard", "arcaded", "roadside",
+    "castle", "cathedral", "skyscraper", "cityscape", "city street",
+    "street background", "street at night", "megacity", "space colony",
+    # Weather and ground conditions
+    "rain-soaked", "rain-slicked", "wet street", "wet mud",
+    # Landscape features. "wheat" is not here on its own: the only match
+    # in the pack is "wheat-pasted", which is an adhesive.
+    "tall grass", "wheat field", "wilderness", "meadow", "mountain vista",
+    "river vista", "forest",
+    # Sky
+    "milky way", "star field", "star trails",
+    # Props that caused real contamination once already
+    "trenchcoat", "cherry blossom", "water droplet crown",
+    "bullet through", "insect scale",
+)
+
+#: Styles that name a term above for a reason unrelated to scene content.
+#: Every entry needs a written reason - an exemption without one is how a
+#: check quietly stops meaning anything.
+_SCENE_EXEMPT: dict[str, str] = {
+    "long_exposure": "star trails are an exposure artefact, not sky content",
+}
+
+
+def _check_scene_content(coll: dict[str, dict]) -> list[str]:
+    """Reject scene content in a style that has not declared a `scene`.
+
+    A style describes how the image is rendered. Naming a place puts that
+    place in the picture whatever the user asked for: Macro Photography
+    once listed "dew drops" and rendered them onto every subject.
+
+    A style whose identity *is* a place declares it in `scene` instead -
+    Liminal Space without a transitional interior is not liminal space -
+    and the gallery badges it so the choice is visible before the render.
+    """
+    errors: list[str] = []
+    for sid, rec in coll.items():
+        if rec.get("scene", "").strip() or sid in _SCENE_EXEMPT:
+            continue
+        blob = f"{rec.get('tags', '')} {rec.get('prose', '')}".lower()
+        for noun in _SCENE_NOUNS:
+            # Word boundaries, not substrings. A plain `in` test matched
+            # "alley" inside "gallery" and "wheat" inside "wheat-pasted",
+            # which is exactly the kind of confident wrong answer that
+            # makes a maintainer stop believing a checker.
+            # Trailing `s?` because the first boundary-anchored version
+            # silently stopped matching "wet streets" and "city streets"
+            # and quietly shrank the report.
+            if re.search(rf"\b{re.escape(noun)}s?\b", blob):
+                errors.append(
+                    f"style '{sid}': names the scene element '{noun}' but "
+                    f"declares no 'scene'. Either cut it (a style describes "
+                    f"rendering, not what is in the picture) or, if the "
+                    f"style is defined by that setting, declare `scene` so "
+                    f"the gallery can warn the user."
+                )
+                break
+    return errors
+
+
+def _check_scene_field(coll: dict[str, dict]) -> list[str]:
+    """`scene` must be a short affirmative phrase when present."""
+    errors: list[str] = []
+    for sid, rec in coll.items():
+        if "scene" not in rec:
+            continue
+        scene = rec["scene"]
+        if not isinstance(scene, str) or not scene.strip():
+            errors.append(
+                f"style '{sid}': 'scene' must be a non-empty string, or be "
+                f"omitted entirely"
+            )
+            continue
+        if _word_count(scene) > 12:
+            errors.append(
+                f"style '{sid}': 'scene' has {_word_count(scene)} words; it "
+                f"is a badge caption, keep it under 12"
+            )
+        if scene[:1].isupper() and not scene.startswith(("A ", "An ", "The ")):
+            errors.append(
+                f"style '{sid}': 'scene' reads {scene!r}; write it lower-case "
+                f"as a noun phrase so it reads naturally after 'places your "
+                f"subject in'"
+            )
     return errors
 
 

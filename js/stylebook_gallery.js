@@ -327,6 +327,7 @@ function styleItems() {
         label: data.labels[i],
         group: category,
         aliases: (data.aliases && data.aliases[i]) || [],
+        scene: (data.scenes && data.scenes[i]) || "",
       });
     }
   }
@@ -340,6 +341,7 @@ function styleItems() {
       label: entry.label,
       group: entry.category,
       aliases: [],
+      scene: entry.scene || "",
       isCustom: true,
     });
   }
@@ -749,9 +751,12 @@ class StylebookPicker {
     tile.setAttribute("role", "option");
     tile.tabIndex = -1;
     tile.setAttribute("data-group", item.group || "");
-    tile.title = item.aliases.length
-      ? item.label + "\nalso: " + item.aliases.join(", ")
-      : item.label;
+    const titleLines = [item.label];
+    if (item.aliases.length) titleLines.push("also: " + item.aliases.join(", "));
+    // Said in full in the tooltip, because the badge itself only has room
+    // for one word and "scene" alone does not explain what will happen.
+    if (item.scene) titleLines.push("Places your subject in " + item.scene + ".");
+    tile.title = titleLines.join("\n");
     if (position) tile.classList.add("selected");
 
     const art = document.createElement("div");
@@ -768,6 +773,18 @@ class StylebookPicker {
       glyph.className = "stylebook-tile-initials";
       glyph.textContent = initials(item.label);
       art.appendChild(glyph);
+    }
+
+    // Overlaid on the art rather than added as a row. Tile height is fixed
+    // by grid-auto-rows plus the --sb-* line variables, so any new line
+    // inside a tile silently clips the label -- and jsdom cannot see that.
+    // An absolutely positioned badge costs no layout.
+    if (item.scene) {
+      const badge = document.createElement("div");
+      badge.className = "stylebook-tile-scene";
+      badge.textContent = "scene";
+      badge.setAttribute("aria-hidden", "true");
+      art.appendChild(badge);
     }
 
     const label = document.createElement("div");

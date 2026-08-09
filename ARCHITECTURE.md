@@ -600,6 +600,9 @@ so they appeared in images of whatever the user actually asked for. A
 style may only name a subject when the subject *is* the style: Ikebana is
 an arrangement of flowers, and removing the flowers leaves nothing.
 
+That exception is now a field rather than a judgement call. See
+"Styles that set the scene" below.
+
 **State properties affirmatively, not only as negations.** Rendering
 Ligne Claire without its negative keeps the uniform line weight and loses
 the flat colour, because the positive stated the line weight affirmatively
@@ -613,11 +616,74 @@ applies.
 "sudden, jarring, explosive, rapid" gives a model nothing to draw. This
 was confined to one category and is now guarded by a review script.
 
+## Styles that set the scene
+
+Most styles change *how* your subject is drawn. A minority also decide
+*where* it is, and the difference matters enough to be visible before you
+render rather than after.
+
+Liminal Space is the clear case. The aesthetic comes from anthropology —
+*limen*, a threshold — and names a transitional place emptied of the
+people it was built for. Strip the place out and nothing survives but a
+yellow-green fluorescent snapshot. The same is true of Vanitas without its
+skull and guttering candle, Ikebana without its flowers, and de Chirico's
+Metaphysical Art without its arcaded piazza.
+
+Such a style declares an optional **`scene`** field: a short affirmative
+noun phrase naming what it imposes.
+
+```python
+"scene": "a deserted transitional interior",
+```
+
+Three things read it, which is the whole reason it is data and not a
+comment:
+
+- **`tests/validate_data.py`** rejects scene nouns in any style that has
+  *not* declared one. The lexicon is deliberately narrow and hand-verified
+  against every style in the pack, because the obvious wide version is
+  mostly false positives — "paper" is a substrate, "hand" is hand-pulled,
+  "plate" is a printing plate, "field" is depth of field, "face" is a coin
+  face and "plane" is the picture plane. A narrow gate that is always
+  right beats a broad one that trains you to skim past it. It also matches
+  on word boundaries with an optional plural: a plain substring test found
+  "alley" inside *gallery* and "wheat" inside *wheat-pasted*.
+- **The gallery** badges those tiles and spells it out in the tooltip
+  ("Places your subject in a deserted transitional interior"). The badge is
+  absolutely positioned over the thumbnail, not added as a tile row,
+  because tile height is fixed by `grid-auto-rows` and a new row silently
+  clips the label — see "Frontend rules that are not optional".
+- **`scripts/build_previews.py`** already had to know which styles are
+  places, so that a preview renders the place rather than the category's
+  stock person. `tests/test_scene.py` binds the two lists together.
+
+Two deliberate limits. `scene` is **not** used for object and container
+styles: `object_artifact` is a whole category meaning "the subject is
+rendered inside the thing", and the gallery already shows category chips,
+so a second signal would add surface area and no information. And a test
+asserts fewer than a quarter of styles declare one — if `scene` becomes
+common, the badge has stopped carrying meaning.
+
+Generalise rather than over-specify. Liminal Space originally named
+patterned corridor carpet and drop ceiling tiles, which pinned it to the
+office-hallway variant and drew that carpet even when an empty pool was
+wanted. It now names the class of place and lets the rendering signature
+carry the rest.
+
+**Known edge, deliberately not solved.** Nothing stops two scene styles
+being combined — a Blend of Liminal Space and Vanitas asks for a corridor
+and a tabletop at once, and Sheet can resolve several scene styles in one
+list. `blocks` handles the equivalent conflict on modifier axes, but there
+is no scene-versus-scene equivalent and none is planned. Adding one would
+put real complexity into Blend and Sheet to prevent a combination nobody
+has yet reported wanting to avoid. Revisit if it is actually reported.
+
 ## Adding a style
 
 1. Add the record to the right module under `data/styles/`. Required
    fields: `id` (matching the key), `label`, `category`, `aliases`,
-   `tags`, `prose`, `negative`, `preview`, `blocks`.
+   `tags`, `prose`, `negative`, `preview`, `blocks`. Optional: `scene`,
+   only if the style decides where the subject is — see above.
 2. Write `tags` as concrete visual noun phrases. A list of mood adjectives
    ("sudden, jarring, explosive") gives a model nothing to render.
 3. Write `negative` as what this style is *not*. It is used both at render

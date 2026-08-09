@@ -4320,6 +4320,96 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["painter of light", "glowing cottage", "sentimental landscape"],
         "descriptor": "storybook cottages with windows glowing amber against blue twilight, cobblestone lanes wet with reflected light, blooming gardens and warm impasto highlight bloom everywhere",
     },
+    "kathe_kollwitz": {
+        "label": "Käthe Kollwitz",
+        "category": "fine-art",
+        "aliases": ['kollwitz', 'kaethe kollwitz'],
+        "descriptor": "stark charcoal and lithographic blacks, gaunt working figures pared to essential mass, grief rendered through weight of line alone",
+    },
+    "amrita_sher_gil": {
+        "label": "Amrita Sher-Gil",
+        "category": "fine-art",
+        "aliases": ['sher-gil'],
+        "descriptor": "flattened planes of warm ochre and deep indigo, elongated still figures, European modernist form fused with Indian miniature colour",
+    },
+    "nicholas_roerich": {
+        "label": "Nicholas Roerich",
+        "category": "fine-art",
+        "aliases": ['nikolai roerich', 'roerich'],
+        "descriptor": "flat tempera mountain ranges in banded violet and turquoise, luminous stylised peaks, mystical stillness and thin clear air",
+    },
+    "vija_celmins": {
+        "label": "Vija Celmins",
+        "category": "fine-art",
+        "aliases": ['celmins'],
+        "descriptor": "obsessive graphite renderings of ocean surface and night sky, an even all-over field, grey tonal precision holding every part equally",
+    },
+    "alex_colville": {
+        "label": "Alex Colville",
+        "category": "fine-art",
+        "aliases": ['colville'],
+        "descriptor": "flat acrylic realism with geometric compositional order, still tense figures, muted palette and an atmosphere of suspended threat",
+    },
+    "charles_sheeler": {
+        "label": "Charles Sheeler",
+        "category": "fine-art",
+        "aliases": ['sheeler'],
+        "descriptor": "precisionist industrial forms in crisp hard-edged planes, smooth surfaces, clean factory geometry laid down in flat even paint",
+    },
+    "gunta_stolzl": {
+        "label": "Gunta Stölzl",
+        "category": "fine-art",
+        "aliases": ['gunta stoelzl', 'stolzl'],
+        "descriptor": "Bauhaus weaving in bold rectilinear colour blocks, layered woven texture, primary hues gridded into rhythmic abstract bands",
+    },
+    "kim_jung_gi": {
+        "label": "Kim Jung Gi",
+        "category": "comics",
+        "aliases": ['kim jung-gi'],
+        "descriptor": "dense freehand ink laid straight down in pen, crowded dynamic perspective, confident varied line describing crowds and machinery at once",
+    },
+    "jerry_pinkney": {
+        "label": "Jerry Pinkney",
+        "category": "illustration",
+        "aliases": ['pinkney'],
+        "descriptor": "luminous layered watercolour and coloured pencil, warm earth tones, textured pencil underdrawing showing through expressive animal and human forms",
+    },
+    "ezra_jack_keats": {
+        "label": "Ezra Jack Keats",
+        "category": "illustration",
+        "aliases": ['keats'],
+        "descriptor": "bold collage of patterned papers with gouache, flat graphic city shapes, warm saturated colour and simple joyful child figures",
+    },
+    "lotte_reiniger": {
+        "label": "Lotte Reiniger",
+        "category": "film",
+        "aliases": ['reiniger'],
+        "descriptor": "intricate black cut-paper silhouettes against luminous coloured grounds, delicate filigree edges, storybook shadow-theatre staging",
+    },
+    "sven_nykvist": {
+        "label": "Sven Nykvist",
+        "category": "film",
+        "aliases": ['nykvist'],
+        "descriptor": "soft naturalistic north-light cinematography, luminous skin against muted grounds, restrained shadow and unadorned emotional clarity",
+    },
+    "agnes_varda": {
+        "label": "Agnès Varda",
+        "category": "film",
+        "aliases": ['varda'],
+        "descriptor": "warm humane framing that mixes documentary texture with playful colour, candid faces, sunlit everyday surfaces treated with affection",
+    },
+    "chantal_akerman": {
+        "label": "Chantal Akerman",
+        "category": "film",
+        "aliases": ['akerman'],
+        "descriptor": "fixed frontal camera holding a static symmetrical frame, flat even light, durational stillness that makes ordinary space monumental",
+    },
+    "ernst_haas": {
+        "label": "Ernst Haas",
+        "category": "photography",
+        "aliases": ['haas'],
+        "descriptor": "pioneering colour photography of saturated motion blur, reflections and layered light, abstraction pulled out of ordinary movement",
+    },
 }
 
 # Merge user-supplied artists so they survive a git pull.
