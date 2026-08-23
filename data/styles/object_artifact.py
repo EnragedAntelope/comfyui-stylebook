@@ -590,6 +590,28 @@ OBJECT_ARTIFACT_STYLES: dict[str, dict] = {
         "preview": "object_artifact#53",
         "blocks": [],
     },
+    "fruit_crate_label": {
+        "id": "fruit_crate_label",
+        "label": "Fruit Crate Label",
+        "category": "object_artifact",
+        "aliases": ["citrus crate label", "orange box label", "produce label lithograph"],
+        "tags": "vintage fruit crate label lithograph, saturated stone-litho colour, bold arched brand lettering, an idealised central vignette, decorative border rules, slight ink misregistration, matte uncoated paper stock, confident early twentieth-century commercial art",
+        "prose": "Printed as a vintage fruit crate label: saturated stone-lithographic colour under bold arched brand lettering, an idealised central vignette framed by decorative border rules, the ink slightly misregistered on matte uncoated stock.",
+        "negative": "photographic imagery, minimal modern branding, muted desaturated palette, glossy coated finish",
+        "preview": "object_artifact#54",
+        "blocks": [],
+    },
+    "sideshow_banner": {
+        "id": "sideshow_banner",
+        "label": "Sideshow Banner",
+        "category": "object_artifact",
+        "aliases": ["carnival banner", "circus banner", "sideshow canvas"],
+        "tags": "hand-painted sideshow banner, bold flat enamel colour on coarse canvas, thick black outline around every form, huge hand-lettered display type, scalloped border and rope grommets, visible brushwork and canvas weave, sun-faded weathered patches",
+        "prose": "Painted as a canvas sideshow banner: bold flat enamel colour brushed onto coarse weave, every form ringed in thick black outline beneath huge hand-lettered display type, a scalloped border and grommets at the edge, the whole surface sun-faded and worn.",
+        "negative": "photographic reproduction, subtle tonal rendering, restrained typography, pristine glossy surface",
+        "preview": "object_artifact#55",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = OBJECT_ARTIFACT_STYLES

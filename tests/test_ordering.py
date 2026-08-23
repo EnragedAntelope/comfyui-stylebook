@@ -88,6 +88,7 @@ class StyleOptionOrderTests(unittest.TestCase):
     def test_numeric_labels_read_naturally(self):
         numeric = [label for label in self.options if label[:1].isdigit()]
         self.assertEqual(numeric, [
+            "1-Bit Monochrome",
             "3D Matte Painting",
             "8-Bit Pixel Art",
             "16-Bit Pixel Art",

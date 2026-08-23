@@ -1,8 +1,29 @@
-"""Generate the frontend's data module from the Python data layer.
+"""Generate the frontend's data files from the Python data layer.
 
-Writes ``js/stylebook_data.js``, which is generated in full and contains
-nothing hand-written. The gallery code lives in ``js/stylebook_gallery.js``
-and this script never touches it.
+Writes two files, both generated in full, both containing nothing
+hand-written. The gallery code lives in ``js/stylebook_gallery.js`` and
+this script never touches it.
+
+**Why two files.** ComfyUI discovers frontend extensions by globbing
+``**/*.js`` under every pack's web directory and importing every hit
+(``server.py``, ``get_extensions``). It does not care whether a file
+registers an extension -- a ``.js`` file in ``js/`` is parsed at app
+start no matter what. The style corpus is roughly 300 KB of that, and
+every ComfyUI user paid for it on every load, including the ones with no
+Stylebook node on the canvas.
+
+So the corpus moved to ``js/stylebook_data.json``, which the glob does
+not match and which the gallery fetches the first time a picker opens.
+What stays in ``js/stylebook_data.js`` is only what the *node* needs
+before any dialog exists: the axis-to-modifier map that gates the
+Modifier widget, the category tables the tab strip names, and the
+counts. That is a couple of kilobytes.
+
+Moving it to a ``.mjs`` module and using a dynamic ``import()`` would
+have been tidier to read, but a module import is subject to the server's
+MIME type for the extension, and ``mimetypes`` on Windows takes its
+answer from the registry. ``fetch`` + ``response.json()`` enforces no
+MIME type at all.
 
 An earlier revision generated into the middle of a hand-edited file and
 overwrote the whole thing, silently deleting the ``export`` statements
@@ -12,7 +33,7 @@ fresh render of itself. Keeping generated and hand-written code in
 separate files removes that failure mode entirely.
 
 Usage:
-    python scripts/generate_js_data.py            # write
+    python scripts/generate_js_data.py            # write both files
     python scripts/generate_js_data.py --check    # verify (CI gate)
 """
 
@@ -21,6 +42,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -34,6 +56,7 @@ if str(ROOT) not in sys.path:
 os.environ.setdefault("STYLEBOOK_IGNORE_USER_STYLES", "1")
 
 TARGET = ROOT / "js" / "stylebook_data.js"
+BULK_TARGET = ROOT / "js" / "stylebook_data.json"
 PREVIEW_INDEX = ROOT / "js" / "previews" / "index.json"
 
 HEADER = """\
@@ -43,6 +66,11 @@ HEADER = """\
 //
 // This entire file is generated. Hand-written frontend code belongs in
 // stylebook_gallery.js, which the generator never touches.
+//
+// Only what a node needs before any dialog exists lives here. The style,
+// artist and modifier corpus is in stylebook_data.json, fetched the first
+// time a picker opens -- ComfyUI imports every .js under a pack's web
+// directory at app start, so a 300 KB one is a tax on every user.
 """
 
 
@@ -89,13 +117,23 @@ def _preview_sprites() -> dict:
     return {"model": raw.get("model", ""), "categories": out}
 
 
-def generate() -> str:
+def generate() -> tuple[str, str]:
     from data.artists import (
         ARTIST_CATEGORIES, ARTIST_CATEGORY_LABELS, ARTISTS,
     )
     from data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS
     from data.ordering import label_sort_key
     from data.styles import CATEGORIES, CATEGORY_LABELS, STYLES
+    from data.versions import ADDED_IN, RELEASES
+
+    # The build's own version, read the same way the publish workflow reads
+    # it. tomllib would be tidier but arrived in 3.11 and the pack floor is
+    # 3.10, which CI actually runs.
+    match = re.search(
+        r'(?m)^version\s*=\s*"([^"]+)"',
+        (ROOT / "pyproject.toml").read_text(encoding="utf-8"),
+    )
+    version = match.group(1) if match else ""
 
     styles_by_category: dict[str, dict[str, list]] = {}
     for category in CATEGORIES:
@@ -109,6 +147,14 @@ def generate() -> str:
         styles_by_category[category] = {
             "ids": ids,
             "labels": [STYLES[sid]["label"] for sid in ids],
+            # The release each style first shipped in, so the gallery can
+            # sort by newest and filter to "New" without a second lookup
+            # table. data/versions.py is the source; CI keeps it complete.
+            "added": [ADDED_IN["styles"].get(sid, "") for sid in ids],
+            # Who the style is named after, when it is named after
+            # somebody. Shown in the tile tooltip so the promise the tile
+            # makes is visible before the render, not just to a maintainer.
+            "namesakes": [STYLES[sid].get("namesake", "") for sid in ids],
             # Aliases power gallery search. The search box has always
             # claimed to match them; now it actually can.
             "aliases": [list(STYLES[sid].get("aliases", [])) for sid in ids],
@@ -132,11 +178,14 @@ def generate() -> str:
             "axis": axis,
             "detail": MODIFIERS[mid].get("prose", ""),
             "aliases": list(MODIFIERS[mid].get("aliases", [])),
+            "added": ADDED_IN["modifiers"].get(mid, ""),
         }
         for axis in AXES
         for mid in MODIFIERS_BY_AXIS.get(axis, [])
         if mid in MODIFIERS
     ]
+
+    artist_ids_by_label = {rec["label"]: aid for aid, rec in ARTISTS.items()}
 
     preview_index = _preview_sprites()
 
@@ -153,40 +202,61 @@ def generate() -> str:
         f"export const STYLE_COUNT = {len(STYLES)};",
         f"export const ARTIST_COUNT = {len(ARTISTS)};",
         "",
-        "// Per-category ids, labels and aliases as parallel arrays.",
-        f"export const STYLE_DATA_BY_CATEGORY = {_js(styles_by_category)};",
+        "// The release this build is, and every release before it, oldest",
+        "// first. The gallery's \"New\" tab means CURRENT_VERSION; the",
+        "// newest-first sort ranks by position in RELEASES rather than",
+        "// parsing version strings in JavaScript.",
+        f"export const CURRENT_VERSION = {_js(version)};",
+        f"export const RELEASES = {_js(list(RELEASES))};",
         "",
-        "// Every style label, in data/ordering.py's order -- the same order",
-        "// the node's own dropdown uses. The gallery sorts with Intl.Collator",
-        "// rather than reading this, because it also has to place entries from",
-        "// a user_styles.json this generator never saw. That makes one rule in",
-        "// two languages, so tests/frontend/gallery.test.mjs asserts that",
-        "// re-sorting this list with the JS comparator changes nothing.",
-        f"export const ALL_STYLE_LABELS = {_js(all_labels)};",
+        "// The axis-to-modifier map gates the Modifier node's dropdown as",
+        "// soon as the node exists, before any dialog is opened, so unlike",
+        "// the corpus it genuinely has to be here.",
+        f"export const MODIFIER_AXES = {_js(list(AXES))};",
+        f"export const MODIFIER_LABELS_BY_AXIS = {_js(modifiers_by_axis)};",
         "",
-        f"export const ARTIST_LABELS = {_js([r['label'] for r in artists])};",
-        f"export const ARTIST_CATEGORIES = {_js([r.get('category', '') for r in artists])};",
         "// The category tabs for the artist picker, in offer order, plus",
         "// their display names. Derived from the data so a category added",
         "// by a user_styles.json artist still gets a tab.",
         f"export const ARTIST_CATEGORY_ORDER = {_js(list(ARTIST_CATEGORIES))};",
         f"export const ARTIST_CATEGORY_LABELS = {_js(ARTIST_CATEGORY_LABELS)};",
-        f"export const ARTIST_ALIASES = {_js([list(r.get('aliases', [])) for r in artists])};",
-        "// Descriptors are what actually make an artist choosable: the",
-        "// name alone means nothing if you do not already know the work.",
-        f"export const ARTIST_DESCRIPTORS = {_js([r.get('descriptor', '') for r in artists])};",
         "",
-        f"export const MODIFIER_AXES = {_js(list(AXES))};",
-        f"export const MODIFIER_LABELS_BY_AXIS = {_js(modifiers_by_axis)};",
-        f"export const MODIFIER_RECORDS = {_js(modifier_records)};",
-        "",
-        "// Sprite-sheet coordinates for the gallery thumbnails. Empty when",
-        "// previews have not been built, in which case the gallery falls",
-        "// back to lettered placeholder tiles.",
-        f"export const PREVIEW_INDEX = {_js(preview_index)};",
+        "// Everything else -- 600-plus styles, 800-plus artist descriptors,",
+        "// every modifier and the sprite index -- is in stylebook_data.json,",
+        "// fetched by the gallery the first time a picker opens.",
+        f"export const BULK_DATA_FILE = {_js(BULK_TARGET.name)};",
         "",
     ]
-    return "\n".join(lines)
+
+    bulk = {
+        # Per-category ids, labels, aliases, scenes, release stamps and
+        # namesakes as parallel arrays.
+        "STYLE_DATA_BY_CATEGORY": styles_by_category,
+        # Every style label, in data/ordering.py's order -- the same order
+        # the node's own dropdown uses. The gallery sorts with
+        # Intl.Collator rather than reading this, because it also has to
+        # place entries from a user_styles.json this generator never saw.
+        # That makes one rule in two languages, so
+        # tests/frontend/gallery.test.mjs asserts that re-sorting this list
+        # with the JS comparator changes nothing.
+        "ALL_STYLE_LABELS": all_labels,
+        "ARTIST_LABELS": [r["label"] for r in artists],
+        "ARTIST_CATEGORIES": [r.get("category", "") for r in artists],
+        "ARTIST_ALIASES": [list(r.get("aliases", [])) for r in artists],
+        # Descriptors are what actually make an artist choosable: the name
+        # alone means nothing if you do not already know the work.
+        "ARTIST_DESCRIPTORS": [r.get("descriptor", "") for r in artists],
+        "ARTIST_ADDED": [
+            ADDED_IN["artists"].get(artist_ids_by_label.get(r["label"], ""), "")
+            for r in artists
+        ],
+        "MODIFIER_RECORDS": modifier_records,
+        # Sprite-sheet coordinates for the gallery thumbnails. Empty when
+        # previews have not been built, in which case the gallery falls
+        # back to lettered placeholder tiles.
+        "PREVIEW_INDEX": preview_index,
+    }
+    return "\n".join(lines), json.dumps(bulk, ensure_ascii=False, sort_keys=True)
 
 
 def main() -> int:
@@ -195,22 +265,25 @@ def main() -> int:
                         help="Verify only; exit non-zero if stale.")
     args = parser.parse_args()
 
-    expected = generate()
+    expected, expected_bulk = generate()
+    pairs = ((TARGET, expected), (BULK_TARGET, expected_bulk))
 
     if args.check:
-        if not TARGET.is_file():
-            print(f"FAIL: {TARGET.name} does not exist. "
-                  f"Run: python scripts/generate_js_data.py")
-            return 1
-        if TARGET.read_text(encoding="utf-8") != expected:
-            print("FAIL: generated JS data is stale. "
-                  "Run: python scripts/generate_js_data.py")
-            return 1
-        print("PASS: generated JS data is current.")
+        for path, want in pairs:
+            if not path.is_file():
+                print(f"FAIL: {path.name} does not exist. "
+                      f"Run: python scripts/generate_js_data.py")
+                return 1
+            if path.read_text(encoding="utf-8") != want:
+                print(f"FAIL: {path.name} is stale. "
+                      "Run: python scripts/generate_js_data.py")
+                return 1
+        print("PASS: generated frontend data is current.")
         return 0
 
-    TARGET.write_text(expected, encoding="utf-8", newline="\n")
-    print(f"Written: js/{TARGET.name}")
+    for path, want in pairs:
+        path.write_text(want, encoding="utf-8", newline="\n")
+        print(f"Written: js/{path.name} ({len(want):,} bytes)")
     return 0
 
 

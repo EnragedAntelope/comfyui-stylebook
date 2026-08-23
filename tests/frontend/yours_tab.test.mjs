@@ -19,7 +19,7 @@
 
 import { test, before, beforeEach } from "node:test";
 import assert from "node:assert/strict";
-import { installDom, resetDom, stubFetch } from "./dom.mjs";
+import { installDom, resetDom, settle, stubFetch } from "./dom.mjs";
 import { makeNode, widgetByName } from "./fake_node.mjs";
 
 installDom();
@@ -46,6 +46,7 @@ async function openStylePicker() {
   await app.__getExtension("stylebook.gallery").nodeCreated(node);
   const button = widgetByName(node, "Open style gallery");
   button.callback();
+  await settle();
   return document.querySelector(".stylebook-overlay");
 }
 

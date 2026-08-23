@@ -86,6 +86,25 @@
     outline-offset: -1px;
 }
 
+/* Ordering control. Sits between the search box and the count, sized to
+ * its content so the count stays where the eye expects it. */
+.stylebook-sort {
+    flex: 0 0 auto;
+    padding: 6px 8px;
+    border: 1px solid var(--border-color, #4a4a4a);
+    border-radius: 6px;
+    background: var(--comfy-input-bg, #131313);
+    color: var(--input-text, #ddd);
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.stylebook-sort:focus-visible {
+    outline: 2px solid var(--p-primary-color, #4a9eff);
+    outline-offset: -1px;
+}
+
 .stylebook-count {
     flex: 0 0 auto;
     opacity: 0.7;
@@ -231,6 +250,22 @@
     font-family: inherit;
     text-align: left;
     cursor: pointer;
+    /*
+     * Skip layout, style and paint for tiles scrolled out of view.
+     *
+     * Six hundred tiles is a lot of work per frame, and a search rebuilds
+     * all of them. The alternative was virtualising the grid, which means
+     * owning scroll position, keyboard focus and the "N results" count by
+     * hand -- a lot of machinery to reimplement what the browser already
+     * does here in two declarations.
+     *
+     * contain-intrinsic-size has to match grid-auto-rows: it is the size
+     * the browser assumes for a skipped tile, and getting it wrong makes
+     * the scrollbar jump as tiles come into view.
+     */
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--sb-tile)
+        auto calc(var(--sb-tile) + var(--sb-label) + var(--sb-cat));
 }
 
 .stylebook-tile:hover,
@@ -289,6 +324,42 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     pointer-events: none;
+}
+
+/* Marks an entry this release added. Same absolute-overlay reasoning as
+ * the scene badge above, opposite corner so the two never collide, and a
+ * colour of its own so it reads on any thumbnail. */
+.stylebook-tile-new {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--p-primary-color, #4a9eff);
+    color: #04121f;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+/* The list layout has no thumbnail to overlay, so the marker rides the
+ * name inline. Smaller and outlined rather than filled: in a dense list
+ * of 800 rows a solid block of accent colour every few lines is noise. */
+.stylebook-row-new {
+    display: inline-block;
+    padding: 0 4px;
+    border: 1px solid var(--p-primary-color, #4a9eff);
+    border-radius: 3px;
+    color: var(--p-primary-color, #4a9eff);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: 1px;
 }
 
 .stylebook-tile-initials {
@@ -437,6 +508,12 @@
     border: 1px solid transparent;
     border-radius: 6px;
     cursor: pointer;
+    /* As on the tile. A row's height is not fixed by the grid, so the
+       intrinsic size is the common single-line case; a wrapped row costs
+       one reflow when it scrolls in, which is cheaper than laying out
+       every row in the list on every keystroke. */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 34px;
 }
 
 .stylebook-row:hover,
@@ -466,4 +543,33 @@
         grid-template-columns: 1fr;
         gap: 2px;
     }
+}
+
+/*
+ * Fallback confirmation pill for "Copy resolved prompt".
+ *
+ * Used only when ComfyUI's own toast service is unavailable, so on a
+ * current frontend this never renders. Fixed to the viewport rather than
+ * anchored to the node: the canvas pans, and a message that slides away
+ * with it is worse than none.
+ */
+.stylebook-toast {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 10000;
+    max-width: 360px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color, #4a4a4a);
+    border-radius: 8px;
+    background: var(--comfy-menu-bg, #202020);
+    color: var(--input-text, #ddd);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    font-size: 13px;
+    line-height: 1.4;
+    pointer-events: none;
+}
+
+.stylebook-toast-error {
+    border-color: #d06060;
 }

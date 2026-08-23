@@ -42,8 +42,8 @@ from stylebook_nodes.stylebook_sheet import (  # noqa: E402
 )
 from stylebook_nodes.stylebook_style import build_style_chain  # noqa: E402
 from tests.validate_data import (  # noqa: E402
-    _PERSON_STYLES, _check_encoding, _check_negation, _check_person_styles,
-    validate,
+    _NAMESAKE_EXEMPT, _check_encoding, _check_negation, _check_person_styles,
+    _check_undeclared_namesakes, validate,
 )
 
 TAG_META = {"format": "tags", "placement": "prepend", "strength": "normal",
@@ -167,23 +167,41 @@ class PersonNamedStyleTests(unittest.TestCase):
     def test_the_shipped_data_is_clean(self):
         self.assertEqual(_check_person_styles(STYLES, ARTISTS), [])
 
-    def test_every_mapped_style_is_still_shipped(self):
-        """The map is hand-maintained, so a renamed style id has to fail
-        loudly rather than quietly stop checking anything."""
-        for sid in _PERSON_STYLES:
-            with self.subTest(sid):
-                self.assertIn(sid, STYLES)
-
     def test_a_missing_artist_record_is_reported(self):
         thinned = {aid: rec for aid, rec in ARTISTS.items()
                    if rec.get("label") != "Akira Kurosawa"}
         errors = _check_person_styles(STYLES, thinned)
         self.assertTrue(any("Akira Kurosawa" in e for e in errors))
 
-    def test_a_stale_style_id_in_the_map_is_reported(self):
-        thinned = {sid: rec for sid, rec in STYLES.items() if sid != "kurosawa"}
-        errors = _check_person_styles(thinned, ARTISTS)
-        self.assertTrue(any("no longer ships" in e for e in errors))
+    def test_the_declaration_lives_on_the_style_record(self):
+        """The map used to live in the test file, where a maintainer
+        adding a style never saw it. It is data now, so the field is
+        written beside the prose it belongs to."""
+        self.assertEqual(STYLES["kurosawa"]["namesake"], "Akira Kurosawa")
+
+    def test_a_style_named_for_a_shipped_artist_must_declare_it(self):
+        """The gap the old map could not close: a *missing* entry.
+
+        A style is named after somebody the pack already ships, and
+        nobody remembers to say so.
+        """
+        undeclared = dict(STYLES)
+        stripped = dict(undeclared["kurosawa"])
+        stripped.pop("namesake")
+        undeclared["kurosawa"] = stripped
+        errors = _check_undeclared_namesakes(undeclared, ARTISTS)
+        self.assertTrue(any("kurosawa" in e for e in errors), errors)
+
+    def test_the_shipped_data_declares_or_exempts_every_collision(self):
+        self.assertEqual(_check_undeclared_namesakes(STYLES, ARTISTS), [])
+
+    def test_every_exemption_carries_a_written_reason(self):
+        """An exemption without a reason is how a check quietly stops
+        meaning anything -- the same contract as _SCENE_EXEMPT."""
+        for sid, reason in _NAMESAKE_EXEMPT.items():
+            with self.subTest(sid):
+                self.assertIn(sid, STYLES)
+                self.assertTrue(reason.strip())
 
 
 class EncodingGuardTests(unittest.TestCase):

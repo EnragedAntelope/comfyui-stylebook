@@ -56,11 +56,50 @@ function copyToClipboard(text) {
   textarea.focus();
   textarea.select();
   try {
-    document.execCommand("copy");
+    // Reports false rather than throwing when the copy did not happen,
+    // which is the case this fallback exists for. Returning a resolved
+    // promise regardless was how a silent denial looked like a success.
+    if (!document.execCommand("copy")) {
+      return Promise.reject(new Error("the browser refused the copy"));
+    }
   } finally {
     textarea.remove();
   }
   return Promise.resolve();
+}
+
+/**
+ * Say whether the copy worked.
+ *
+ * It was fire-and-forget: a clipboard write that a browser silently
+ * denied -- which is what happens outside a secure context -- looked
+ * exactly like one that succeeded, and there was nothing on screen either
+ * way. ComfyUI's own toast is used when it is there, so the message lands
+ * where the user already looks for feedback, with a floating pill as the
+ * fallback for older frontends.
+ */
+function notify(message, isError) {
+  try {
+    const toast = app.extensionManager && app.extensionManager.toast;
+    if (toast && typeof toast.add === "function") {
+      toast.add({
+        severity: isError ? "error" : "success",
+        summary: "Stylebook",
+        detail: message,
+        life: isError ? 5000 : 2000,
+      });
+      return;
+    }
+  } catch (_) { /* fall through to the pill */ }
+
+  try {
+    const pill = document.createElement("div");
+    pill.className = "stylebook-toast" + (isError ? " stylebook-toast-error" : "");
+    pill.setAttribute("role", "status");
+    pill.textContent = message;
+    document.body.appendChild(pill);
+    setTimeout(() => pill.remove(), isError ? 5000 : 2000);
+  } catch (_) { /* nothing left to try */ }
 }
 
 function addMenuItems(node, options) {
@@ -72,7 +111,17 @@ function addMenuItems(node, options) {
     disabled: !hasPrompt,
     callback: () => {
       if (!hasPrompt) return;
-      copyToClipboard(resolved.prompt).catch((error) => warn("copy failed", error));
+      copyToClipboard(resolved.prompt).then(
+        () => notify("Resolved prompt copied to the clipboard.", false),
+        (error) => {
+          warn("copy failed", error);
+          notify(
+            "Could not copy. Your browser blocks clipboard writes here -- "
+            + "the prompt is also shown on the node face.",
+            true
+          );
+        }
+      );
     },
   });
 

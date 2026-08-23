@@ -8,7 +8,7 @@
       "hash": "beea8eb0476f9224"
     },
     "3d_matte_painting": {
-      "hash": "f2ee67e086330ea2"
+      "hash": "d21fcd154aa5b51c"
     },
     "8bit_pixel": {
       "hash": "3bbdb24e91c88b17"
@@ -160,6 +160,9 @@
     "bl_visual_novel": {
       "hash": "94c693bac28b385d"
     },
+    "blacklight_poster": {
+      "hash": "4ec0ca57f5c6f846"
+    },
     "blackout_poetry": {
       "hash": "baa151039aec2ffe"
     },
@@ -186,6 +189,9 @@
     },
     "bobbin_lace": {
       "hash": "63a828a6399ebb7a"
+    },
+    "bollywood_poster": {
+      "hash": "e245658be90c30b4"
     },
     "bonsai": {
       "hash": "17d78ae1e8688152"
@@ -284,7 +290,7 @@
       "hash": "0be2216c5fdec7c6"
     },
     "cinematic": {
-      "hash": "6993e718bf9b0466"
+      "hash": "18264f4e39cfaa9f"
     },
     "clamp_ornate": {
       "hash": "5ceb8de3e9c5cce7"
@@ -292,8 +298,14 @@
     "clay_render": {
       "hash": "c01bc5ce407205a1"
     },
+    "claymation": {
+      "hash": "5a40639029b5449f"
+    },
     "cliche_verre": {
       "hash": "ac158ec2380a1415"
+    },
+    "cloisonnism": {
+      "hash": "75349031a029f7e0"
     },
     "cloth_simulation": {
       "hash": "072238f13ed78da4"
@@ -336,6 +348,9 @@
     },
     "cooking_manga": {
       "hash": "77d99c9d58168eef"
+    },
+    "corporate_memphis": {
+      "hash": "a82ad2321ca76380"
     },
     "cowboy_bebop": {
       "hash": "67893c8bddd31aab"
@@ -460,6 +475,9 @@
     "egg_tempera": {
       "hash": "514d5bea2e612f27"
     },
+    "emakimono": {
+      "hash": "1c8f8a55c8ec7fe9"
+    },
     "embroidery": {
       "hash": "dca4fa8a8e9dcac0"
     },
@@ -481,6 +499,9 @@
     "etching_intaglio": {
       "hash": "3fd5ae5323703ed8"
     },
+    "ethiopian_icon": {
+      "hash": "6240e135da8a2f8a"
+    },
     "european_album": {
       "hash": "d98332f7dd6a1211"
     },
@@ -495,6 +516,9 @@
     },
     "exquisite_corpse": {
       "hash": "5e0e52ac1003eff5"
+    },
+    "extreme_nineties": {
+      "hash": "b6d80f20190d0231"
     },
     "fashion": {
       "hash": "d6c5c214d22cba2d"
@@ -568,6 +592,12 @@
     "frottage_grattage": {
       "hash": "bc6fa1e5d37a585f"
     },
+    "fruit_crate_label": {
+      "hash": "986f8d053e0c04a9"
+    },
+    "frutiger_aero": {
+      "hash": "4a15d5b0bb7c381d"
+    },
     "fumetti": {
       "hash": "4b45a6f7b593de7b"
     },
@@ -617,7 +647,7 @@
       "hash": "8f9faabf10afd05f"
     },
     "glitch_collage": {
-      "hash": "5b02ac3e3ec7f327"
+      "hash": "74724a3cd3e2eeb5"
     },
     "golden_age_comics": {
       "hash": "ab8b14359e749daf"
@@ -742,6 +772,9 @@
     "isometric_pixel": {
       "hash": "151804374149beb2"
     },
+    "isotype": {
+      "hash": "22d1344129e6620a"
+    },
     "italian_neorealism": {
       "hash": "86d05244f9c6be23"
     },
@@ -789,6 +822,9 @@
     },
     "knitwear": {
       "hash": "444e58517aecd79c"
+    },
+    "kodomo_manga": {
+      "hash": "d64a1fc3a484197f"
     },
     "kubrick": {
       "hash": "4efc43255e7ea2b9"
@@ -952,6 +988,9 @@
     "mingei": {
       "hash": "993cfeb7a34477a7"
     },
+    "minhwa": {
+      "hash": "b16ba44315f9b092"
+    },
     "miniature_forced_perspective": {
       "hash": "aea9e254e7309301"
     },
@@ -993,6 +1032,9 @@
     },
     "naive_art": {
       "hash": "63e448502a70ebf2"
+    },
+    "ndebele_wall_painting": {
+      "hash": "5040964f19f007d6"
     },
     "needle_felted": {
       "hash": "4f03d143fd43f891"
@@ -1059,6 +1101,9 @@
     },
     "old_map_parchment": {
       "hash": "14b5dd8bef3b771b"
+    },
+    "one_bit_mono": {
+      "hash": "1f68b7c595d40954"
     },
     "one_piece_oda": {
       "hash": "245ee54d64a487ac"
@@ -1162,6 +1207,9 @@
     "photorealism": {
       "hash": "e37f9ef4c067141d"
     },
+    "pichwai": {
+      "hash": "04d24512f9e16c3d"
+    },
     "pinball_backglass": {
       "hash": "4510d1d753e3ad8b"
     },
@@ -1227,6 +1275,9 @@
     },
     "pov_first_person": {
       "hash": "7d7a8ccc79e521b5"
+    },
+    "pre_columbian_codex": {
+      "hash": "ae853d81c04688f9"
     },
     "precisionism": {
       "hash": "451b2df938f307a3"
@@ -1318,11 +1369,17 @@
     "romanticism": {
       "hash": "acd8d24ca1192e79"
     },
+    "rosemaling": {
+      "hash": "feed1d532103e801"
+    },
     "rotoscoping": {
       "hash": "c08e197575456b4e"
     },
     "royal_icing": {
       "hash": "eba3b3d60c9555ae"
+    },
+    "rubber_hose_animation": {
+      "hash": "e7d41d4ae94c9f75"
     },
     "rubber_stamp": {
       "hash": "cf4dbd248a94c8dd"
@@ -1390,6 +1447,9 @@
     "showa_retro_anime": {
       "hash": "583d7ca54d525299"
     },
+    "sideshow_banner": {
+      "hash": "8ba916726e2639bc"
+    },
     "sign_painting": {
       "hash": "df7fc39dd77d8dd4"
     },
@@ -1438,11 +1498,17 @@
     "social_realism": {
       "hash": "087d5b4639acd434"
     },
+    "socialist_realism": {
+      "hash": "0f3db5d389fda846"
+    },
     "soft_body_dynamics": {
       "hash": "db1203e9fa40ec88"
     },
     "solarization": {
       "hash": "9bb786918c26fd08"
+    },
+    "solarpunk": {
+      "hash": "ead7ddd2479b09d4"
     },
     "sosaku_hanga": {
       "hash": "e04e131a1ad1b837"
@@ -1585,6 +1651,9 @@
     "thangka": {
       "hash": "a683bcba4c9d2815"
     },
+    "thermal_imaging": {
+      "hash": "a7df0c34b7d33d82"
+    },
     "thermal_receipt_print": {
       "hash": "0b8eff3a4d3eaccb"
     },
@@ -1636,11 +1705,17 @@
     "underwater": {
       "hash": "8c4a74500a99ec69"
     },
+    "upa_limited_animation": {
+      "hash": "18977a8a0186b90a"
+    },
     "urasawa_monster": {
       "hash": "852e62d4d8c7f6e3"
     },
     "urban_sketching": {
       "hash": "31ac31b94a9c7c24"
+    },
+    "uv_texture_layout": {
+      "hash": "f9ee8c72e4178bee"
     },
     "vagabond_inoue": {
       "hash": "fca5da20ac163aaf"
@@ -1721,7 +1796,7 @@
       "hash": "0ca64dd6dfde77b1"
     },
     "webcomic_infinite_canvas": {
-      "hash": "e362544d3557b009"
+      "hash": "269ccd441ed7ec1a"
     },
     "webtoon": {
       "hash": "895d9f94db213bbb"
@@ -1779,6 +1854,9 @@
     },
     "xray_radiograph": {
       "hash": "008375b4da981e72"
+    },
+    "y2k_chrome": {
+      "hash": "7a788865bed58ac2"
     },
     "yaoi_bl_style": {
       "hash": "15e959ff57dd6e16"

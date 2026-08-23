@@ -16,7 +16,7 @@
 import { test, before, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { installDom, resetDom } from "./dom.mjs";
+import { installDom, resetDom, settle } from "./dom.mjs";
 import { makeNode, widgetByName } from "./fake_node.mjs";
 
 installDom();
@@ -166,6 +166,7 @@ test("StylebookStyle: picker opens, search narrows results, Escape closes and re
 
   document.body.focus?.();
   button.callback();
+  await settle();
 
   const overlay = document.querySelector(".stylebook-overlay");
   assert.ok(overlay, "picker did not open");
@@ -176,6 +177,9 @@ test("StylebookStyle: picker opens, search narrows results, Escape closes and re
   assert.ok(search);
   search.value = "Cyanotype";
   search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  // The search box is debounced, so the grid rebuilds a beat after the
+  // keystroke rather than during it.
+  await settle(150);
 
   const tilesAfter = document.querySelectorAll(".stylebook-tile");
   assert.equal(tilesAfter.length, 1, "search should narrow to the one matching style");
@@ -191,6 +195,7 @@ test("Tab wraps at both ends instead of walking onto the canvas behind", async (
   const node = makeNode("StylebookStyle");
   await getExtension().nodeCreated(node);
   findWidget(node, "Open style gallery").callback();
+  await settle();
 
   const overlay = document.querySelector(".stylebook-overlay");
   assert.ok(overlay, "picker did not open");
@@ -230,6 +235,7 @@ test("Tab in the middle of the dialog is left alone", async () => {
   const node = makeNode("StylebookStyle");
   await getExtension().nodeCreated(node);
   findWidget(node, "Open style gallery").callback();
+  await settle();
 
   const overlay = document.querySelector(".stylebook-overlay");
   const focusable = Array.from(
@@ -315,7 +321,9 @@ test("Python and JS agree on order: re-sorting ALL_STYLE_LABELS with the JS comp
   // data/ordering.py's order. If label_sort_key and Intl.Collator ever
   // disagree on a shipped label, this is where it surfaces -- otherwise
   // the dropdown and the gallery would quietly diverge.
-  const { ALL_STYLE_LABELS } = await import("../../js/stylebook_data.js");
+  const { ALL_STYLE_LABELS } = JSON.parse(
+    readFileSync(new URL("../../js/stylebook_data.json", import.meta.url), "utf8")
+  );
   assert.ok(ALL_STYLE_LABELS.length > 100, "generated data looks empty");
   const resorted = ALL_STYLE_LABELS.slice().sort(compare);
   const drift = ALL_STYLE_LABELS.findIndex((label, i) => label !== resorted[i]);
@@ -332,6 +340,7 @@ async function openStyleGallery() {
   const node = makeNode("StylebookStyle");
   await getExtension().nodeCreated(node);
   widgetByName(node, "Open style gallery").callback();
+  await settle();
   const overlay = document.querySelector(".stylebook-overlay");
   assert.ok(overlay, "picker did not open");
   return overlay;
@@ -355,8 +364,8 @@ test("the All tab lists every style alphabetically, not grouped by category", as
   assert.deepEqual(labels, labels.slice().sort(compare));
   // Data order used to put "Aerial Photography" (photography, first
   // category) ahead of "3D Matte Painting"; numeric-leading names now
-  // lead the list.
-  assert.equal(labels[0], "3D Matte Painting");
+  // lead the list, in numeric order.
+  assert.equal(labels[0], "1-Bit Monochrome");
 });
 
 test("a category tab lists its own styles alphabetically", async () => {
@@ -381,6 +390,7 @@ test("the modifier reference stays in data order, so the era axis reads chronolo
   const node = makeNode("StylebookModifier");
   await getExtension().nodeCreated(node);
   widgetByName(node, "Open modifier reference").callback();
+  await settle();
   const names = Array.from(document.querySelectorAll(".stylebook-row-name"))
     .map((el) => el.textContent);
   assert.ok(names.length > 20, "modifier reference rendered almost nothing");
@@ -416,6 +426,7 @@ test("the category chip shows in All, in search results, and not in a category t
   const search = overlay.querySelector(".stylebook-search");
   search.value = "print";
   search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  await settle(150);
   assert.ok(chips().length > 0,
     "a search spans every category, so results need the caption back");
 });
@@ -456,4 +467,105 @@ test("the artist reference gets no category chip -- its rows already carry a des
   await getExtension().nodeCreated(node);
   widgetByName(node, "Open artist reference").callback();
   assert.equal(document.querySelectorAll(".stylebook-tile-cat").length, 0);
+});
+
+// --- 15. what shipped in this release --------------------------------------
+
+test("the style gallery offers a New tab, and it holds only this release's styles", async () => {
+  const overlay = await openStyleGallery();
+  const { CURRENT_VERSION } = await import("../../js/stylebook_data.js");
+  const { STYLE_DATA_BY_CATEGORY } = JSON.parse(
+    readFileSync(new URL("../../js/stylebook_data.json", import.meta.url), "utf8")
+  );
+
+  const expected = new Set();
+  for (const data of Object.values(STYLE_DATA_BY_CATEGORY)) {
+    data.labels.forEach((label, i) => {
+      if (data.added[i] === CURRENT_VERSION) expected.add(label);
+    });
+  }
+  assert.ok(expected.size > 0, "this release added no styles; retune the fixture");
+
+  clickTab(overlay, "New in " + CURRENT_VERSION);
+  const shown = new Set(tileLabels());
+  assert.deepEqual(
+    Array.from(shown).sort(),
+    Array.from(expected).sort(),
+    "the New tab must hold exactly what data/versions.py says this release added"
+  );
+});
+
+test("every tile in the New tab carries the ribbon, and older tiles do not", async () => {
+  const overlay = await openStyleGallery();
+  const { CURRENT_VERSION } = await import("../../js/stylebook_data.js");
+
+  clickTab(overlay, "New in " + CURRENT_VERSION);
+  const tiles = document.querySelectorAll(".stylebook-tile");
+  assert.ok(tiles.length > 0);
+  for (const tile of tiles) {
+    assert.ok(tile.querySelector(".stylebook-tile-new"), "a New tile lost its ribbon");
+  }
+
+  // The ribbon is absolutely positioned inside the art box for the same
+  // reason the scene badge is: a tile's height is fixed by grid-auto-rows,
+  // so a marker occupying a row would clip the label.
+  const art = tiles[0].querySelector(".stylebook-tile-art");
+  assert.ok(art.querySelector(".stylebook-tile-new"), "the ribbon must live inside the art box");
+
+  clickTab(overlay, "All");
+  const ribbons = document.querySelectorAll(".stylebook-tile-new").length;
+  const all = document.querySelectorAll(".stylebook-tile").length;
+  assert.ok(ribbons > 0 && ribbons < all, "only this release's tiles should be ribboned");
+});
+
+test("newest-first sorting puts this release at the top and stays alphabetical inside a release", async () => {
+  const overlay = await openStyleGallery();
+  const { CURRENT_VERSION } = await import("../../js/stylebook_data.js");
+
+  const sort = overlay.querySelector(".stylebook-sort");
+  assert.ok(sort, "no sort control");
+  sort.value = "new";
+  sort.dispatchEvent(new window.Event("change", { bubbles: true }));
+
+  const tiles = Array.from(document.querySelectorAll(".stylebook-tile"));
+  const newCount = document.querySelectorAll(".stylebook-tile-new").length;
+  assert.ok(newCount > 0);
+  // Every ribboned tile comes before every unribboned one.
+  const firstOld = tiles.findIndex((t) => !t.querySelector(".stylebook-tile-new"));
+  assert.equal(firstOld, newCount, "newest-first must group this release at the top");
+
+  const newLabels = tiles.slice(0, newCount)
+    .map((t) => t.querySelector(".stylebook-tile-label > span").textContent);
+  assert.deepEqual(newLabels, newLabels.slice().sort(compare),
+    "inside one release the order is still alphabetical");
+
+  // Restore, so the module-level preference does not leak into later tests.
+  sort.value = "az";
+  sort.dispatchEvent(new window.Event("change", { bubbles: true }));
+});
+
+test("a style named after somebody says so in its tooltip", async () => {
+  await openStyleGallery();
+  const tile = Array.from(document.querySelectorAll(".stylebook-tile"))
+    .find((t) => t.querySelector(".stylebook-tile-label > span").textContent
+      === "Sirkian Melodrama");
+  assert.ok(tile, "Sirkian Melodrama is missing from the gallery");
+  assert.match(tile.title, /Named for Douglas Sirk\./,
+    "the tile promises an artist; the tooltip has to name them");
+});
+
+test("the corpus is fetched, not imported, so ComfyUI does not parse it at app start", async () => {
+  // The regression this pins: someone re-adds `export const
+  // STYLE_DATA_BY_CATEGORY` to stylebook_data.js for convenience, and
+  // every ComfyUI user silently pays 300 KB of parse on every load again,
+  // whether or not they have a Stylebook node.
+  const eager = readFileSync(
+    new URL("../../js/stylebook_data.js", import.meta.url), "utf8"
+  );
+  assert.ok(eager.length < 32 * 1024,
+    `stylebook_data.js is ${eager.length} bytes; the corpus belongs in the .json`);
+  for (const name of ["STYLE_DATA_BY_CATEGORY", "ARTIST_DESCRIPTORS", "PREVIEW_INDEX"]) {
+    assert.ok(!eager.includes("export const " + name),
+      `${name} is back in the eagerly-imported module`);
+  }
 });

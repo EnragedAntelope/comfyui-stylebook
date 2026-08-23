@@ -12,6 +12,7 @@ tile whose inputs have changed is rebuilt.
     python scripts/build_previews.py --pack       # repack atlases only
     python scripts/build_previews.py --style <id> # redo one bad tile
     python scripts/build_previews.py --contact-sheet   # labelled review sheets
+    python scripts/build_previews.py --prune      # drop renders of removed styles
 
 ``--check`` is the CI gate. It needs no GPU and no ComfyUI: it compares
 the manifest against the data layer and fails when they have drifted, so
@@ -176,6 +177,38 @@ STYLE_SUBJECT = {
     "land_art": "a vast spiral of heaped stone reaching out across a dry lake "
                 "bed, seen from high above",
     "shan_shui": "a tall mountain rising above still water and drifting mist",
+    # 0.10.0. Each of these is a layout, a diagram or a tradition with its
+    # own canonical subject, and the category subject shows the subject
+    # rather than the style.
+    "isotype": "three rows of small repeated human pictograms above a "
+               "printed caption",
+    "solarpunk": "a tall building whose terraces and balconies are planted "
+                 "with trees, seen from across the way",
+    "pre_columbian_codex": "two figures in profile facing one another with "
+                           "small glyph symbols set between them",
+    "minhwa": "a tiger and a magpie beside a pine branch",
+    "rosemaling": "a painted wooden panel with scrolling floral decoration "
+                  "around a small central motif",
+    # Second pass over the 0.10.0 tiles, after looking at a contact sheet.
+    # Each of these rendered something true about the style and useless as
+    # an advert for it: a poster hung on a gallery wall rather than filling
+    # the frame, a whole scroll reduced to a hairline strip, a headless
+    # suit, a figure too small to read, and a heat map where a texture
+    # atlas belonged.
+    "blacklight_poster": "a mountain and a flying bird filling the whole "
+                         "picture area, edge to edge",
+    "rubber_hose_animation": "a cheerful cartoon character standing and "
+                             "waving, facing the camera, full figure",
+    "upa_limited_animation": "one whole standing figure, head to feet, "
+                             "centred with space around it",
+    "emakimono": "two seated figures beside a low table, seen from above at "
+                 "an oblique angle, filling the frame",
+    "webcomic_infinite_canvas": "three loose comic panels stacked down the "
+                                "page, the same character drawn in each, one "
+                                "hand-lettered speech balloon above them",
+    "uv_texture_layout": "the separated flat pieces of a character model - "
+                         "head, torso, arms, legs - laid out side by side "
+                         "across a chequered sheet",
 }
 
 # Applied on top of each style's own negative, never instead of it. The
@@ -430,6 +463,53 @@ def render_one(client: ComfyClient, style: dict, model: str) -> bool:
     return False
 
 
+def prune_sources(styles: dict) -> int:
+    """Delete source renders for styles the pack no longer ships.
+
+    ``previews/src`` is gitignored and rebuildable, so a renamed style
+    leaves its old PNG behind where git will never mention it. Thirty-six
+    of them, about 50 MB, had piled up by 0.10.0 from renames like
+    studio_ghibli -> ghibli_studio. Harmless, but they are also exactly
+    why ``ls previews/src | wc -l`` is not a completeness check -- the
+    count agreed with the style count while eighteen tiles were missing.
+    """
+    if not SRC_DIR.is_dir():
+        print("No previews/src directory; nothing to prune.")
+        return 0
+    orphans = sorted(
+        path for path in SRC_DIR.glob("*.png") if path.stem not in styles
+    )
+    if not orphans:
+        print("previews/src holds no renders of removed styles.")
+        return 0
+    freed = sum(path.stat().st_size for path in orphans)
+    for path in orphans:
+        print(f"  removing {path.name}")
+        path.unlink()
+    print(f"Pruned {len(orphans)} render(s), freeing {freed / 1_048_576:.1f} MB.")
+    return 0
+
+
+#: How many times to re-attempt one tile before giving up on it.
+#: A full run is several hundred renders over a couple of hours, and a
+#: single transient failure -- ComfyUI busy, a socket dropped, a VRAM
+#: hiccup -- used to leave a permanent gap that only a later `--check`
+#: revealed and only a manual `--style` re-run filled.
+RENDER_ATTEMPTS = 3
+
+
+def render_with_retry(client: ComfyClient, style: dict, model: str) -> bool:
+    """render_one, with a short backoff between attempts."""
+    for attempt in range(1, RENDER_ATTEMPTS + 1):
+        if render_one(client, style, model):
+            return True
+        if attempt < RENDER_ATTEMPTS:
+            delay = 5 * attempt
+            print(f"    attempt {attempt} failed; retrying in {delay}s")
+            time.sleep(delay)
+    return False
+
+
 # ---------------------------------------------------------------------------
 # Atlas packing
 # ---------------------------------------------------------------------------
@@ -615,6 +695,10 @@ def main() -> int:
     parser.add_argument("--style", metavar="ID", action="append", default=[],
                         help="Render just this style id. Repeatable. "
                              "Use when one tile came out wrong.")
+    parser.add_argument("--prune", action="store_true",
+                        help="Delete source renders for styles the pack no "
+                             "longer ships. previews/src is gitignored, so "
+                             "these are invisible to git and accumulate.")
     parser.add_argument("--contact-sheet", action="store_true",
                         help="Write labelled review sheets to previews/review.")
     parser.add_argument("--url", default=DEFAULT_URL,
@@ -623,13 +707,17 @@ def main() -> int:
                         help="UNet filename or a substring of one.")
     args = parser.parse_args()
 
-    if not (args.check or args.build or args.pack or args.contact_sheet):
+    if not (args.check or args.build or args.pack or args.contact_sheet
+            or args.prune):
         args.check = True
     if args.style:
         args.build = True
         args.check = False
 
     from data.styles import STYLES
+
+    if args.prune:
+        return prune_sources(STYLES)
 
     if args.check:
         missing, stale, orphan = survey(args.model)
@@ -691,7 +779,7 @@ def main() -> int:
             for position, sid in enumerate(targets, 1):
                 style = STYLES[sid]
                 print(f"[{position}/{len(targets)}] {sid} ({style['category']})")
-                if render_one(client, style, model):
+                if render_with_retry(client, style, model):
                     tiles[sid] = {"hash": tile_hash(style, model)}
                     done += 1
                 else:

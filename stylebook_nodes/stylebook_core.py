@@ -63,7 +63,11 @@ ARTIST_MAX = 5
 
 def parse_chain(raw: str) -> dict[str, Any]:
     """Parse a chain JSON string, falling back to an empty chain."""
-    if not raw or not raw.strip():
+    # A non-string never reaches json.loads: `raw.strip()` would raise
+    # AttributeError first, outside any handler. The socket type makes that
+    # unlikely, but a hand-edited workflow can put anything on a wire, and
+    # an empty chain beats a traceback that takes the whole graph down.
+    if not isinstance(raw, str) or not raw.strip():
         return json.loads(EMPTY_CHAIN)
     try:
         chain = json.loads(raw)
@@ -117,6 +121,16 @@ def resolve_meta(
     resolved: dict[str, str] = {}
     for field in _META_FIELDS:
         value = meta.get(field)
+        # Every consumer of _meta treats these as strings and formats them
+        # straight into the prompt. A number or a list arriving from a
+        # hand-edited chain used to pass through and render as itself --
+        # wrong output, silently. Fall back to the default and say so.
+        if value is not None and not isinstance(value, str):
+            print(
+                f"[Stylebook] chain _meta['{field}'] is "
+                f"{type(value).__name__}, not text; using the default instead"
+            )
+            value = None
         if not value:
             value = defaults.get(field, _META_DEFAULTS.get(field, ""))
         resolved[field] = value

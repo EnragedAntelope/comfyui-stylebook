@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -58,18 +59,36 @@ TARGET = ROOT / "docs" / "gallery" / "index.html"
 ASSET_PREFIX = "../../js/previews/"
 
 
+
+def _current_version() -> str:
+    """This build's version, read out of pyproject.toml.
+
+    A regex rather than tomllib, which arrived in 3.11 while the pack floor
+    is 3.10 -- and CI actually runs 3.10.
+    """
+    match = re.search(
+        r'(?m)^version\s*=\s*"([^"]+)"',
+        (ROOT / "pyproject.toml").read_text(encoding="utf-8"),
+    )
+    return match.group(1) if match else ""
+
+
 def _payload() -> dict:
     from generate_js_data import _preview_sprites  # noqa: E402
 
     from data.artists import ARTISTS
     from data.ordering import label_sort_key
     from data.styles import CATEGORIES, CATEGORY_LABELS, STYLES
+    from data.versions import ADDED_IN, RELEASES
 
+    version = _current_version()
     styles = sorted(STYLES.values(), key=lambda rec: label_sort_key(rec["label"]))
     return {
         "categoryLabels": {c: CATEGORY_LABELS[c] for c in CATEGORIES},
         "categories": list(CATEGORIES),
         "artistCount": len(ARTISTS),
+        "version": version,
+        "releases": list(RELEASES),
         "sprites": _preview_sprites(),
         "styles": [
             {
@@ -78,6 +97,8 @@ def _payload() -> dict:
                 "category": rec.get("category", ""),
                 "aliases": list(rec.get("aliases", [])),
                 "scene": rec.get("scene", ""),
+                "added": ADDED_IN["styles"].get(rec["id"], ""),
+                "namesake": rec.get("namesake", ""),
                 "prose": rec.get("prose", ""),
                 "tags": rec.get("tags", ""),
                 "negative": rec.get("negative", ""),
@@ -148,6 +169,16 @@ main { max-width: 1180px; margin: 0 auto; padding: 18px 20px 60px; }
   font: inherit; text-align: center; display: flex; flex-direction: column;
 }
 .tile:hover, .tile:focus-visible { border-color: var(--accent); outline: none; }
+/* Skip layout and paint for tiles scrolled out of view. Six hundred of
+   them rebuild on every keystroke; virtualising the grid would mean
+   owning scroll position and the result count by hand to reproduce what
+   the browser already does in two declarations. The intrinsic size has
+   to match what a tile actually occupies or the scrollbar jumps. */
+.tile {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--tile)
+    auto calc(var(--tile) + var(--label) + var(--cat));
+}
 .art {
   position: relative;
   width: 100%; aspect-ratio: 1; background-repeat: no-repeat;
@@ -159,6 +190,13 @@ main { max-width: 1180px; margin: 0 auto; padding: 18px 20px 60px; }
   position: absolute; left: 4px; bottom: 4px; padding: 1px 5px;
   border-radius: 3px; background: rgba(12,12,12,.72); color: #f2f2f2;
   font-size: 9px; font-weight: 600; line-height: 1.4; letter-spacing: .06em;
+  text-transform: uppercase;
+}
+/* Opposite corner from .scene so the two never collide. */
+.newbadge {
+  position: absolute; right: 4px; top: 4px; padding: 1px 5px;
+  border-radius: 3px; background: var(--accent); color: #fff;
+  font-size: 9px; font-weight: 700; line-height: 1.4; letter-spacing: .06em;
   text-transform: uppercase;
 }
 .name { padding: 6px 6px 0; font-size: 12px; font-weight: 600; line-height: 1.25; }
@@ -211,6 +249,10 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px 40px; color: var(--m
 <div class="controls"><div class="controls-inner">
   <input id="q" type="search" placeholder="Search styles by name, alias, category or description" autocomplete="off" spellcheck="false" aria-label="Search styles">
   <select id="cat" aria-label="Filter by category"></select>
+  <select id="sort" aria-label="Sort order">
+    <option value="az">A-Z</option>
+    <option value="new">Newest first</option>
+  </select>
   <span id="count" aria-live="polite"></span>
 </div></div>
 
@@ -230,7 +272,13 @@ const ASSETS = "__ASSET_PREFIX__";
 const grid = document.getElementById("grid");
 const q = document.getElementById("q");
 const catSel = document.getElementById("cat");
+const sortSel = document.getElementById("sort");
 const countEl = document.getElementById("count");
+
+/* Rank by position in the release list rather than by comparing version
+   strings: "0.10.0" sorts before "0.9.0" as text. */
+const RANK = new Map((DATA.releases || []).map((v, i) => [v, i]));
+const isNew = s => Boolean(DATA.version) && s.added === DATA.version;
 const sheet = document.getElementById("sheet");
 
 /* The manifest stores the checkpoint exactly as ComfyUI names it, which
@@ -242,6 +290,12 @@ document.getElementById("model").textContent =
   || "a fixed checkpoint";
 
 catSel.append(new Option("All categories", ""));
+/* Offered first, and only when this release actually added something --
+   a filter that is always there and sometimes empty teaches you to
+   ignore it. */
+if (DATA.styles.some(isNew)) {
+  catSel.append(new Option("New in " + DATA.version, "__new__"));
+}
 for (const c of DATA.categories) catSel.append(new Option(DATA.categoryLabels[c] || c, c));
 
 /* Same sprite arithmetic as js/stylebook_gallery.js: percentage
@@ -261,6 +315,8 @@ function applySprite(el, category, id) {
   return true;
 }
 
+const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
+
 function matches(s, needle) {
   if (!needle) return true;
   return (s.label + " " + s.id + " " + s.aliases.join(" ") + " " + s.scene +
@@ -272,7 +328,15 @@ function matches(s, needle) {
 function render() {
   const needle = q.value.trim().toLowerCase();
   const cat = catSel.value;
-  const visible = DATA.styles.filter(s => (!cat || s.category === cat) && matches(s, needle));
+  const inScope = s => !cat || (cat === "__new__" ? isNew(s) : s.category === cat);
+  const visible = DATA.styles.filter(s => inScope(s) && matches(s, needle));
+  if (sortSel.value === "new") {
+    visible.sort((a, b) => {
+      const ra = RANK.has(a.added) ? RANK.get(a.added) : -1;
+      const rb = RANK.has(b.added) ? RANK.get(b.added) : -1;
+      return rb - ra || collator.compare(a.label, b.label);
+    });
+  }
   countEl.textContent = visible.length + (visible.length === 1 ? " style" : " styles");
   grid.replaceChildren();
   if (!visible.length) {
@@ -291,13 +355,23 @@ function render() {
     art.className = "art";
     applySprite(art, s.category, s.id);
     /* Overlaid on the art, so it costs no row height. */
+    const tips = [];
     if (s.scene) {
       const b = document.createElement("span");
       b.className = "scene";
       b.textContent = "scene";
       art.append(b);
-      tile.title = "Places your subject in " + s.scene + ".";
+      tips.push("Places your subject in " + s.scene + ".");
     }
+    if (isNew(s)) {
+      const n = document.createElement("span");
+      n.className = "newbadge";
+      n.textContent = "new";
+      art.append(n);
+      tips.push("New in " + DATA.version + ".");
+    }
+    if (s.namesake) tips.push("Named for " + s.namesake + ".");
+    if (tips.length) tile.title = tips.join(" ");
     const name = document.createElement("div");
     name.className = "name";
     name.textContent = s.label;
@@ -335,6 +409,8 @@ function open(s) {
   const where = document.createElement("div");
   where.className = "where";
   where.textContent = (DATA.categoryLabels[s.category] || s.category) +
+    (s.added ? " \\u00b7 added in " + s.added : "") +
+    (s.namesake ? " \\u00b7 named for " + s.namesake : "") +
     (s.aliases.length ? " \\u00b7 also: " + s.aliases.join(", ") : "");
   const art = document.createElement("div");
   art.className = "art";
@@ -355,6 +431,7 @@ function open(s) {
 sheet.querySelector(".close").addEventListener("click", () => sheet.close());
 q.addEventListener("input", render);
 catSel.addEventListener("change", render);
+sortSel.addEventListener("change", render);
 render();
 </script>
 </body>

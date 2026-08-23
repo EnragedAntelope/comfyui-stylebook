@@ -794,6 +794,28 @@ CRAFT_MATERIAL_STYLES: dict[str, dict] = {
         "preview": "craft_material#73",
         "blocks": [],
     },
+    "ndebele_wall_painting": {
+        "id": "ndebele_wall_painting",
+        "label": "Ndebele Wall Painting",
+        "category": "craft_material",
+        "aliases": ["Ndebele mural", "Ndebele geometric", "South African wall art"],
+        "tags": "Ndebele wall painting, bold geometric blocks bounded by thick black outline, flat saturated colour in cobalt yellow pink and green, symmetrical stepped and chevron motifs, hand-brushed slightly irregular edges, matte lime-washed surface, architectural banding",
+        "prose": "Painted as Ndebele wall decoration: bold geometric blocks bounded by thick black outline, flat cobalt, yellow, pink and green filling each field, stepped and chevron motifs held in symmetry, edges hand-brushed slightly irregular across a matte lime-washed surface.",
+        "negative": "shaded modelling, muted earth palette, freehand organic curves, glossy finish",
+        "preview": "craft_material#74",
+        "blocks": [],
+    },
+    "rosemaling": {
+        "id": "rosemaling",
+        "label": "Rosemaling",
+        "category": "craft_material",
+        "aliases": ["Norwegian folk painting", "rosemåling", "Scandinavian scrollwork"],
+        "tags": "Norwegian rosemaling, scrolling C and S curves of stylised flowers, transparent glazed colour over a dark stained ground, fine white overstroke line, asymmetric flowing ornament, brush pressure visible in every stroke, satin varnish on painted wood",
+        "prose": "Painted as Norwegian rosemaling: scrolling C and S curves of stylised flowers laid in transparent glazed colour over a dark stained ground, fine white overstrokes riding the top, brush pressure visible in every asymmetric flowing stroke under satin varnish.",
+        "negative": "flat mechanical vector shapes, symmetrical stencil repetition, matte opaque fills, geometric hard edges",
+        "preview": "craft_material#75",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = CRAFT_MATERIAL_STYLES

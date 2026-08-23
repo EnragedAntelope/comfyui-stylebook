@@ -254,6 +254,7 @@ def validate() -> list[str]:
 
     # --- a style named after somebody must be findable as an artist ---
     errors.extend(_check_person_styles(STYLES, ARTISTS))
+    errors.extend(_check_undeclared_namesakes(STYLES, ARTISTS))
 
     errors.extend(_check_duplicate_labels("style", STYLES))
     errors.extend(_check_duplicate_labels("artist", ARTISTS))
@@ -411,56 +412,13 @@ _SCENE_EXEMPT: dict[str, str] = {
 }
 
 
-#: Styles whose label names a real person, mapped to the artist record
-#: that person must have.
-#:
-#: Naming a style after somebody is a promise the Artist picker has to
-#: keep. Finding "Akira Kurosawa Rain" in the style gallery and then
-#: getting nothing back for "Kurosawa" in the artist search is the pack
-#: contradicting itself, and a batch of these entries had no artist
-#: record when this check was written.
-#:
-#: Hand-maintained on purpose, exactly like ``_SCENE_EXEMPT``. A name
-#: detector would have to decide whether "Ligne Claire", "Superflat" and
-#: "Cowboy Bebop" name people, and it would be wrong about at least one
-#: of them. Styles named only for a work, a studio or a movement --
-#: Cowboy Bebop, Evangelion, Studio Ghibli, Superflat -- are absent by
-#: design: no person is named on the tile, so nothing is promised. That
-#: also means this catches a *broken* promise, not a *missing* entry: a
-#: new person-named style has to be added here by hand.
-_PERSON_STYLES: dict[str, str] = {
-    # film_cinema
-    "bergman": "Ingmar Bergman",
-    "fellini": "Federico Fellini",
-    "fincher": "David Fincher",
-    "gaspar_noe": "Gaspar Noe",
-    "hitchcockian": "Alfred Hitchcock",
-    "kubrick": "Stanley Kubrick",
-    "kurosawa": "Akira Kurosawa",
-    "sirkian_melodrama": "Douglas Sirk",
-    "nolan_imax": "Christopher Nolan",
-    "ozu_tatami": "Yasujiro Ozu",
-    "spike_lee": "Spike Lee",
-    "tarantino": "Quentin Tarantino",
-    "tarkovsky": "Andrei Tarkovsky",
-    "terrence_malick": "Terrence Malick",
-    "wes_anderson": "Wes Anderson",
-    "wong_kar_wai": "Wong Kar-wai",
-    # anime_manga
-    "akira_otomo": "Katsuhiro Otomo",
-    "clamp_ornate": "CLAMP",
-    "ghost_in_the_shell": "Mamoru Oshii",
-    "inio_asano_realism": "Inio Asano",
-    "junji_ito_horror": "Junji Ito",
-    "makoto_shinkai": "Makoto Shinkai",
-    "one_piece_oda": "Eiichiro Oda",
-    "otoyomegatari_mori": "Kaoru Mori",
-    "satoshi_kon": "Satoshi Kon",
-    "shoujo_takeuchi": "Naoko Takeuchi",
-    "urasawa_monster": "Naoki Urasawa",
-    "vagabond_inoue": "Takehiko Inoue",
-    "yoshitaka_amano": "Yoshitaka Amano",
-    "yotsuba_azuma": "Kiyohiko Azuma",
+#: Style labels that share a word with an artist label without being named
+#: after that person, mapped to the reason. Same contract as
+#: ``_SCENE_EXEMPT``: an exemption without a written reason is how a check
+#: quietly stops meaning anything.
+_NAMESAKE_EXEMPT: dict[str, str] = {
+    "cctv_still": "'still' is a frame grab, not the painter Clyfford Still",
+    "still_life_drawing": "'still' as in still life, not Clyfford Still",
 }
 
 
@@ -468,24 +426,106 @@ def _check_person_styles(
     styles: dict[str, dict],
     artists: dict[str, dict],
 ) -> list[str]:
-    """Every person a style is named after must have an artist record."""
+    """Every person a style is named after must have an artist record.
+
+    The declaration lives on the style record itself, as the optional
+    `namesake` field, rather than in a map inside this file. Three things
+    read it: this check, the picker tooltip and the public gallery, which
+    both show "Named for ..." so the connection is visible before the
+    render rather than only to a maintainer.
+
+    Naming a style after somebody is a promise the Artist picker has to
+    keep. Finding "Akira Kurosawa Rain" in the style gallery and then
+    getting nothing back for "Kurosawa" in the artist search is the pack
+    contradicting itself.
+
+    Styles named only for a work, a studio or a movement -- Cowboy Bebop,
+    Evangelion, Studio Ghibli, Superflat -- carry no `namesake` by design:
+    no person is named on the tile, so nothing is promised.
+    """
     errors: list[str] = []
     labels = {
         rec.get("label", "").strip().lower()
         for rec in artists.values()
         if isinstance(rec.get("label"), str)
     }
-    for sid, artist_label in sorted(_PERSON_STYLES.items()):
-        if sid not in styles:
+    for sid, rec in sorted(styles.items()):
+        namesake = rec.get("namesake", "")
+        if not namesake:
+            continue
+        if not isinstance(namesake, str) or not namesake.strip():
+            errors.append(f"style '{sid}': namesake must be a non-empty string")
+        elif namesake.strip().lower() not in labels:
             errors.append(
-                f"_PERSON_STYLES names style '{sid}', which the pack no "
-                f"longer ships. Drop the entry or fix the id."
-            )
-        elif artist_label.strip().lower() not in labels:
-            errors.append(
-                f"style '{sid}' is named after {artist_label}, who has no "
+                f"style '{sid}' is named after {namesake}, who has no "
                 f"artist record. A style named after somebody has to be "
                 f"findable in the Artist picker under that name."
+            )
+    return errors
+
+
+def _name_words(label: str) -> set[str]:
+    """Words in a label long enough to be somebody's name.
+
+    Five characters, because four admits "Ross", "Wood", "Lee" and "Ray",
+    every one of which collides with a style word ("Wood Engraving",
+    "Ray Traced Render") while naming nobody the style is about.
+    """
+    cleaned = re.sub(r"\(.*?\)", " ", label)
+    return {
+        word.lower()
+        for word in re.split(r"[^A-Za-z]+", cleaned)
+        if len(word) >= 5
+    }
+
+
+def _check_undeclared_namesakes(
+    styles: dict[str, dict],
+    artists: dict[str, dict],
+) -> list[str]:
+    """Catch a style that names a shipped artist and forgot to say so.
+
+    The old hand-maintained map caught a *broken* promise -- a declared
+    namesake with no artist record -- but never a *missing* one: a new
+    person-named style simply had to remember to add its own line, and
+    nothing noticed when it did not.
+
+    This closes the common half of that gap. When a style label shares a
+    name-length word with an artist label, one of two things is true: the
+    style is named after that person and must declare `namesake`, or the
+    collision is a coincidence and belongs in ``_NAMESAKE_EXEMPT`` with a
+    reason.
+
+    It is honestly partial, and the remaining hole is worth stating: an
+    adjectival label ("Sirkian Melodrama", "Hitchcockian") shares no whole
+    word with "Douglas Sirk" or "Alfred Hitchcock", so only the author can
+    declare those. What it does catch is the case that actually recurs --
+    a style named for somebody the pack already ships.
+    """
+    errors: list[str] = []
+    artist_words: dict[str, str] = {}
+    for rec in artists.values():
+        label = rec.get("label", "")
+        if not isinstance(label, str):
+            continue
+        for word in _name_words(label):
+            artist_words.setdefault(word, label)
+
+    for sid, rec in sorted(styles.items()):
+        if rec.get("namesake") or sid in _NAMESAKE_EXEMPT:
+            continue
+        label = rec.get("label", "")
+        if not isinstance(label, str):
+            continue
+        hit = sorted(_name_words(label) & set(artist_words))
+        if hit:
+            who = ", ".join(artist_words[word] for word in hit)
+            errors.append(
+                f"style '{sid}' ({label}) shares a name with a shipped "
+                f"artist ({who}) but declares no 'namesake'. Either add "
+                f"namesake so the Artist picker keeps the promise the tile "
+                f"makes, or record why it is a coincidence in "
+                f"_NAMESAKE_EXEMPT."
             )
     return errors
 

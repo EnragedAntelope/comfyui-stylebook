@@ -10,15 +10,15 @@ try:
     from . import schema_options as opt
     from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
-        dump_chain, parse_chain, readout_detail, render_negative,
-        render_prompt, resolve_meta, resolved_summary,
+        _split_items, dump_chain, parse_chain, readout_detail,
+        render_negative, render_prompt, resolve_meta, resolved_summary,
     )
 except ImportError:  # pragma: no cover - standalone/test context
     from stylebook_nodes import schema_options as opt
     from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
-        dump_chain, parse_chain, readout_detail, render_negative,
-        render_prompt, resolve_meta, resolved_summary,
+        _split_items, dump_chain, parse_chain, readout_detail,
+        render_negative, render_prompt, resolve_meta, resolved_summary,
     )
 
 try:
@@ -28,8 +28,10 @@ except ImportError:  # pragma: no cover
     _COMFY_AVAILABLE = False
 
 
-def _items(text: str) -> list[str]:
-    return [item.strip() for item in text.split(",") if item.strip()]
+#: Blend splits tag strings exactly as the renderer does. This was a
+#: second copy of the same three lines; two implementations of "split a
+#: tag string" is one more than the pack should have.
+_items = _split_items
 
 
 def _take(items: list[str], share: float) -> list[str]:
@@ -55,7 +57,13 @@ def blend_styles(style_a: dict, style_b: dict, ratio: float) -> dict:
     * it decides which style leads the prose sentence, because whichever
       style is named first dominates how a prose model reads the result.
     """
-    ratio = min(1.0, max(0.0, ratio))
+    # NaN survives min/max untouched -- every comparison against it is
+    # False -- and then round(NaN) raises ValueError deep inside _take.
+    # The widget's own min/max keeps this off the normal path; a chain
+    # carrying a hand-written value does not.
+    if ratio != ratio:
+        ratio = 0.5
+    ratio = min(1.0, max(0.0, float(ratio)))
     a_label = style_a.get("label", "A")
     b_label = style_b.get("label", "B")
 

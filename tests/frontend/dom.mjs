@@ -9,19 +9,51 @@
  * painting.
  */
 
+import { readFileSync } from "node:fs";
 import { JSDOM } from "jsdom";
 
 let dom = null;
 
-/** Empty-but-successful response, so a test that never calls stubFetch()
- * still exercises the "nothing to load" path instead of hitting the
- * network (Node's built-in fetch also rejects a relative URL like
- * "/stylebook/user_data" outright with no base to resolve it against). */
-function defaultFetchStub() {
+/**
+ * Route fetch() the way a real ComfyUI install would.
+ *
+ * Two things are fetched. `/stylebook/user_data` is the "Yours" route,
+ * which answers empty here so a test that never calls stubFetch()
+ * exercises the "nothing to load" path. `stylebook_data.json` is the
+ * style corpus, and that one is served from the real generated file --
+ * the whole point of these tests is that they run the shipped data, and
+ * an empty stub would turn every ordering and search assertion into a
+ * check of nothing.
+ *
+ * Node's built-in fetch would reject the first URL outright (relative,
+ * with no base to resolve against) and file-read the second, so neither
+ * works unstubbed.
+ */
+const BULK_JSON = new URL("../../js/stylebook_data.json", import.meta.url);
+
+function defaultFetchStub(input) {
+  const url = String(input && input.url ? input.url : input);
+  if (url.endsWith("stylebook_data.json")) {
+    const text = readFileSync(BULK_JSON, "utf8");
+    return Promise.resolve({ ok: true, json: () => Promise.resolve(JSON.parse(text)) });
+  }
   return Promise.resolve({
     ok: true,
     json: () => Promise.resolve({ styles: [], artists: [], modifiers: [] }),
   });
+}
+
+/**
+ * Let pending promises run.
+ *
+ * The picker fetches its corpus when it opens, so the dialog exists one
+ * turn before its tiles do. Every test that opens a picker awaits this
+ * first. A real user sees the same thing -- an open dialog saying
+ * "Loading styles..." -- which is why the fetch is not hidden behind a
+ * synchronous import instead.
+ */
+export function settle(ms = 0) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function installDom() {
@@ -47,9 +79,21 @@ export function installDom() {
   return dom;
 }
 
-/** Point global fetch() at a one-off handler for the current test. */
+/**
+ * Point global fetch() at a one-off handler for the current test.
+ *
+ * The corpus is deliberately *not* routed to the handler. Every caller of
+ * this is testing the `/stylebook/user_data` route -- a failure, a non-ok
+ * response, a payload -- and a handler that also answered the corpus
+ * request would silently empty the gallery, turning "built-ins must still
+ * render" into an assertion about a stub rather than about the pack.
+ */
 export function stubFetch(handler) {
-  globalThis.fetch = handler;
+  globalThis.fetch = (input, init) => {
+    const url = String(input && input.url ? input.url : input);
+    if (url.endsWith("stylebook_data.json")) return defaultFetchStub(input);
+    return handler(input, init);
+  };
 }
 
 export function resetDom() {

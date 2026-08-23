@@ -107,6 +107,12 @@ class PackagedContentTests(unittest.TestCase):
         "data/styles/painting.py",
         "data/artists.py",
         "js/stylebook_data.js",
+        # The corpus. It is a .json rather than a .js so ComfyUI's
+        # extension glob does not parse 300 KB at app start, and that
+        # makes it exactly the kind of file an ignore rule drops by
+        # accident -- with the symptom being an empty gallery on a
+        # registry install and a full one in the dev tree.
+        "js/stylebook_data.json",
         "js/stylebook_gallery.js",
         "js/stylebook_gallery.css",
         # The whole point of the gallery.
@@ -125,8 +131,11 @@ class PackagedContentTests(unittest.TestCase):
         ".github/workflows/ci.yml",
         # Read only by a script that is itself excluded.
         "previews/manifest.json",
-        # The public web gallery; a ComfyUI install reads stylebook_data.js.
+        # The public web gallery; a ComfyUI install reads the js/ data.
         "docs/gallery/index.html",
+        # data/versions.py ships (the generator reads it), but the script
+        # that maintains it does not.
+        "scripts/stamp_versions.py",
     )
 
     def test_the_files_the_pack_needs_survive_packaging(self):

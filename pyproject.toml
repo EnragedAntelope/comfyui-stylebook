@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-stylebook"
-version = "0.9.0"
-description = "600+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list and a matching negative prompt. Plus 750+ artists with descriptors that work even when your model does not know the name, and modifiers for lighting, colour, era, finish and mood. Offline, zero dependencies."
+version = "0.10.0"
+description = "600+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list and a matching negative prompt. Plus 850+ artists with descriptors that work even when your model does not know the name, and modifiers for lighting, colour, era, finish and mood. Offline, zero dependencies."
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10"

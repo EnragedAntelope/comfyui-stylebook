@@ -1,19 +1,16 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 import {
-  ARTIST_ALIASES,
-  ARTIST_CATEGORIES,
   ARTIST_CATEGORY_LABELS,
   ARTIST_CATEGORY_ORDER,
-  ARTIST_DESCRIPTORS,
-  ARTIST_LABELS,
+  ARTIST_COUNT,
+  BULK_DATA_FILE,
   CATEGORIES,
   CATEGORY_LABELS,
+  CURRENT_VERSION,
   MODIFIER_AXES,
   MODIFIER_LABELS_BY_AXIS,
-  MODIFIER_RECORDS,
-  PREVIEW_INDEX,
-  STYLE_DATA_BY_CATEGORY,
+  RELEASES,
 } from "./stylebook_data.js";
 import {
   MIN_NODE_WIDTH,
@@ -49,8 +46,12 @@ import {
  *   4. A working "Fix node (recreate)", which lives in its own module,
  *      stylebook_recreate.js.
  *
- * Data comes from stylebook_data.js, which is generated. This file is
- * hand-written and the generator never touches it.
+ * Data comes from two generated files. stylebook_data.js holds the few
+ * kilobytes a node needs before any dialog exists; stylebook_data.json
+ * holds the corpus and is fetched the first time a picker opens, because
+ * ComfyUI imports every .js under a pack's web directory at app start.
+ * Both are generated. This file is hand-written and the generator never
+ * touches it.
  */
 
 const EXT_NAME = "stylebook.gallery";
@@ -71,10 +72,85 @@ const GROUP_ALL = "__all__";
 // things I added", filtered by `item.isCustom` rather than by group.
 const GROUP_YOURS = "__yours__";
 
+// Pseudo-group offered second, only when this release actually added
+// something to that picker. Six hundred tiles is too many to rescan for
+// what changed, and the data already knows: every entry carries the
+// release it first shipped in.
+const GROUP_NEW = "__new__";
+
+const SORT_ALPHA = "az";
+const SORT_NEWEST = "new";
+const SORT_KEY = "stylebook.gallery.sort";
+
+//: Rank of each release, newest highest. Sorting by "newest" ranks on
+//: this rather than comparing version strings, because "0.10.0" sorts
+//: before "0.9.0" as text and there is no reason to write a semver
+//: comparator when the generator can just emit the order.
+const RELEASE_RANK = new Map((RELEASES || []).map((v, i) => [v, i]));
+
+/**
+ * Chosen ordering, shared by every picker and remembered between opens.
+ *
+ * Module-level rather than per-dialog: a user who switches to newest-first
+ * to see what a release added means it for the Artist reference too, and
+ * having each picker forget independently is a small, constant annoyance.
+ * localStorage is best-effort -- a private window or a browser with site
+ * data blocked throws on access, and the default is fine there.
+ */
+let sortOrder = SORT_ALPHA;
+try {
+  const saved = window.localStorage.getItem(SORT_KEY);
+  if (saved === SORT_NEWEST || saved === SORT_ALPHA) sortOrder = saved;
+} catch (_) { /* storage unavailable; the default stands */ }
+
+function setSortOrder(value) {
+  sortOrder = value === SORT_NEWEST ? SORT_NEWEST : SORT_ALPHA;
+  try {
+    window.localStorage.setItem(SORT_KEY, sortOrder);
+  } catch (_) { /* not worth telling anyone about */ }
+}
+
+/**
+ * The style/artist/modifier corpus, fetched on first use.
+ *
+ * It is not imported. ComfyUI globs `**\/*.js` under every pack's web
+ * directory and imports every hit, so a `.js` file here is parsed at app
+ * start whether or not anyone opens a picker -- 300 KB charged to every
+ * ComfyUI user, including the ones with no Stylebook node on the canvas.
+ * As a `.json` fetched when a dialog first opens, it costs nothing until
+ * it is wanted. See scripts/generate_js_data.py for the full reasoning.
+ */
+let bulk = null;
+let bulkPromise = null;
+
+function loadBulkData() {
+  if (bulk) return Promise.resolve(bulk);
+  if (!bulkPromise) {
+    bulkPromise = fetch(assetURL("./" + BULK_DATA_FILE))
+      .then((response) => {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
+      })
+      .then((data) => {
+        if (!data || typeof data !== "object") throw new Error("not an object");
+        bulk = data;
+        return bulk;
+      })
+      .catch((error) => {
+        // Cleared so a retry can actually retry rather than re-resolving
+        // the same rejection for the rest of the session.
+        bulkPromise = null;
+        throw error;
+      });
+  }
+  return bulkPromise;
+}
+
 //: Fetched once in setup(). Read as {styles:[],artists:[],modifiers:[]}
 //: even before the fetch resolves, so every item-source function below
 //: can merge it in unconditionally with no extra null-checking.
 let userData = { styles: [], artists: [], modifiers: [] };
+let userDataVersion = 0;
 
 // Artist category tabs. The list used to be flat, which made 590 entries
 // searchable but not browsable: with no way to say "show me the
@@ -122,6 +198,9 @@ async function loadUserData() {
     artists: Array.isArray(data.artists) ? data.artists : [],
     modifiers: Array.isArray(data.modifiers) ? data.modifiers : [],
   };
+  // Bumped so the memoised item lists below rebuild once, rather than
+  // caching a built-ins-only list before this fetch landed.
+  userDataVersion += 1;
 }
 
 /**
@@ -134,6 +213,9 @@ async function loadUserData() {
 function groupName(key) {
   if (key === GROUP_ALL) return "All";
   if (key === GROUP_YOURS) return "Yours";
+  // Named for the release, not just "New": a user who skipped a version
+  // needs to know which one they are looking at.
+  if (key === GROUP_NEW) return "New in " + CURRENT_VERSION;
   if (CATEGORY_LABELS && CATEGORY_LABELS[key]) return CATEGORY_LABELS[key];
   if (ARTIST_CATEGORY_LABELS && ARTIST_CATEGORY_LABELS[key]) {
     return ARTIST_CATEGORY_LABELS[key];
@@ -289,7 +371,8 @@ function setSeedVisible(widgets, visible) {
 // --- preview sprite lookup ------------------------------------------------
 
 function previewFor(category, styleId) {
-  const categories = PREVIEW_INDEX && PREVIEW_INDEX.categories;
+  const index = bulk && bulk.PREVIEW_INDEX;
+  const categories = index && index.categories;
   if (!categories) return null;
   const entry = categories[category];
   if (!entry || !entry.tiles) return null;
@@ -323,19 +406,62 @@ function applySprite(element, preview) {
 
 // --- item sources ---------------------------------------------------------
 
-function styleItems() {
+/**
+ * Memoise an item list until the data behind it changes.
+ *
+ * renderGrid() runs on every keystroke, and each call used to rebuild
+ * 600-plus objects and re-sort them before filtering. Nothing about that
+ * list depends on the query. The only inputs that do change are the
+ * fetched corpus and a late-arriving user_styles.json, so both are in the
+ * cache key.
+ */
+function memoiseItems(build) {
+  let cached = null;
+  let key = "";
+  return () => {
+    const fresh = (bulk ? "b" : "-") + userDataVersion;
+    if (cached && key === fresh) return cached;
+    cached = build();
+    key = fresh;
+    return cached;
+  };
+}
+
+/**
+ * Precompute the lowercased text `matches()` searches.
+ *
+ * Every field used to be re-lowercased for every item on every keystroke.
+ * The group's *display* name is folded in here too, so searching
+ * "photography" still finds a tile whose group key is `photography` and
+ * "Fine Art" still finds one whose key is `fine-art`.
+ */
+function withHaystack(item) {
+  item.haystack = [
+    item.label,
+    item.id,
+    item.group ? groupName(item.group) : "",
+    item.detail || "",
+    (item.aliases || []).join(" "),
+  ].join(" ").toLowerCase();
+  return item;
+}
+
+const styleItems = memoiseItems(function buildStyleItems() {
   const items = [];
+  const byCategory = (bulk && bulk.STYLE_DATA_BY_CATEGORY) || {};
   for (const category of CATEGORIES) {
-    const data = STYLE_DATA_BY_CATEGORY[category];
+    const data = byCategory[category];
     if (!data || !Array.isArray(data.labels)) continue;
     for (let i = 0; i < data.labels.length; i++) {
-      items.push({
+      items.push(withHaystack({
         id: data.ids[i],
         label: data.labels[i],
         group: category,
         aliases: (data.aliases && data.aliases[i]) || [],
         scene: (data.scenes && data.scenes[i]) || "",
-      });
+        added: (data.added && data.added[i]) || "",
+        namesake: (data.namesakes && data.namesakes[i]) || "",
+      }));
     }
   }
   // A custom style keeps its own category as `group`, so it appears under
@@ -343,79 +469,107 @@ function styleItems() {
   // what the "Yours" tab filters on. It has no preview atlas entry, so the
   // tile falls back to the existing lettered-initials glyph automatically.
   for (const entry of userData.styles) {
-    items.push({
+    items.push(withHaystack({
       id: entry.id,
       label: entry.label,
       group: entry.category,
       aliases: [],
       scene: entry.scene || "",
+      // A custom style has no release: it shipped with whoever wrote it.
+      // Leaving it blank keeps it out of the "New" tab, which is about
+      // what *this pack* added, and sorts it last under newest-first.
+      added: "",
+      namesake: "",
       isCustom: true,
-    });
+    }));
   }
   // Sorted here rather than per tab, so "All", each category, "Yours"
   // and every search result come out alphabetical from one line -- and
   // a custom style lands among the built-ins rather than after them.
   return items.sort(byLabel);
-}
+});
 
-function artistItems() {
+const artistItems = memoiseItems(function buildArtistItems() {
   const items = [];
-  for (let i = 0; i < ARTIST_LABELS.length; i++) {
-    items.push({
-      id: ARTIST_LABELS[i],
-      label: ARTIST_LABELS[i],
-      group: ARTIST_CATEGORIES[i] || "artist",
-      aliases: ARTIST_ALIASES[i] || [],
-      detail: ARTIST_DESCRIPTORS[i] || "",
-    });
+  const labels = (bulk && bulk.ARTIST_LABELS) || [];
+  const categories = (bulk && bulk.ARTIST_CATEGORIES) || [];
+  const aliases = (bulk && bulk.ARTIST_ALIASES) || [];
+  const descriptors = (bulk && bulk.ARTIST_DESCRIPTORS) || [];
+  const added = (bulk && bulk.ARTIST_ADDED) || [];
+  for (let i = 0; i < labels.length; i++) {
+    items.push(withHaystack({
+      id: labels[i],
+      label: labels[i],
+      group: categories[i] || "artist",
+      aliases: aliases[i] || [],
+      detail: descriptors[i] || "",
+      added: added[i] || "",
+    }));
   }
   for (const entry of userData.artists) {
-    items.push({
+    items.push(withHaystack({
       id: entry.label,
       label: entry.label,
       group: entry.category || "artist",
       aliases: [],
       detail: entry.detail || "",
+      added: "",
       isCustom: true,
-    });
+    }));
   }
   return items.sort(byLabel);
-}
+});
 
 // Deliberately unsorted, unlike styles and artists. Modifiers are grouped
 // by axis and the `era` axis reads chronologically -- Ancient Classical,
 // Edwardian, 1920s, 1950s. Alphabetising would scatter the decades to the
 // top of the list. schema_options.modifier_options() makes the same call
 // on the backend, and the two have to agree.
-function modifierItems() {
-  const items = MODIFIER_RECORDS.map((rec) => ({
+const modifierItems = memoiseItems(function buildModifierItems() {
+  const items = ((bulk && bulk.MODIFIER_RECORDS) || []).map((rec) => withHaystack({
     id: rec.label,
     label: rec.label,
     group: rec.axis,
     aliases: rec.aliases || [],
     detail: rec.detail || "",
+    added: rec.added || "",
   }));
   for (const entry of userData.modifiers) {
-    items.push({
+    items.push(withHaystack({
       id: entry.label,
       label: entry.label,
       group: entry.category,
       aliases: [],
       detail: entry.detail || "",
+      added: "",
       isCustom: true,
-    });
+    }));
   }
   return items;
-}
+});
 
 function matches(item, query) {
   if (!query) return true;
-  const q = query.toLowerCase();
-  if (item.label.toLowerCase().includes(q)) return true;
-  if (String(item.id).toLowerCase().includes(q)) return true;
-  if (item.group && groupName(item.group).toLowerCase().includes(q)) return true;
-  if (item.detail && item.detail.toLowerCase().includes(q)) return true;
-  return item.aliases.some((alias) => String(alias).toLowerCase().includes(q));
+  return item.haystack.includes(query.toLowerCase());
+}
+
+/** True when *item* was added by the release this build is. */
+function isNew(item) {
+  return Boolean(CURRENT_VERSION) && item.added === CURRENT_VERSION;
+}
+
+/**
+ * Newest first, then alphabetical inside each release.
+ *
+ * Ties broken by label rather than left to the sort's stability: the
+ * incoming list is already alphabetical, but saying so here means the
+ * ordering survives someone changing that.
+ */
+function byNewest(a, b) {
+  const ra = RELEASE_RANK.has(a.added) ? RELEASE_RANK.get(a.added) : -1;
+  const rb = RELEASE_RANK.has(b.added) ? RELEASE_RANK.get(b.added) : -1;
+  if (ra !== rb) return rb - ra;
+  return byLabel(a, b);
 }
 
 // --- picker dialog --------------------------------------------------------
@@ -461,6 +615,63 @@ class StylebookPicker {
         if (this.searchInput) this.searchInput.focus();
       } catch (_) { /* ignore */ }
     });
+    // The dialog is on screen before the corpus is, so opening feels
+    // instant on a cold load and the wait happens inside a frame that
+    // already exists rather than behind an unresponsive button.
+    this.ensureData();
+  }
+
+  /**
+   * Fetch the corpus if this is the first picker opened this session.
+   *
+   * A failure is shown in the dialog with a retry rather than swallowed:
+   * an empty gallery with no explanation reads as a broken pack, and the
+   * one thing the user can usefully do about a missing file is try again.
+   */
+  ensureData() {
+    if (bulk) {
+      this.renderGrid();
+      return;
+    }
+    this.showPlaceholder("Loading styles...");
+    const opened = this.overlay;
+    loadBulkData().then(
+      () => {
+        if (this.overlay !== opened) return;
+        this.renderGrid();
+      },
+      (error) => {
+        if (this.overlay !== opened) return;
+        warn("could not load the style data", error);
+        this.showPlaceholder(
+          "Could not load the style data. Check that the pack's js/ folder "
+          + "is complete, then try again.",
+          () => this.ensureData()
+        );
+      }
+    );
+  }
+
+  /** Replace the grid with a one-line message, optionally with a retry. */
+  showPlaceholder(message, onRetry) {
+    if (!this.grid) return;
+    this.grid.replaceChildren();
+    this._focused = null;
+    this.grid.classList.remove("with-category");
+    const box = document.createElement("div");
+    box.className = "stylebook-empty";
+    box.textContent = message;
+    if (onRetry) {
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.className = "stylebook-close";
+      retry.textContent = "Try again";
+      retry.addEventListener("click", onRetry);
+      box.append(document.createElement("br"), retry);
+    }
+    this.grid.appendChild(box);
+    if (this.count) this.count.textContent = "";
+    this.visible = [];
   }
 
   close() {
@@ -472,6 +683,12 @@ class StylebookPicker {
     this.tabs = null;
     this.count = null;
     this.searchInput = null;
+    this.sortSelect = null;
+    this._focused = null;
+    if (this._searchTimer) {
+      clearTimeout(this._searchTimer);
+      this._searchTimer = null;
+    }
     // Returning focus to where it was keeps keyboard users oriented.
     try {
       if (this.previousFocus && this.previousFocus.focus) this.previousFocus.focus();
@@ -499,10 +716,17 @@ class StylebookPicker {
     search.spellcheck = false;
     search.autocomplete = "off";
     search.setAttribute("aria-label", this.config.searchPlaceholder);
+    // Debounced. A grid rebuild is cheap now that the item list is
+    // memoised, but a fast typist still generated one full pass per
+    // keystroke; coalescing them keeps the caret responsive on a laptop.
     search.addEventListener("input", (event) => {
       this.query = event.target.value || "";
       this.focusIndex = 0;
-      this.renderGrid();
+      if (this._searchTimer) clearTimeout(this._searchTimer);
+      this._searchTimer = setTimeout(() => {
+        this._searchTimer = null;
+        this.renderGrid();
+      }, 80);
     });
     this.searchInput = search;
 
@@ -510,6 +734,26 @@ class StylebookPicker {
     count.className = "stylebook-count";
     count.setAttribute("aria-live", "polite");
     this.count = count;
+
+    // Ordering control. Alphabetical is the default and stays the way in
+    // when you know what you are looking for; newest-first answers the
+    // other question a returning user has, which is what changed.
+    const sort = document.createElement("select");
+    sort.className = "stylebook-sort";
+    sort.setAttribute("aria-label", "Sort order");
+    for (const [value, text] of [[SORT_ALPHA, "A-Z"], [SORT_NEWEST, "Newest"]]) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = text;
+      sort.appendChild(option);
+    }
+    sort.value = sortOrder;
+    sort.addEventListener("change", () => {
+      setSortOrder(sort.value);
+      this.focusIndex = 0;
+      this.renderGrid();
+    });
+    this.sortSelect = sort;
 
     const close = document.createElement("button");
     close.type = "button";
@@ -526,10 +770,10 @@ class StylebookPicker {
       done.className = "stylebook-close stylebook-done";
       done.addEventListener("click", () => this.commit());
       this.doneButton = done;
-      header.append(search, count, done, close);
+      header.append(search, sort, count, done, close);
       this.updateChosenCount();
     } else {
-      header.append(search, count, close);
+      header.append(search, sort, count, close);
     }
 
     // Tab strip, only when the source is grouped.
@@ -651,22 +895,39 @@ class StylebookPicker {
     return Math.max(1, Math.floor(width / (TILE_DISPLAY_PX + 14)));
   }
 
+  /**
+   * Move the focus ring, touching two elements rather than all of them.
+   *
+   * This runs on every arrow key and every mouseenter. It used to
+   * querySelectorAll the whole grid and walk 600-plus tiles per press,
+   * which is the wrong shape of work for the hot navigation path: the
+   * only elements that change are the one leaving focus and the one
+   * taking it.
+   */
   highlight() {
     if (!this.grid) return;
-    const tiles = this.grid.querySelectorAll(".stylebook-tile, .stylebook-row");
-    tiles.forEach((tile, index) => {
-      const active = index === this.focusIndex;
-      tile.classList.toggle("focused", active);
-      tile.setAttribute("aria-selected", active ? "true" : "false");
-      if (active && tile.scrollIntoView) {
-        tile.scrollIntoView({ block: "nearest" });
-      }
-    });
+    const next = this.visible.length
+      ? this.grid.children[this.focusIndex] || null
+      : null;
+    if (this._focused === next) {
+      if (next && next.scrollIntoView) next.scrollIntoView({ block: "nearest" });
+      return;
+    }
+    if (this._focused) {
+      this._focused.classList.remove("focused");
+      this._focused.setAttribute("aria-selected", "false");
+    }
+    this._focused = next;
+    if (next) {
+      next.classList.add("focused");
+      next.setAttribute("aria-selected", "true");
+      if (next.scrollIntoView) next.scrollIntoView({ block: "nearest" });
+    }
   }
 
   renderTabs() {
     this.tabs.replaceChildren();
-    for (const group of this.config.groups) {
+    for (const group of this.groups()) {
       const button = document.createElement("div");
       button.tabIndex = 0;
       const active = group === this.activeGroup && !this.query;
@@ -692,19 +953,50 @@ class StylebookPicker {
     }
   }
 
+  /**
+   * The tab strip for this picker, with "New" inserted when it applies.
+   *
+   * Conditional for the same reason the "Yours" tab is: a tab that is
+   * always there and sometimes empty teaches you to ignore it. A release
+   * that adds styles but no modifiers shows the tab on the style gallery
+   * only.
+   */
+  groups() {
+    const base = this.config.groups;
+    if (!base) return null;
+    if (!this.config.items().some(isNew)) return base;
+    const out = base.slice();
+    out.splice(base[0] === GROUP_ALL ? 1 : 0, 0, GROUP_NEW);
+    return out;
+  }
+
   renderGrid() {
     if (!this.grid) return;
+    if (!bulk) return;  // ensureData() is showing the placeholder
     this.grid.replaceChildren();
+    this._focused = null;
 
     const all = this.config.items();
     // A search spans every group; without one, show the active tab only.
     this.visible = this.query
       ? all.filter((item) => matches(item, this.query))
       : this.config.groups && this.activeGroup !== GROUP_ALL
-        ? this.activeGroup === GROUP_YOURS
-          ? all.filter((item) => item.isCustom)
-          : all.filter((item) => item.group === this.activeGroup)
+        ? this.activeGroup === GROUP_NEW
+          ? all.filter(isNew)
+          : this.activeGroup === GROUP_YOURS
+            ? all.filter((item) => item.isCustom)
+            : all.filter((item) => item.group === this.activeGroup)
         : all;
+
+    // Sorted here, on the filtered list, rather than in the item source:
+    // the source is memoised and shared, and re-sorting a few hundred
+    // visible entries costs less than keeping two copies of the corpus.
+    // Modifiers are the exception the pack has always made -- the `era`
+    // axis reads chronologically and alphabetising scatters the decades --
+    // so alphabetical order leaves their data order alone.
+    if (sortOrder === SORT_NEWEST) {
+      this.visible = this.visible.slice().sort(byNewest);
+    }
 
     if (this.tabs) this.renderTabs();
 
@@ -764,12 +1056,19 @@ class StylebookPicker {
     const row = document.createElement("div");
     row.className = "stylebook-row";
     row.setAttribute("role", "option");
+    row.setAttribute("aria-selected", "false");
     row.tabIndex = -1;
     if (position) row.classList.add("selected");
 
     const name = document.createElement("div");
     name.className = "stylebook-row-name";
     name.textContent = item.label;
+    if (isNew(item)) {
+      const ribbon = document.createElement("span");
+      ribbon.className = "stylebook-row-new";
+      ribbon.textContent = "new";
+      name.append(" ", ribbon);
+    }
     if (this.config.multi && position) name.prepend(orderBadge(position));
 
     const detail = document.createElement("div");
@@ -792,6 +1091,7 @@ class StylebookPicker {
     const tile = document.createElement("div");
     tile.className = "stylebook-tile";
     tile.setAttribute("role", "option");
+    tile.setAttribute("aria-selected", "false");
     tile.tabIndex = -1;
     tile.setAttribute("data-group", item.group || "");
     const titleLines = [item.label];
@@ -799,6 +1099,11 @@ class StylebookPicker {
     // Said in full in the tooltip, because the badge itself only has room
     // for one word and "scene" alone does not explain what will happen.
     if (item.scene) titleLines.push("Places your subject in " + item.scene + ".");
+    // The style gallery promises an artist by naming one on the tile. Say
+    // who, so the connection is visible here rather than only to whoever
+    // thinks to search the Artist reference for the same name.
+    if (item.namesake) titleLines.push("Named for " + item.namesake + ".");
+    if (isNew(item)) titleLines.push("New in " + CURRENT_VERSION + ".");
     tile.title = titleLines.join("\n");
     if (position) tile.classList.add("selected");
 
@@ -828,6 +1133,17 @@ class StylebookPicker {
       badge.textContent = "scene";
       badge.setAttribute("aria-hidden", "true");
       art.appendChild(badge);
+    }
+
+    // Same trick, opposite corner. Absolutely positioned over the art for
+    // the reason above: tile height is fixed by grid-auto-rows, so a new
+    // line inside a tile clips the label where jsdom cannot see it.
+    if (isNew(item)) {
+      const ribbon = document.createElement("div");
+      ribbon.className = "stylebook-tile-new";
+      ribbon.textContent = "new";
+      ribbon.setAttribute("aria-hidden", "true");
+      art.appendChild(ribbon);
     }
 
     const label = document.createElement("div");
@@ -996,7 +1312,7 @@ function setupArtistNode(node) {
   // settled on.
   attachPicker(node, "artist", {
     title: "Stylebook artist reference",
-    searchPlaceholder: "Search " + ARTIST_LABELS.length +
+    searchPlaceholder: "Search " + ARTIST_COUNT +
       " artists by name, movement, or what their work looks like",
     items: artistItems,
     get groups() {

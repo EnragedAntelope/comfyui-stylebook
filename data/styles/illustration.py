@@ -420,6 +420,17 @@ ILLUSTRATION_STYLES: dict[str, dict] = {
         "preview": "illustration#38",
         "blocks": [],
     },
+    "corporate_memphis": {
+        "id": "corporate_memphis",
+        "label": "Corporate Memphis",
+        "category": "illustration",
+        "aliases": ["flat brand illustration", "alegria style", "big tech illustration"],
+        "tags": "corporate memphis flat vector illustration, elongated bendy limbs and oversized hands, faces reduced to plain shapes, bold saturated brand palette of coral and indigo, flat geometric blobs behind the figures, clean uniform vector edges, playful disproportionate anatomy",
+        "prose": "Drawn as corporate memphis flat vector illustration: elongated bendy limbs and oversized hands, faces reduced to plain shapes, a bold coral and indigo brand palette laid down in flat geometric blobs with clean uniform vector edges throughout.",
+        "negative": "realistic proportion, textured painterly rendering, muted naturalistic colour, detailed facial modelling",
+        "preview": "illustration#39",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = ILLUSTRATION_STYLES

@@ -19,6 +19,7 @@ CHECKS: list[tuple[str, list[str]]] = [
     ("Lint (ruff)", [sys.executable, "-m", "ruff", "check", "."]),
     ("Data integrity", [sys.executable, "tests/validate_data.py"]),
     ("Unit tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-t", "."]),
+    ("Release stamps", [sys.executable, "scripts/stamp_versions.py", "--check"]),
     ("Generated JS data", [sys.executable, "scripts/generate_js_data.py", "--check"]),
     ("Frontend test fixtures", [sys.executable, "scripts/dump_frontend_fixtures.py", "--check"]),
     ("Preview manifest", [sys.executable, "scripts/build_previews.py", "--check"]),

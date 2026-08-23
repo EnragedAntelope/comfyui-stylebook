@@ -22,7 +22,7 @@ process because the subject leads the prompt and the style trails it.
 <br clear="right">
 
 Every style ships four things: a written description, a keyword list, a
-matching negative prompt, and a preview image. 750+ artists ship a written
+matching negative prompt, and a preview image. 850+ artists ship a written
 descriptor each, so the look still lands when the name means nothing to
 your model. No dependencies, no downloads, no network calls, no API keys.
 
@@ -62,12 +62,28 @@ something you landed on without setting up a `user_styles.json`.
 
 ![The style gallery](docs/images/style-gallery.png)
 
+### Finding what changed
+
+Six hundred tiles is a lot to rescan when a release lands, so the gallery
+knows when each entry arrived. Every picker has a **New in x.y.z** tab
+holding exactly what this release added, a **new** ribbon on those tiles,
+and a sort control that switches between **A-Z** and **Newest first**.
+The tab only appears where that release actually added something, so an
+empty one never trains you to ignore it. Your sort choice is remembered
+between openings. The [public gallery](https://enragedantelope.github.io/comfyui-stylebook/docs/gallery/)
+has the same filter and sort.
+
+Where a style is named after a real person — Sirkian Melodrama, Ozu
+Tatami Shot — the tooltip names them, and that person is always findable
+in the Artist reference. The pack refuses to ship a style that promises
+an artist it does not have.
+
 ## The five nodes
 
 | Node | What it does |
 |---|---|
 | **Style** | The medium. Pick from the gallery, draw a seeded Random from a filtered pool, or Cycle a whole category by index. Exclusive: a second Style node replaces the first. |
-| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 750+ artists by name, movement, category, or by what their work actually looks like. |
+| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 850+ artists by name, movement, category, or by what their work actually looks like. |
 | **Modifier** | Tilts one axis: lighting, colour grade, era, finish or mood. 100+ modifiers, each with a description you can browse. One per axis. |
 | **Blend** | Mixes two styles at a ratio that genuinely shifts the balance, not just the endpoints. |
 | **Sheet** | One subject rendered across many styles as a batch. Choose them yourself from the gallery, or leave the list empty and let a seeded draw fill it. |

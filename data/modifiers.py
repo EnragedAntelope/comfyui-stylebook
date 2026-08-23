@@ -43,6 +43,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "caught at blue hour: the sky an even deep blue with the sun already gone, warm artificial lights starting to take over and windows glowing against the dusk.",
         "negative": "daylight, direct sun, midday, warm ambient",
     },
+    "butterfly_lighting": {
+        "label": "Butterfly / Paramount",
+        "axis": "lighting",
+        "aliases": ["paramount lighting", "glamour lighting", "beauty light"],
+        "tags": "butterfly lighting, key light placed high and directly in front, small symmetrical shadow beneath the nose, soft shadow sculpting under the cheekbones and chin, glossy highlight across the forehead, smooth glamour falloff",
+        "prose": "lit in the butterfly pattern: the key placed high and dead centre in front, dropping a small symmetrical shadow beneath the nose, cheekbones sculpted by soft shadow and a glossy highlight riding the forehead.",
+        "negative": "side key light, hard rim separation, asymmetric shadow placement",
+    },
     "candlelight": {
         "label": "Candlelight",
         "axis": "lighting",
@@ -155,6 +163,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "lit by what is in the room: table lamps, signs and screens pooling warm light unevenly, the sources themselves visible in frame.",
         "negative": "studio lighting, sunlight, off-camera key, even coverage",
     },
+    "rembrandt_lighting": {
+        "label": "Rembrandt Lighting",
+        "axis": "lighting",
+        "aliases": ["rembrandt triangle", "short lighting", "45 degree portrait light"],
+        "tags": "Rembrandt portrait lighting, single key high and to one side, small triangle of light on the shadowed cheek, gentle falloff into deep shadow on the far side, darkened surround, soft catchlight in the eye",
+        "prose": "lit in the Rembrandt pattern: one key light high and to one side, a small triangle of light landing on the shadowed cheek, the far side falling gently into deep shadow against a darkened surround.",
+        "negative": "flat frontal lighting, even fill across both sides, high-key exposure",
+    },
     "rim_lighting": {
         "label": "Rim Lighting",
         "axis": "lighting",
@@ -162,6 +178,14 @@ MODIFIERS: dict[str, dict] = {
         "tags": "rim lighting, strong backlight creating bright edge contour, dark foreground, silhouette glow, hazy light wrap",
         "prose": "rim-lit: a strong backlight traces every contour in a bright white edge against a dark ground, the subject solid and readable through outline alone, with a faint hazy bloom where the light wraps around the form.",
         "negative": "flat frontal lighting, fill flash, even ambient light",
+    },
+    "sodium_vapour": {
+        "label": "Sodium Vapour",
+        "axis": "lighting",
+        "aliases": ["sodium light", "low-pressure sodium", "amber monochrome light"],
+        "tags": "sodium vapour light, narrow-spectrum amber, every colour collapsing toward a single orange hue, greys warming to ochre, almost monochrome rendering, soft haze around each source, shadows tipping bluish by contrast",
+        "prose": "lit by sodium vapour: a narrow-spectrum amber that collapses every colour toward one orange hue, greys warming to ochre, the image reading almost monochrome with soft haze around each source and shadows tipping bluish by contrast.",
+        "negative": "daylight colour balance, full-spectrum white light, saturated greens and blues",
     },
     "split_lighting": {
         "label": "Split Lighting",
@@ -277,6 +301,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "graded to muted earth: ochre, umber and olive holding the frame, saturation kept in check so nothing shouts.",
         "negative": "neon, vivid colour, cool blue, high saturation",
     },
+    "orthochromatic": {
+        "label": "Orthochromatic",
+        "axis": "color_grade",
+        "aliases": ["red-blind emulsion", "ortho stock", "early film tonality"],
+        "tags": "orthochromatic black and white, red rendered nearly black, darkened skin tones with exaggerated blemishes, blue skies rising to white, hard contrast between warm and cool subjects, silver-rich early emulsion rendering",
+        "prose": "graded like an orthochromatic emulsion: red falling almost to black so lips and skin darken, blues rising to white, a hard split between warm and cool rendered in silver-rich monochrome.",
+        "negative": "panchromatic tonality, even grey rendering of red, modern colour response",
+    },
     "pastel_wash": {
         "label": "Pastel Wash",
         "axis": "color_grade",
@@ -316,6 +348,14 @@ MODIFIERS: dict[str, dict] = {
         "tags": "teal and orange grade, shadows pushed cyan, skin tones held warm orange, strong complementary separation, glossy contemporary finish",
         "prose": "graded teal and orange: shadows pushed toward cyan while skin holds a warm orange, the two pulling apart into hard complementary separation.",
         "negative": "natural colour, muted palette, monochrome, pastel",
+    },
+    "velvia": {
+        "label": "Velvia Slide Film",
+        "axis": "color_grade",
+        "aliases": ["velvia 50", "punchy transparency", "saturated slide film"],
+        "tags": "Velvia slide film, punchy saturated colour, greens and reds pushed hard, deep contrast crushing shadow detail, cool clean sky rendering, very fine grain, glossy transparency look",
+        "prose": "graded like Velvia transparency film: colour pushed hard with greens and reds leaping forward, deep contrast crushing shadow detail, skies rendering cool and clean over very fine grain.",
+        "negative": "muted pastel palette, faded low contrast, washed-out colour",
     },
     "warm_amber": {
         "label": "Warm Amber",
@@ -521,6 +561,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "finished with visible chromatic aberration: red and cyan fringes creeping wider toward the corners and a purple edge wherever contrast is hardest.",
         "negative": "corrected optics, clean edges, clinical sharpness",
     },
+    "crt_phosphor": {
+        "label": "CRT Phosphor",
+        "axis": "finish",
+        "aliases": ["cathode ray tube", "phosphor bloom", "tube monitor"],
+        "tags": "CRT phosphor rendering, glowing RGB phosphor triads, gentle screen curvature bowing the edges, phosphor bloom smearing bright areas, slight geometric distortion at the corners, soft scanline falloff, glassy reflective sheen",
+        "prose": "finished as a cathode ray tube image: RGB phosphor triads glowing under the bright areas, bloom smearing every highlight, the frame bowing gently at its edges with a glassy sheen and soft scanline falloff.",
+        "negative": "flat panel sharpness, pixel-perfect geometry, matte uniform surface",
+    },
     "crushed_blacks": {
         "label": "Crushed Blacks",
         "axis": "finish",
@@ -560,6 +608,14 @@ MODIFIERS: dict[str, dict] = {
         "tags": "high-gloss lacquer finish, mirror-sharp specular highlights, deep wet-looking blacks, reflections of the surrounding environment, flawless surface",
         "prose": "finished under gloss lacquer: specular highlights sharp as mirrors, blacks looking permanently wet and the surroundings reflected across the surface.",
         "negative": "matte, chalky, textured, diffuse surface",
+    },
+    "halation": {
+        "label": "Halation",
+        "axis": "finish",
+        "aliases": ["highlight bleed", "film halo", "red glow bleed"],
+        "tags": "halation, warm red-orange bleed haloing every bright highlight, glow spreading into the adjacent dark areas, soft blooming edge on light sources, filmic light scatter back through the emulsion, softened edge contrast at the brightest points",
+        "prose": "finished with halation: a warm red-orange bleed haloing every bright highlight, glow spreading softly into the darks around it as light scatters back through the emulsion and edges soften where the image is brightest.",
+        "negative": "clinical highlight roll-off, hard-clipped whites, digital sharpness at bright edges",
     },
     "halftone_dots": {
         "label": "Halftone Dots",
@@ -633,6 +689,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "finished like a CRT: horizontal scan lines across everything, phosphor glow blooming from the bright areas and a faint colour fringe at the edges.",
         "negative": "flat panel sharpness, clean digital, print texture",
     },
+    "sensor_noise": {
+        "label": "Sensor Noise",
+        "axis": "finish",
+        "aliases": ["high ISO noise", "digital noise", "chroma noise"],
+        "tags": "high-ISO sensor noise, coloured chroma blotches mottling the shadows, fine luminance speckle across flat areas, smeared fine detail where noise reduction has worked, muddy dark tones, cool digital speckle texture",
+        "prose": "finished with high-ISO digital noise: coloured chroma blotches mottling the shadows, fine luminance speckle riding every flat area, dark tones going slightly muddy and fine detail smeared where noise reduction has worked over it.",
+        "negative": "clean low-ISO capture, smooth shadow rendering, silver film grain",
+    },
     "shallow_depth_of_field": {
         "label": "Shallow Depth of Field",
         "axis": "finish",
@@ -648,6 +712,22 @@ MODIFIERS: dict[str, dict] = {
         "tags": "diffusion filter, highlights blooming softly outward, contrast gently reduced, fine detail retained under a soft veil, halation around light sources",
         "prose": "finished through a diffusion filter: highlights blooming gently outward and contrast easing, detail still present beneath a soft veil.",
         "negative": "clinical sharpness, harsh contrast, crisp edges",
+    },
+    "swirl_bokeh": {
+        "label": "Swirl Bokeh",
+        "axis": "finish",
+        "aliases": ["petzval bokeh", "swirly bokeh", "vortex blur"],
+        "tags": "swirling Petzval bokeh, out-of-focus highlights smeared into a circular whirl toward the edges, radial turn through the background blur, sharp centre falling off fast, pinched cat-eye highlight shapes at the corners",
+        "prose": "finished with swirling Petzval bokeh: out-of-focus highlights curling into a circular whirl toward the frame edge, the background blur turning radially while the centre stays sharp and corner highlights pinch into cat-eye shapes.",
+        "negative": "even circular bokeh, flat background rendering, uniform corner-to-corner sharpness",
+    },
+    "vhs_artifacts": {
+        "label": "VHS Tape Artifacts",
+        "axis": "finish",
+        "aliases": ["tape warble", "tracking error", "video dub artifacts"],
+        "tags": "VHS tape artifacts, chroma bleeding sideways off saturated edges, head-switching noise band along the bottom, horizontal tracking tears, softened low-resolution detail, colour smearing into trailing streaks, tape warble wobbling the vertical lines",
+        "prose": "finished like a worn VHS dub: chroma bleeding sideways off saturated edges, a head-switching noise band along the bottom, tracking tears cutting horizontally through softened detail and vertical lines wobbling with tape warble.",
+        "negative": "pristine digital capture, crisp resolved detail, stable frame geometry",
     },
     "vignette": {
         "label": "Vignette",
@@ -841,15 +921,27 @@ for _mod_id, _mod in MODIFIERS.items():
     MODIFIERS_BY_AXIS.setdefault(_axis, []).append(_mod_id)
 
 
+#: Lowercased label -> record, built once at import.
+#:
+#: Artists and styles already had an O(1) label table; modifiers were the
+#: one collection still scanned linearly, on the Pick path that every
+#: Modifier node execution takes. Labels are unique -- the data validator
+#: enforces it -- so first-wins and last-wins are the same map here.
+MODIFIERS_BY_LABEL: dict[str, dict] = {
+    record["label"].lower(): record
+    for record in MODIFIERS.values()
+    if isinstance(record.get("label"), str)
+}
+
+
 def get_modifier(label: str, axis: str | None = None) -> dict | None:
     """Return a modifier record by id or label, optionally pinned to *axis*."""
     key = label.lower().strip()
-    if key in MODIFIERS and (axis is None or MODIFIERS[key].get("axis") == axis):
-        return MODIFIERS[key]
-    for record in MODIFIERS.values():
-        if record.get("label", "").lower() == key:
-            if axis is None or record.get("axis") == axis:
-                return record
+    # Id first, then label -- and an axis mismatch on the id still falls
+    # through to the label table, exactly as the old linear scan did.
+    for record in (MODIFIERS.get(key), MODIFIERS_BY_LABEL.get(key)):
+        if record is not None and (axis is None or record.get("axis") == axis):
+            return record
     return None
 
 #: Sentinel values for the modifier node.

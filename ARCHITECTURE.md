@@ -29,7 +29,8 @@ stylebook_nodes/
   stylebook_blend.py      Blend node   - two styles at a ratio.
   stylebook_sheet.py      Sheet node   - one subject, many styles, as a list.
 js/
-  stylebook_data.js       Generated. Never edit by hand.
+  stylebook_data.js       Generated. Never edit by hand. Small on purpose.
+  stylebook_data.json     Generated. The corpus, fetched on first picker open.
   stylebook_shared.js     Helpers shared by every frontend module below.
   stylebook_gallery.js    Hand-written frontend. The generator never touches it.
   stylebook_recreate.js   A working "Fix node (recreate)". See below.
@@ -253,22 +254,74 @@ serves the whole repository, so the page reaches the atlases at
 every other generator here.
 
 One deliberate difference from the in-app gallery: this page shows each
-style's prose, keywords and negative. Shipping the whole prose corpus in
-`stylebook_data.js` would roughly double the payload every ComfyUI user
-downloads, but on a page somebody chose to open it is the most useful
-thing on it.
+style's prose, keywords and negative. Shipping the whole prose corpus to
+ComfyUI would roughly double what every user downloads, but on a page
+somebody chose to open it is the most useful thing on it.
 
 ## Frontend
 
-`stylebook_data.js` is generated in full from the Python data layer.
-`stylebook_gallery.js` is hand-written. They are separate files because a
-previous revision generated into the middle of a hand-edited file, whole-file
-overwrite included, which silently deleted the `export` statements the
-gallery imported and took the entire frontend down. `--check` still passed,
-because it compared the generated block against a fresh render of itself.
+`stylebook_data.js` and `stylebook_data.json` are generated in full from
+the Python data layer. `stylebook_gallery.js` is hand-written. Generated
+and hand-written are separate files because a previous revision generated
+into the middle of a hand-edited file, whole-file overwrite included,
+which silently deleted the `export` statements the gallery imported and
+took the entire frontend down. `--check` still passed, because it compared
+the generated block against a fresh render of itself.
 
 Keep that boundary. If the generator ever needs to emit something new, add
-it to `stylebook_data.js`, never to the gallery.
+it to the generated files, never to the gallery.
+
+### Why the corpus is a `.json`, not a `.js`
+
+ComfyUI finds frontend extensions by globbing `**/*.js` under every pack's
+web directory and importing every hit (`server.py`, `get_extensions`). It
+does not check whether a file registers an extension: a `.js` file in
+`js/` is parsed at app start regardless. The style corpus was about
+300 KB of that, charged to every ComfyUI user on every load — including
+the ones with no Stylebook node on the canvas.
+
+So the split is by *when it is needed*, not by what it is:
+
+- `stylebook_data.js` (a few KB) holds what a node needs before any dialog
+  exists — the axis-to-modifier map that gates the Modifier widget, the
+  category tables, the counts, the version.
+- `stylebook_data.json` holds everything else and is fetched the first
+  time a picker opens. The glob does not match it.
+
+`tests/test_versions.LazyCorpusTests` is the tripwire: it fails if the
+eager module grows past a few KB or if a corpus export reappears in it.
+
+A `.mjs` module with a dynamic `import()` would read better, but a module
+import is subject to the server's MIME type for that extension, and
+`mimetypes` on Windows takes its answer from the registry. `fetch` plus
+`response.json()` enforces no MIME type at all.
+
+The dialog opens before the corpus arrives and shows "Loading styles...",
+then a message with a **Try again** button if the fetch fails. An empty
+gallery with no explanation reads as a broken pack.
+
+### What each entry's release stamp is for
+
+`data/versions.py` maps every style, artist and modifier id to the release
+it first shipped in, and lists every release oldest-first. It is generated
+by `scripts/stamp_versions.py`:
+
+```
+python scripts/stamp_versions.py --check          # CI gate
+python scripts/stamp_versions.py --stamp          # new entries -> this version
+python scripts/stamp_versions.py --from-history   # rebuild from git
+```
+
+The habit is: add records, run `--stamp`. `--check` fails when a shipped
+entry has no stamp, which is the failure the convention alone could not
+catch — an unstamped style would simply sort as if it had always been
+there and never appear under "New".
+
+The gallery reads it for two things: the **New in x.y.z** tab, and the
+**Newest first** sort. Both rank on position in `RELEASES` rather than
+comparing version strings, because "0.10.0" sorts before "0.9.0" as text.
+It is presentation data only — nothing here reaches a prompt, and no seed,
+saved workflow or dropdown order depends on it.
 
 Gallery thumbnails are sliced out of per-category WebP atlases with CSS
 sprite offsets, expressed in grid units: an atlas `cols` tiles wide is
@@ -698,25 +751,45 @@ Some styles carry somebody's name — `Akira Kurosawa Rain`,
 the Artist picker has to keep. Finding a style named for Kurosawa in the
 gallery and then getting nothing back for "Kurosawa" in the artist search
 is the pack contradicting itself, and a batch of these had no artist
-record at all until the map below was written.
+record at all until this check was written.
 
-`tests/validate_data._PERSON_STYLES` maps each such style id to the
-artist label that must exist, and the validator fails on either half
-coming loose: an artist record that went away, or a style id that was
-renamed out from under the map.
+The declaration is the optional **`namesake`** field on the style record
+itself, naming the artist label that must exist. It used to be a map
+inside `tests/validate_data.py`, where a maintainer adding a style never
+saw it; as data it sits beside the prose it belongs to, and it earns its
+keep three ways rather than one:
 
-It is hand-maintained, exactly like `_SCENE_EXEMPT`, and for the same
-reason. A name detector would have to decide whether "Ligne Claire",
-"Superflat" and "Cowboy Bebop" name people, and it would be wrong about
-at least one of them. Styles named only for a work, a studio or a
-movement are deliberately absent — no person is named on the tile, so
-nothing is promised.
+1. `_check_person_styles` fails if the named artist has no record.
+2. The picker tooltip and the public gallery both say "Named for ...", so
+   the connection is visible before the render instead of only to whoever
+   thinks to search the Artist reference for the same name.
+3. `_check_undeclared_namesakes` closes the gap the old map could not.
 
-The trade-off that buys: the check catches a **broken** promise, never a
-**missing** one. Adding a new person-named style means adding its line
-here too. That is the same bargain `_SCENE_EXEMPT` makes, and it is worth
-it for the same reason: a narrow gate that is always right beats a broad
-one that trains you to skim past it.
+That third one is the interesting half. The old map caught a **broken**
+promise — a declared namesake with no artist record — but never a
+**missing** one: a new person-named style simply had to remember to add
+its line, and nothing noticed when it did not. The detector now flags any
+style whose label shares a name-length word with a shipped artist's label
+and declares no `namesake`; the maintainer either declares it or records
+why it is a coincidence in `_NAMESAKE_EXEMPT`, with a written reason, the
+same contract `_SCENE_EXEMPT` uses.
+
+"Name-length" is five characters, and that threshold is load-bearing:
+four admits "Ross", "Wood", "Lee" and "Ray", each of which collides with
+a style word ("Wood Engraving", "Ray Traced Render") while naming nobody.
+Parenthetical qualifiers are stripped from artist labels first, or
+"Moebius (Comics)" would flag every style with "Comics" in its name.
+Across 627 styles and 875 artists it produces exactly two false
+positives, both about Clyfford Still and both exempted.
+
+The hole that remains, stated plainly: an adjectival label — "Sirkian
+Melodrama", "Hitchcockian" — shares no whole word with "Douglas Sirk" or
+"Alfred Hitchcock", so only the author can declare those. What the
+detector does catch is the case that actually recurs, a style named for
+somebody the pack already ships. Styles named only for a work, a studio
+or a movement (Cowboy Bebop, Evangelion, Studio Ghibli, Superflat) carry
+no `namesake` by design: no person is named on the tile, so nothing is
+promised.
 
 ## Adding a style
 
@@ -731,9 +804,11 @@ one that trains you to skim past it.
 4. Set `blocks` when the style already fixes an axis. A cyanotype fixes
    `color_grade`, so a Sepia modifier on top would fight it. Every style
    that is monochrome or single-hue by definition currently does this.
-5. If the label names a person, add the artist record and the
-   `_PERSON_STYLES` line — see above.
-6. Run the gate below, then `--build` the preview.
+5. If the label names a person, add the artist record and set
+   `namesake` on the style — see above.
+6. Run `python scripts/stamp_versions.py --stamp` so the entry knows which
+   release it arrived in.
+7. Run the gate below, then `--build` the preview.
 
 ## Local gate
 
@@ -743,6 +818,7 @@ Run all of these before committing:
 python -m ruff check .
 python tests/validate_data.py
 python -m unittest discover -s tests -t . -v
+python scripts/stamp_versions.py --check
 python scripts/generate_js_data.py --check
 python scripts/dump_frontend_fixtures.py --check
 python scripts/build_previews.py --check
