@@ -22,6 +22,7 @@ CHECKS: list[tuple[str, list[str]]] = [
     ("Generated JS data", [sys.executable, "scripts/generate_js_data.py", "--check"]),
     ("Frontend test fixtures", [sys.executable, "scripts/dump_frontend_fixtures.py", "--check"]),
     ("Preview manifest", [sys.executable, "scripts/build_previews.py", "--check"]),
+    ("Public gallery page", [sys.executable, "scripts/build_gallery_page.py", "--check"]),
 ]
 
 

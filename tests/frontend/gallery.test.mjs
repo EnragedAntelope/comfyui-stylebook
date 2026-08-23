@@ -185,6 +185,70 @@ test("StylebookStyle: picker opens, search narrows results, Escape closes and re
   assert.equal(document.querySelector(".stylebook-overlay"), null, "Escape did not close the dialog");
 });
 
+// --- 6b. Tab stays inside the dialog ---------------------------------------
+
+test("Tab wraps at both ends instead of walking onto the canvas behind", async () => {
+  const node = makeNode("StylebookStyle");
+  await getExtension().nodeCreated(node);
+  findWidget(node, "Open style gallery").callback();
+
+  const overlay = document.querySelector(".stylebook-overlay");
+  assert.ok(overlay, "picker did not open");
+
+  // Tiles and rows carry tabIndex -1 on purpose: the arrow keys drive
+  // those, so Tab must not step through 550 of them.
+  const focusable = Array.from(
+    overlay.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"])')
+  );
+  assert.ok(focusable.length > 1, "expected several tabbable controls");
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  const tab = (shiftKey) =>
+    overlay.dispatchEvent(
+      new window.KeyboardEvent("keydown", { key: "Tab", shiftKey, bubbles: true })
+    );
+
+  last.focus();
+  tab(false);
+  assert.equal(document.activeElement, first, "Tab off the last control should wrap to the first");
+
+  first.focus();
+  tab(true);
+  assert.equal(document.activeElement, last, "Shift+Tab off the first control should wrap to the last");
+
+  // Focus already outside the overlay (a click on the canvas, say) is
+  // pulled back in rather than left there.
+  document.body.focus();
+  tab(false);
+  assert.ok(overlay.contains(document.activeElement), "Tab should pull focus back into the dialog");
+
+  overlay.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+});
+
+test("Tab in the middle of the dialog is left alone", async () => {
+  const node = makeNode("StylebookStyle");
+  await getExtension().nodeCreated(node);
+  findWidget(node, "Open style gallery").callback();
+
+  const overlay = document.querySelector(".stylebook-overlay");
+  const focusable = Array.from(
+    overlay.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"])')
+  );
+  assert.ok(focusable.length > 2, "need a middle element for this to mean anything");
+
+  const middle = focusable[1];
+  middle.focus();
+  const event = new window.KeyboardEvent("keydown", {
+    key: "Tab", bubbles: true, cancelable: true,
+  });
+  overlay.dispatchEvent(event);
+  assert.equal(event.defaultPrevented, false, "the browser should handle an interior Tab");
+  assert.equal(document.activeElement, middle, "focus should not have been moved by us");
+
+  overlay.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+});
+
 // --- 7. a fresh node is widened to a legible minimum ------------------------
 
 test("a fresh node narrower than MIN_NODE_WIDTH is widened", async () => {

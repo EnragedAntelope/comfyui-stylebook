@@ -36,6 +36,18 @@ _IGNORE_ENV_VAR = "STYLEBOOK_IGNORE_USER_STYLES"
 #: import cycle, not just a style preference.
 _SENTINELS = frozenset({"None", "Off", "Random"})
 
+#: The modifier axes a style may name in ``blocks``. Mirrored from
+#: ``data.modifiers.AXES`` for the same reason ``_SENTINELS`` is mirrored:
+#: ``data/modifiers.py`` imports this module at its own top level, so
+#: importing it back here would be a real cycle. A cross-check test binds
+#: the two (``tests/test_user_data.py``), so they cannot drift.
+#:
+#: Worth checking at all because ``blocks`` fails silently. A typo like
+#: "color_grading" passes a bare list-of-strings check, then blocks
+#: nothing: the user's modifier keeps applying, the style never says why,
+#: and there is no console line anywhere to look at.
+_AXES = frozenset({"lighting", "color_grade", "era", "finish", "mood"})
+
 #: What the user file added, recorded as it merges.
 USER_ADDED_STYLES: set[str] = set()
 USER_ADDED_ARTISTS: set[str] = set()
@@ -60,12 +72,27 @@ def _load_section(section: str, path: Path | None = None) -> dict[str, Any]:
     return block if isinstance(block, dict) else {}
 
 
-def _existing_labels(records: dict[str, dict]) -> set[str]:
-    """Lower-cased labels already in use, built-in or already merged."""
+def _existing_labels(
+    records: dict[str, dict],
+    exclude_id: str | None = None,
+) -> set[str]:
+    """Lower-cased labels already in use, built-in or already merged.
+
+    ``exclude_id`` drops one record's own label from the set. Overriding
+    a built-in by reusing its id is documented behaviour
+    (``docs/custom-styles.md``), and the obvious way to do it is to keep
+    the built-in's label and change the text underneath. Counting the
+    record being replaced as a collision rejected exactly that, so the
+    only override that worked was one that also renamed the entry - and
+    the console said "duplicates an existing style" about the very style
+    it was replacing.
+    """
     return {
         rec["label"].strip().lower()
-        for rec in records.values()
-        if isinstance(rec.get("label"), str) and rec["label"].strip()
+        for record_id, rec in records.items()
+        if record_id != exclude_id
+        and isinstance(rec.get("label"), str)
+        and rec["label"].strip()
     }
 
 
@@ -87,6 +114,7 @@ def validate_user_record(
     required_fields: tuple[str, ...] = ("label",),
     string_fields: tuple[str, ...] = (),
     list_fields: tuple[str, ...] = (),
+    axis_list_field: str | None = None,
     category_field: str | None = None,
     known_categories: set[str] | None = None,
 ) -> str | None:
@@ -126,6 +154,14 @@ def validate_user_record(
             if not all(isinstance(v, str) for v in value):
                 return f"'{field}' must be a list of text; it has a non-text entry"
 
+    if axis_list_field:
+        for axis in record.get(axis_list_field, []):
+            if axis not in _AXES:
+                return (
+                    f"'{axis_list_field}' names '{axis}', which is not a "
+                    f"modifier axis (known: {', '.join(sorted(_AXES))})"
+                )
+
     if category_field and known_categories is not None:
         category = record.get(category_field)
         if category and category not in known_categories:
@@ -153,7 +189,6 @@ def apply_user_styles(
         return 0
     path = path or USER_STYLES_PATH
     known_categories = _known_values(styles, "category")
-    labels_in_use = _existing_labels(styles)
     added = 0
     rejected = 0
     for style_id, record in _load_section("styles", path).items():
@@ -162,11 +197,12 @@ def apply_user_styles(
         reason = validate_user_record(
             "style",
             record,
-            existing_labels=labels_in_use,
+            existing_labels=_existing_labels(styles, exclude_id=style_id),
             required_fields=("label", "category"),
             string_fields=("label", "tags", "prose", "negative", "preview",
                            "scene"),
             list_fields=("aliases", "blocks"),
+            axis_list_field="blocks",
             category_field="category",
             known_categories=known_categories,
         )
@@ -184,7 +220,6 @@ def apply_user_styles(
         record["id"] = style_id
         styles[style_id] = record
         USER_ADDED_STYLES.add(style_id)
-        labels_in_use.add(record["label"].strip().lower())
         added += 1
     _report(path, "style", added, rejected)
     return added
@@ -199,7 +234,6 @@ def apply_user_artists(
         return 0
     path = path or USER_STYLES_PATH
     known_categories = _known_values(artists, "category")
-    labels_in_use = _existing_labels(artists)
     added = 0
     rejected = 0
     for artist_id, record in _load_section("artists", path).items():
@@ -208,7 +242,7 @@ def apply_user_artists(
         reason = validate_user_record(
             "artist",
             record,
-            existing_labels=labels_in_use,
+            existing_labels=_existing_labels(artists, exclude_id=artist_id),
             required_fields=("label",),
             string_fields=("label", "descriptor", "category"),
             list_fields=("aliases",),
@@ -221,7 +255,6 @@ def apply_user_artists(
             continue
         artists[artist_id] = record
         USER_ADDED_ARTISTS.add(artist_id)
-        labels_in_use.add(record["label"].strip().lower())
         added += 1
     _report(path, "artist", added, rejected)
     return added
@@ -236,7 +269,6 @@ def apply_user_modifiers(
         return 0
     path = path or USER_STYLES_PATH
     known_axes = _known_values(modifiers, "axis")
-    labels_in_use = _existing_labels(modifiers)
     added = 0
     rejected = 0
     for mod_id, record in _load_section("modifiers", path).items():
@@ -245,7 +277,7 @@ def apply_user_modifiers(
         reason = validate_user_record(
             "modifier",
             record,
-            existing_labels=labels_in_use,
+            existing_labels=_existing_labels(modifiers, exclude_id=mod_id),
             required_fields=("label", "axis"),
             string_fields=("label", "tags", "prose", "negative"),
             list_fields=("aliases",),
@@ -258,7 +290,6 @@ def apply_user_modifiers(
             continue
         modifiers[mod_id] = record
         USER_ADDED_MODIFIERS.add(mod_id)
-        labels_in_use.add(record["label"].strip().lower())
         added += 1
     _report(path, "modifier", added, rejected)
     return added

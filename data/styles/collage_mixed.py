@@ -355,6 +355,17 @@ _COLLAGE_MIXED_ENTRIES: dict[str, dict] = {
         "preview": "collage_mixed#37",
         "blocks": [],
     },
+    "blackout_poetry": {
+        "id": "blackout_poetry",
+        "label": "Blackout Poetry",
+        "category": "collage_mixed",
+        "aliases": ["redacted page", "erasure poetry", "found text"],
+        "tags": "blackout poetry page, dense printed text buried under heavy black marker laid on in streaky uneven passes, isolated words left standing in the field of ink, matte ink sitting dull against the paper texture, yellowed book page showing at the margins, stark black-on-cream contrast",
+        "prose": "Made as blackout poetry: a dense page of printed text buried under heavy black marker laid on in streaky uneven passes, isolated words left standing in the field of ink, the matte ink sitting dull against the paper texture with the yellowed page showing at the margins.",
+        "negative": "clean legible text, full colour, digital typography, photographic imagery",
+        "preview": "collage_mixed#38",
+        "blocks": ["color_grade"],
+    },
 }
 
 COLLAGE_MIXED_STYLES = _COLLAGE_MIXED_ENTRIES

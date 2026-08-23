@@ -44,7 +44,7 @@ _PRIMITIVE_VOCAB: dict[str, set[str]] = {
         "sepia", "pastel", "neon", "saturated", "desaturated", "warm",
         "cool", "amber", "magenta", "cyan", "ochre", "cobalt", "crimson",
         "gold", "silver", "bone", "rust", "oxblood", "slate", "mauve",
-        "pearl", "ultramarine", "viridian", "umber", "sienna", "ochre",
+        "pearl", "ultramarine", "viridian", "umber", "sienna",
         "lilac", "rose", "teal", "orange", "violet", "purple", "green",
         "blue", "red", "yellow", "white", "black", "grey", "brown",
         "pink", "lavender", "beige", "turquoise", "indigo", "emerald",
@@ -70,7 +70,7 @@ _PRIMITIVE_VOCAB: dict[str, set[str]] = {
         "impasto", "brushstroke", "brushwork", "wash", "glaze",
         "matte", "glossy", "metallic", "rough", "smooth", "polished",
         "velvety", "powdery", "gritty", "dusty", "weathered",
-        "distressed", "aged", "weathered", "chipped", "cracked",
+        "distressed", "aged", "chipped", "cracked",
         "peeling", "worn", "faded", "bleached", "stained",
         "transparent", "translucent", "opaque", "reflective",
         "wet", "dry", "slick", "texture", "surface", "finish",
@@ -249,7 +249,11 @@ def validate() -> list[str]:
     # --- scene content ---
     # A style describes rendering. Naming a place renders that place.
     errors.extend(_check_scene_content(STYLES))
+    errors.extend(_check_scene_content(MODIFIERS, "modifier"))
     errors.extend(_check_scene_field(STYLES))
+
+    # --- a style named after somebody must be findable as an artist ---
+    errors.extend(_check_person_styles(STYLES, ARTISTS))
 
     errors.extend(_check_duplicate_labels("style", STYLES))
     errors.extend(_check_duplicate_labels("artist", ARTISTS))
@@ -274,6 +278,7 @@ def validate() -> list[str]:
     # --- negation, in both directions ---
     errors.extend(_check_negation("style", STYLES))
     errors.extend(_check_negation("modifier", MODIFIERS))
+    errors.extend(_check_negation("artist", ARTISTS, ("descriptor",)))
 
     return errors
 
@@ -306,7 +311,11 @@ _PROCESS_NEGATIONS = (
 )
 
 
-def _check_negation(kind: str, coll: dict[str, dict]) -> list[str]:
+def _check_negation(
+    kind: str,
+    coll: dict[str, dict],
+    positive_fields: tuple[str, ...] = ("tags", "prose"),
+) -> list[str]:
     """Reject negated clauses in `negative`, and bare ones in positive text.
 
     Both directions are the same defect. A text encoder handles negation
@@ -319,6 +328,14 @@ def _check_negation(kind: str, coll: dict[str, dict]) -> list[str]:
     In `tags` and `prose` the same phrase gives the model the thing you
     did not want. Say what is there instead: "unshaded interiors" rather
     than "no shading".
+
+    ``positive_fields`` exists because an artist record spells its
+    positive text ``descriptor`` rather than ``tags``/``prose``, and that
+    text is concatenated straight into the prompt by
+    ``stylebook_core.render_artist``. Leaving artists out of this check
+    is how Candida Hofer shipped "endless bookshelves without a single
+    figure" - a descriptor whose whole point is the absence of people,
+    asking a text encoder for a figure.
     """
     errors: list[str] = []
     for rid, rec in coll.items():
@@ -330,7 +347,7 @@ def _check_negation(kind: str, coll: dict[str, dict]) -> list[str]:
                     f"itself negated, so it excludes the opposite of what it "
                     f"means. State the exclusion affirmatively or drop it."
                 )
-        for field in ("tags", "prose"):
+        for field in positive_fields:
             text = rec.get(field, "")
             lowered = text.lower()
             if any(allowed in lowered for allowed in _PROCESS_NEGATIONS):
@@ -372,7 +389,9 @@ _SCENE_NOUNS = (
     "castle", "cathedral", "skyscraper", "cityscape", "city street",
     "street background", "street at night", "megacity", "space colony",
     # Weather and ground conditions
-    "rain-soaked", "rain-slicked", "wet street", "wet mud",
+    # "rain-slick" as well as "rain-slicked": the bare form is what
+    # Neon Noir actually shipped, and the inflected one did not match it.
+    "rain-soaked", "rain-slick", "rain-slicked", "wet street", "wet mud",
     # Landscape features. "wheat" is not here on its own: the only match
     # in the pack is "wheat-pasted", which is an adhesive.
     "tall grass", "wheat field", "wilderness", "meadow", "mountain vista",
@@ -392,8 +411,87 @@ _SCENE_EXEMPT: dict[str, str] = {
 }
 
 
-def _check_scene_content(coll: dict[str, dict]) -> list[str]:
-    """Reject scene content in a style that has not declared a `scene`.
+#: Styles whose label names a real person, mapped to the artist record
+#: that person must have.
+#:
+#: Naming a style after somebody is a promise the Artist picker has to
+#: keep. Finding "Akira Kurosawa Rain" in the style gallery and then
+#: getting nothing back for "Kurosawa" in the artist search is the pack
+#: contradicting itself, and a batch of these entries had no artist
+#: record when this check was written.
+#:
+#: Hand-maintained on purpose, exactly like ``_SCENE_EXEMPT``. A name
+#: detector would have to decide whether "Ligne Claire", "Superflat" and
+#: "Cowboy Bebop" name people, and it would be wrong about at least one
+#: of them. Styles named only for a work, a studio or a movement --
+#: Cowboy Bebop, Evangelion, Studio Ghibli, Superflat -- are absent by
+#: design: no person is named on the tile, so nothing is promised. That
+#: also means this catches a *broken* promise, not a *missing* entry: a
+#: new person-named style has to be added here by hand.
+_PERSON_STYLES: dict[str, str] = {
+    # film_cinema
+    "bergman": "Ingmar Bergman",
+    "fellini": "Federico Fellini",
+    "fincher": "David Fincher",
+    "gaspar_noe": "Gaspar Noe",
+    "hitchcockian": "Alfred Hitchcock",
+    "kubrick": "Stanley Kubrick",
+    "kurosawa": "Akira Kurosawa",
+    "sirkian_melodrama": "Douglas Sirk",
+    "nolan_imax": "Christopher Nolan",
+    "ozu_tatami": "Yasujiro Ozu",
+    "spike_lee": "Spike Lee",
+    "tarantino": "Quentin Tarantino",
+    "tarkovsky": "Andrei Tarkovsky",
+    "terrence_malick": "Terrence Malick",
+    "wes_anderson": "Wes Anderson",
+    "wong_kar_wai": "Wong Kar-wai",
+    # anime_manga
+    "akira_otomo": "Katsuhiro Otomo",
+    "clamp_ornate": "CLAMP",
+    "ghost_in_the_shell": "Mamoru Oshii",
+    "inio_asano_realism": "Inio Asano",
+    "junji_ito_horror": "Junji Ito",
+    "makoto_shinkai": "Makoto Shinkai",
+    "one_piece_oda": "Eiichiro Oda",
+    "otoyomegatari_mori": "Kaoru Mori",
+    "satoshi_kon": "Satoshi Kon",
+    "shoujo_takeuchi": "Naoko Takeuchi",
+    "urasawa_monster": "Naoki Urasawa",
+    "vagabond_inoue": "Takehiko Inoue",
+    "yoshitaka_amano": "Yoshitaka Amano",
+    "yotsuba_azuma": "Kiyohiko Azuma",
+}
+
+
+def _check_person_styles(
+    styles: dict[str, dict],
+    artists: dict[str, dict],
+) -> list[str]:
+    """Every person a style is named after must have an artist record."""
+    errors: list[str] = []
+    labels = {
+        rec.get("label", "").strip().lower()
+        for rec in artists.values()
+        if isinstance(rec.get("label"), str)
+    }
+    for sid, artist_label in sorted(_PERSON_STYLES.items()):
+        if sid not in styles:
+            errors.append(
+                f"_PERSON_STYLES names style '{sid}', which the pack no "
+                f"longer ships. Drop the entry or fix the id."
+            )
+        elif artist_label.strip().lower() not in labels:
+            errors.append(
+                f"style '{sid}' is named after {artist_label}, who has no "
+                f"artist record. A style named after somebody has to be "
+                f"findable in the Artist picker under that name."
+            )
+    return errors
+
+
+def _check_scene_content(coll: dict[str, dict], kind: str = "style") -> list[str]:
+    """Reject scene content in a record that has not declared a `scene`.
 
     A style describes how the image is rendered. Naming a place puts that
     place in the picture whatever the user asked for: Macro Photography
@@ -402,11 +500,28 @@ def _check_scene_content(coll: dict[str, dict]) -> list[str]:
     A style whose identity *is* a place declares it in `scene` instead -
     Liminal Space without a transitional interior is not liminal space -
     and the gallery badges it so the choice is visible before the render.
+
+    Modifiers get the same treatment, and get no `scene` escape hatch: a
+    modifier tilts one axis of the rendering and is never the reason a
+    place is in the picture. This ran on styles only for a while, and in
+    that gap the Neon Noir lighting modifier shipped "rain-slick streets"
+    in its tags - a wet street added to every image it touched, on an
+    axis the user chose for its colour.
     """
     errors: list[str] = []
     for sid, rec in coll.items():
-        if rec.get("scene", "").strip() or sid in _SCENE_EXEMPT:
-            continue
+        if kind == "style":
+            if rec.get("scene", "").strip() or sid in _SCENE_EXEMPT:
+                continue
+        elif "scene" in rec:
+            # Nothing reads `scene` off a modifier - the gallery badges
+            # styles only - so declaring one here buys no exemption and
+            # silently does nothing. Say so rather than honour it.
+            errors.append(
+                f"{kind} '{sid}': declares a 'scene', which only a style "
+                f"may do. A modifier tilts one axis of the rendering and "
+                f"is never the reason a place is in the picture."
+            )
         blob = f"{rec.get('tags', '')} {rec.get('prose', '')}".lower()
         for noun in _SCENE_NOUNS:
             # Word boundaries, not substrings. A plain `in` test matched
@@ -418,8 +533,8 @@ def _check_scene_content(coll: dict[str, dict]) -> list[str]:
             # and quietly shrank the report.
             if re.search(rf"\b{re.escape(noun)}s?\b", blob):
                 errors.append(
-                    f"style '{sid}': names the scene element '{noun}' but "
-                    f"declares no 'scene'. Either cut it (a style describes "
+                    f"{kind} '{sid}': names the scene element '{noun}' but "
+                    f"declares no 'scene'. Either cut it (a {kind} describes "
                     f"rendering, not what is in the picture) or, if the "
                     f"style is defined by that setting, declare `scene` so "
                     f"the gallery can warn the user."

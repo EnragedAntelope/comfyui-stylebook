@@ -133,10 +133,49 @@ STYLE_SUBJECT = {
     # is defined by not having. Worded affirmatively for the same reason
     # the data validator forbids negation in a positive prompt: "no
     # people" is the most reliable way to get people.
+    # Design disciplines and typographic artefacts added in 0.9.0: the
+    # category subject is a poster or a pictured motif, which a specimen
+    # sheet and an instructional card both are not.
+    # Five 0.9.0 tiles where the category subject produced a render that
+    # did not show the style: a square frame cannot demonstrate a
+    # letterboxed one, a flash portrait cropped to the legs, and the
+    # pictured-motif subject drew a postcard rather than a carton.
+    "anamorphic_widescreen": "a person standing at the left of a very wide "
+                             "letterboxed frame with black bars across the "
+                             "top and bottom",
+    "press_flash": "the head and shoulders of a fully clothed person, "
+                   "looking straight at the camera",
+    "blaxploitation": "the head and shoulders of a fully clothed person, "
+                      "looking straight at the camera",
+    "milk_carton": "a gable-top milk carton seen straight on, a mountain and "
+                   "a bird printed on its side panel",
+    "yonkoma": "four square panels stacked in one vertical column, the same "
+               "character drawn in each",
+    "type_specimen": "the letter A shown very large above the same face "
+                     "repeated at smaller sizes",
+    "airline_safety_card": "a numbered row of instructional panels showing a "
+                           "simplified seated figure",
+    "sign_painting": "a hand-painted shop sign with bold lettering beside a "
+                     "small painted motif",
+    "illuminated_manuscript": "a decorated initial letter beside a small "
+                              "figure on a vellum page",
+    "studio_packshot": "a cordless electric kettle on a plain surface",
+    "botanical_plate": "a flowering plant specimen with its leaves and a "
+                       "cross-sectioned bloom",
+    "wildlife_photography": "an alert wild deer standing in low light",
+    "fluxus": "a partitioned box of small everyday objects and printed cards",
+    "arte_povera": "a heap of burlap and rusted iron and untreated timber",
+    "kinetic_art": "a construction of layered metal rods and discs on a plinth",
+    "metaball": "three merging blobby spheres on a plain ground plane",
+    "sdf_raymarch": "a repeating arrangement of geometric columns receding "
+                    "into the distance",
     "liminal_space": "a deserted carpeted corridor lined with closed doors",
     "googie": "a roadside coffee shop with an upswept roof and a tall neon sign",
     "metaphysical_art": "a deserted arcaded town square with a distant tower",
     "vaporwave": "a marble bust on a checkerboard floor beside a potted palm",
+    "land_art": "a vast spiral of heaped stone reaching out across a dry lake "
+                "bed, seen from high above",
+    "shan_shui": "a tall mountain rising above still water and drifting mist",
 }
 
 # Applied on top of each style's own negative, never instead of it. The

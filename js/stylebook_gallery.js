@@ -1,4 +1,5 @@
 import { app } from "../../scripts/app.js";
+import { api } from "../../scripts/api.js";
 import {
   ARTIST_ALIASES,
   ARTIST_CATEGORIES,
@@ -98,15 +99,21 @@ function assetURL(relative) {
 /**
  * Fetch what a local user_styles.json added, for the "Yours" picker tab.
  *
- * A plain server-root path, not assetURL()'d: this pack's HTTP route
+ * A server route, not assetURL()'d: this pack's HTTP route
  * (stylebook_nodes/routes.py) is registered on the shared PromptServer
  * instance, not served relative to this file's own /extensions/... path.
+ * Requested through api.fetchApi rather than a bare fetch("/stylebook/..."),
+ * because a root-absolute path only resolves when ComfyUI is served from
+ * the root of its origin -- behind a reverse proxy on a sub-path it 404s
+ * and the "Yours" tab is silently empty. fetchApi applies the same base
+ * path the rest of the frontend uses.
+ *
  * A missing route, a network failure or a malformed response all leave
  * `userData` at its empty default -- every picker degrades to exactly
  * today's built-ins-only behaviour, never a broken tab.
  */
 async function loadUserData() {
-  const response = await fetch("/stylebook/user_data");
+  const response = await api.fetchApi("/stylebook/user_data");
   if (!response.ok) return;
   const data = await response.json();
   if (!data || typeof data !== "object") return;
@@ -564,6 +571,20 @@ class StylebookPicker {
     this.renderGrid();
   }
 
+  /**
+   * Everything inside the dialog that Tab can land on, in document order.
+   *
+   * Tiles and rows are deliberately absent: they carry tabIndex -1 and
+   * are driven by the arrow keys instead, so tabbing through 550 of them
+   * is never something a user has to sit through.
+   */
+  focusableElements() {
+    if (!this.overlay) return [];
+    return Array.from(this.overlay.querySelectorAll(
+      'input, button, [tabindex]:not([tabindex="-1"])'
+    )).filter((el) => !el.disabled);
+  }
+
   onKeyDown(event) {
     if (event.key === "Escape") {
       event.preventDefault();
@@ -571,6 +592,28 @@ class StylebookPicker {
       this.close();
       return;
     }
+
+    // Keep Tab inside the dialog. It sets aria-modal and returns focus on
+    // close, but without this the focus ring walked straight out of the
+    // last control and onto the ComfyUI canvas behind the overlay, which
+    // is still there and still interactive.
+    if (event.key === "Tab") {
+      const focusable = this.focusableElements();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      const outside = !this.overlay.contains(active);
+      if (event.shiftKey && (active === first || outside)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || outside)) {
+        event.preventDefault();
+        first.focus();
+      }
+      return;
+    }
+
     const columns = this.columnCount();
     const lastIndex = this.visible.length - 1;
     let next = null;

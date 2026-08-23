@@ -290,7 +290,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Rineke Dijkstra",
         "category": "photography",
         "aliases": ["portrait", "Dutch contemporary"],
-        "descriptor": "direct large-format color portraits of adolescents and new mothers against plain backgrounds, unflinching daylight and shallow depth, awkwardness and vulnerability without artifice or retouching",
+        "descriptor": "direct large-format color portraits of adolescents and new mothers against plain backgrounds, unflinching daylight and shallow depth, awkwardness and vulnerability exactly as the camera found them",
     },
     "jeff_wall": {
         "label": "Jeff Wall",
@@ -485,7 +485,7 @@ ARTISTS: dict[str, dict] = {
     "velazquez": {
         "label": "Diego Velazquez",
         "category": "fine-art",
-        "aliases": ["Spanish Golden Age", "court painter"],
+        "aliases": ["Diego Velázquez", "Spanish Golden Age", "court painter"],
         "descriptor": "loose broken brushwork resolving into realism at distance, cool silver-grey light, deep blacks and muted earth tones, atmospheric perspective dissolving distant forms",
     },
     "zurbaran": {
@@ -525,7 +525,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Francois Boucher",
         "category": "fine-art",
         "aliases": ["Rococo", "decorative painter"],
-        "descriptor": "polished porcelain-smooth surfaces in blush pink and sky blue, plump mythological figures in frothy pastel settings, decorative elegance with no rough edge anywhere",
+        "descriptor": "polished porcelain-smooth surfaces in blush pink and sky blue, plump mythological figures in frothy pastel settings, decorative elegance with every edge blended soft",
     },
     "fragonard": {
         "label": "Jean-Honore Fragonard",
@@ -623,7 +623,7 @@ ARTISTS: dict[str, dict] = {
     "cezan": {
         "label": "Paul Cezanne",
         "category": "fine-art",
-        "aliases": ["Post-Impressionist", "structural painter"],
+        "aliases": ["Paul Cézanne", "Post-Impressionist", "structural painter"],
         "descriptor": "constructive brushstroke of parallel hatched planes, colour modulated in faceted geometric steps, apples and mountains built from cylinder and sphere under warm Provencal light",
     },
     "gauguin": {
@@ -717,7 +717,7 @@ ARTISTS: dict[str, dict] = {
     "miro": {
         "label": "Joan Miro",
         "category": "fine-art",
-        "aliases": ["Surrealist", "biomorphic abstraction"],
+        "aliases": ["Joan Miró", "Surrealist", "biomorphic abstraction"],
         "descriptor": "playful biomorphic shapes in primary colour on bright grounds, stars eyes and ladders in spontaneous childlike line, joy of pure colour and form unbound",
     },
     "duchamp": {
@@ -790,7 +790,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Jackson Pollock",
         "category": "fine-art",
         "aliases": ["Action painting", "drip painting"],
-        "descriptor": "dense web of poured and dripped enamel paint layered across unstretched canvas, rhythmic all-over composition with no centre, the physical gesture of painting made visible",
+        "descriptor": "dense web of poured and dripped enamel paint layered across unstretched canvas, rhythmic all-over composition of even density edge to edge, the physical gesture of painting made visible",
     },
     "rothko": {
         "label": "Mark Rothko",
@@ -941,7 +941,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Tracey Emin",
         "category": "fine-art",
         "aliases": ["YBA", "confessional"],
-        "descriptor": "raw autobiographical neon and textile works spelling out intimate confessions, handwritten text and sewn appliques in vulnerable colour, the personal made public without filter",
+        "descriptor": "raw autobiographical neon and textile works spelling out intimate confessions, handwritten text and sewn appliques in vulnerable colour, the personal spilled raw into public view",
     },
     "ofili": {
         "label": "Chris Ofili",
@@ -2536,7 +2536,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Candida Hofer",
         "category": "photography",
         "aliases": ["empty interior", "architecture"],
-        "descriptor": "large-format colour photographs of empty libraries and palaces, ornate ceilings and endless bookshelves without a single figure, the architecture of collective memory in vivid detail",
+        "descriptor": "large-format colour photographs of empty libraries and palaces, ornate ceilings and endless bookshelves in deserted symmetry, the architecture of collective memory in vivid detail",
     },
     "thomas_ruff": {
         "label": "Thomas Ruff",
@@ -3626,7 +3626,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Donald Judd",
         "category": "fine-art",
         "aliases": ["minimalist sculpture", "specific objects", "minimalist"],
-        "descriptor": "precise geometric boxes and stacks in industrial materials, polished aluminium and painted plywood in mathematical progression, the object itself as art without reference or metaphor",
+        "descriptor": "precise geometric boxes and stacks in industrial materials, polished aluminium and painted plywood in mathematical progression, the object itself as art, literal and self-contained",
     },
     "sol_lewitt": {
         "label": "Sol LeWitt",
@@ -4044,7 +4044,7 @@ ARTISTS: dict[str, dict] = {
         "label": "Todd Schorr",
         "category": "fine-art",
         "aliases": ["lowbrow", "cartoon maximalism"],
-        "descriptor": "hyper-detailed lowbrow oil crammed with cartoon characters and monsters, glossy airbrushed saturation, no empty space anywhere",
+        "descriptor": "hyper-detailed lowbrow oil crammed with cartoon characters and monsters, glossy airbrushed saturation, every inch of the surface packed",
     },
     "joe_coleman": {
         "label": "Joe Coleman",
@@ -4409,6 +4409,278 @@ ARTISTS: dict[str, dict] = {
         "category": "photography",
         "aliases": ['haas'],
         "descriptor": "pioneering colour photography of saturated motion blur, reflections and layered light, abstraction pulled out of ordinary movement",
+    },
+    # --- Audit additions: canonical names the pack had no record for, and
+    # --- the people its own person-named styles already promise.
+    "henri_matisse": {
+        "label": "Henri Matisse",
+        "category": "fine-art",
+        "aliases": ["Matisse", "fauvism", "cut-outs"],
+        "descriptor": "flat planes of pure unmixed colour bounded by fluid contour, decorative pattern flattening depth, paper cut-out shapes in vivid primaries",
+    },
+    "pierre_auguste_renoir": {
+        "label": "Pierre-Auguste Renoir",
+        "category": "fine-art",
+        "aliases": ["Renoir", "impressionism", "dappled figures"],
+        "descriptor": "soft feathered brushwork over warm luminous flesh tones, dappled sunlight breaking across figures at leisure, rounded forms dissolving into shimmering colour",
+    },
+    "caspar_david_friedrich": {
+        "label": "Caspar David Friedrich",
+        "category": "fine-art",
+        "aliases": ["Friedrich", "German Romanticism", "Ruckenfigur"],
+        "descriptor": "a small dark figure seen from behind before a vast misty expanse, silvered dawn light, meticulous detail dissolving into atmospheric distance",
+    },
+    "keith_haring": {
+        "label": "Keith Haring",
+        "category": "fine-art",
+        "aliases": ["Haring", "radiant baby", "subway drawings"],
+        "descriptor": "bold uniform black outlines enclosing flat unmodulated colour, dancing simplified figures ringed with radiating motion marks, dense allover pattern",
+    },
+    "william_blake": {
+        "label": "William Blake",
+        "category": "fine-art",
+        "aliases": ["Blake", "visionary", "illuminated books"],
+        "descriptor": "luminous watercolour over engraved outline, muscular elongated figures in swirling visionary compositions, hand-tinted plates glowing with jewel-toned washes",
+    },
+    "kitagawa_utamaro": {
+        "label": "Kitagawa Utamaro",
+        "category": "fine-art",
+        "aliases": ["Utamaro", "bijin-ga", "ukiyo-e portraits"],
+        "descriptor": "half-length woodblock portraits of women against flat mica-dusted grounds, elongated features drawn in fine even line, muted natural pigments",
+    },
+    "alexander_calder": {
+        "label": "Alexander Calder",
+        "category": "fine-art",
+        "aliases": ["Calder", "mobiles", "stabiles"],
+        "descriptor": "balanced sheet-metal shapes suspended on fine wire arms, primary red yellow and blue against black, weightless equilibrium in constant slow motion",
+    },
+    "andy_goldsworthy": {
+        "label": "Andy Goldsworthy",
+        "category": "fine-art",
+        "aliases": ["Goldsworthy", "land art", "ephemeral sculpture"],
+        "descriptor": "natural materials arranged into precise geometry outdoors, graded leaves and stacked stone and woven twigs, documentary daylight photography",
+    },
+    "herge": {
+        "label": "Hergé",
+        "category": "comics",
+        "aliases": ["Tintin", "ligne claire", "Georges Remi"],
+        "descriptor": "uniform-weight black contour enclosing flat even colour, every object drawn with equal clarity, meticulous research behind clean uncluttered staging",
+    },
+    "charles_schulz": {
+        "label": "Charles Schulz",
+        "category": "comics",
+        "aliases": ["Schulz", "Peanuts", "Charlie Brown"],
+        "descriptor": "spare trembling pen line on a four-panel strip, round-headed children drawn with minimal features, wide empty space carrying quiet melancholy",
+    },
+    "gary_larson": {
+        "label": "Gary Larson",
+        "category": "comics",
+        "aliases": ["Larson", "The Far Side", "single panel"],
+        "descriptor": "single-panel cartoon in scratchy crosshatched pen, thick-spectacled humans and deadpan animals drawn with lumpy anatomy, absurd captioned situations",
+    },
+    "inio_asano": {
+        "label": "Inio Asano",
+        "category": "comics",
+        "aliases": ["Asano", "Oyasumi Punpun", "Solanin"],
+        "descriptor": "photorealistic screentoned backgrounds behind loosely cartooned characters, meticulous urban texture, flat melancholy light and unsettling tonal shifts between panels",
+    },
+    "naoki_urasawa": {
+        "label": "Naoki Urasawa",
+        "category": "comics",
+        "aliases": ["Urasawa", "Monster", "20th Century Boys"],
+        "descriptor": "restrained realist manga linework, ordinary faces rendered with subtle expressive detail, cinematic panel pacing and heavy naturalistic shadow",
+    },
+    "eiichiro_oda": {
+        "label": "Eiichiro Oda",
+        "category": "comics",
+        "aliases": ["Oda", "One Piece"],
+        "descriptor": "exaggerated rubbery anatomy and wildly varied character silhouettes, dense adventurous crowd scenes, bold cartoon linework packed edge to edge",
+    },
+    "takehiko_inoue": {
+        "label": "Takehiko Inoue",
+        "category": "comics",
+        "aliases": ["Inoue", "Vagabond", "Slam Dunk"],
+        "descriptor": "brush-drawn manga in sumi ink, dry-brush texture and violent tonal contrast, anatomically exact figures caught in charged stillness",
+    },
+    "kaoru_mori": {
+        "label": "Kaoru Mori",
+        "category": "comics",
+        "aliases": ["Mori", "A Bride's Story", "Emma"],
+        "descriptor": "obsessively detailed manga linework, embroidered textile pattern rendered thread by thread, period costume and carved wood drawn with historical precision",
+    },
+    "kiyohiko_azuma": {
+        "label": "Kiyohiko Azuma",
+        "category": "comics",
+        "aliases": ["Azuma", "Yotsuba", "Azumanga Daioh"],
+        "descriptor": "clean even linework over photographic-grade background detail, warm domestic light, small gestures of everyday life drawn with unhurried precision",
+    },
+    "josef_muller_brockmann": {
+        "label": "Josef Müller-Brockmann",
+        "category": "illustration",
+        "aliases": ["Muller-Brockmann", "Swiss style", "grid systems"],
+        "descriptor": "strict mathematical grid, Akzidenz-Grotesk set flush left, large flat colour fields and pure geometric form arranged with objective clarity",
+    },
+    "jan_tschichold": {
+        "label": "Jan Tschichold",
+        "category": "illustration",
+        "aliases": ["Tschichold", "New Typography", "Penguin covers"],
+        "descriptor": "asymmetric typographic composition on a rigid grid, sanserif type in a few decisive sizes, thick rules and generous white field",
+    },
+    "roger_dean": {
+        "label": "Roger Dean",
+        "category": "illustration",
+        "aliases": ["Dean", "Yes album covers", "floating islands"],
+        "descriptor": "airbrushed fantasy vistas in luminous washes, organic curved architecture and arching rock forms, translucent layered atmosphere in acid greens and blues",
+    },
+    "storm_thorgerson": {
+        "label": "Storm Thorgerson",
+        "category": "photography",
+        "aliases": ["Thorgerson", "Hipgnosis", "album cover surrealism"],
+        "descriptor": "a single surreal object staged on location and photographed straight, deadpan daylight, one impossible element presented as plain fact",
+    },
+    "gordon_willis": {
+        "label": "Gordon Willis",
+        "category": "film",
+        "aliases": ["Willis", "Prince of Darkness", "The Godfather"],
+        "descriptor": "amber-warm underexposure with eyes lost in shadow under hard top light, deep printed blacks, restrained camera and formal symmetrical framing",
+    },
+    "robby_muller": {
+        "label": "Robby Müller",
+        "category": "film",
+        "aliases": ["Muller", "Paris Texas", "natural light"],
+        "descriptor": "saturated neon and daylight held in balance, sparse naturalistic sources, wide static frames with colour doing the emotional work",
+    },
+    "hoyte_van_hoytema": {
+        "label": "Hoyte van Hoytema",
+        "category": "film",
+        "aliases": ["van Hoytema", "IMAX", "Interstellar"],
+        "descriptor": "large-format IMAX capture with tactile grain, available light pushed hard, cold clean highlights and enormous depth held in wide frames",
+    },
+    "ingmar_bergman": {
+        "label": "Ingmar Bergman",
+        "category": "film",
+        "aliases": ["Bergman", "Persona", "chamber drama"],
+        "descriptor": "stark black-and-white close-ups holding a face until it cracks, plain grey backgrounds, sculpted north light and unbroken stillness",
+    },
+    "akira_kurosawa": {
+        "label": "Akira Kurosawa",
+        "category": "film",
+        "aliases": ["Kurosawa", "Seven Samurai", "Rashomon"],
+        "descriptor": "deep-focus multi-camera staging with telephoto compression, violent weather driven across the frame, layered movement from foreground to far distance",
+    },
+    "david_fincher": {
+        "label": "David Fincher",
+        "category": "film",
+        "aliases": ["Fincher", "Se7en", "Zodiac"],
+        "descriptor": "precise locked-off framing in desaturated green-amber, deep shadow with clean digital detail retained, motion planned to the millimetre",
+    },
+    "christopher_nolan": {
+        "label": "Christopher Nolan",
+        "category": "film",
+        "aliases": ["Nolan", "IMAX", "practical effects"],
+        "descriptor": "large-format frames of cold blue-grey scale, practical in-camera spectacle, handheld intimacy cut against vast architectural geometry",
+    },
+    "terrence_malick": {
+        "label": "Terrence Malick",
+        "category": "film",
+        "aliases": ["Malick", "magic hour", "Days of Heaven"],
+        "descriptor": "roaming handheld wide-angle at magic hour, natural backlight flaring through the lens, figures moving through low golden light",
+    },
+    "federico_fellini": {
+        "label": "Federico Fellini",
+        "category": "film",
+        "aliases": ["Fellini", "La Dolce Vita", "Italian surrealism"],
+        "descriptor": "carnival procession of grotesque faces in extravagant costume, wide-angle theatrical staging, dreamlike drift between memory and spectacle",
+    },
+    "quentin_tarantino": {
+        "label": "Quentin Tarantino",
+        "category": "film",
+        "aliases": ["Tarantino", "Pulp Fiction", "genre pastiche"],
+        "descriptor": "saturated widescreen genre pastiche, low-angle frames looking up from floor level, retro title cards and long held two-shots",
+    },
+    "alfred_hitchcock": {
+        "label": "Alfred Hitchcock",
+        "category": "film",
+        "aliases": ["Hitchcock", "suspense", "Vertigo"],
+        "descriptor": "geometric suspense staging that withholds what the character sees, cool controlled colour, precise point-of-view cutting and looming foreground objects",
+    },
+    "spike_lee": {
+        "label": "Spike Lee",
+        "category": "film",
+        "aliases": ["Lee", "Do the Right Thing", "double dolly"],
+        "descriptor": "hot saturated colour under summer heat, the double-dolly shot floating a figure toward camera, direct-address framing and bold graphic blocking",
+    },
+    "makoto_shinkai": {
+        "label": "Makoto Shinkai",
+        "category": "film",
+        "aliases": ["Shinkai", "Your Name", "Weathering With You"],
+        "descriptor": "hyper-detailed painted backgrounds under saturated skies, lens flare and god rays layered over everything, luminous clouds and glittering surface reflections",
+    },
+    "yasujiro_ozu": {
+        "label": "Yasujiro Ozu",
+        "category": "film",
+        "aliases": ["Ozu", "Tokyo Story", "tatami shot"],
+        "descriptor": "camera fixed low at tatami height, absolutely static symmetrical frames built from receding rectangles, flat even light and muted domestic colour",
+    },
+    "vera_molnar": {
+        "label": "Vera Molnár",
+        "category": "digital",
+        "aliases": ["Molnar", "plotter drawings", "computer art pioneer"],
+        "descriptor": "plotter-drawn line grids disturbed by controlled randomness, squares rotating out of alignment, restrained pen-on-paper geometry in one or two colours",
+    },
+    "casey_reas": {
+        "label": "Casey Reas",
+        "category": "digital",
+        "aliases": ["Reas", "Processing", "software art"],
+        "descriptor": "generative software drawings of accumulated agent paths, soft overlapping translucent strokes building tonal fields, procedural line systems in restrained palettes",
+    },
+    "manfred_mohr": {
+        "label": "Manfred Mohr",
+        "category": "digital",
+        "aliases": ["Mohr", "algorithmic art", "hypercube"],
+        "descriptor": "algorithmic black-and-white line constructions, projected hypercube fragments, rigid machine-drawn geometry arranged in systematic serial variation",
+    },
+    "refik_anadol": {
+        "label": "Refik Anadol",
+        "category": "digital",
+        "aliases": ["Anadol", "data sculpture", "machine hallucination"],
+        "descriptor": "vast data-driven pigment flows rendered as churning fluid volumes, iridescent particle clouds on architectural scale, machine-generated colour in constant motion",
+    },
+    "saul_steinberg": {
+        "label": "Saul Steinberg",
+        "category": "illustration",
+        "aliases": ["Steinberg"],
+        "descriptor": "spare witty pen line that draws its own act of drawing, hand-lettered rubber-stamp bureaucracy and scrolling flourishes, wry diagrammatic wit on plain paper",
+    },
+    "tove_jansson": {
+        "label": "Tove Jansson",
+        "category": "illustration",
+        "aliases": ["Jansson", "Moomin"],
+        "descriptor": "soft rounded ink creatures in gently melancholy black-and-white worlds, fine brush contour with dense stippled shadow, wistful tenderness at storybook scale",
+    },
+    "alex_ross": {
+        "label": "Alex Ross",
+        "category": "comics",
+        "aliases": ["Ross"],
+        "descriptor": "painted gouache superhero realism with monumental low-angle gravitas, weathered fabric and real anatomy under warm classical light, everyday people in mythic costume",
+    },
+    "tsukioka_yoshitoshi": {
+        "label": "Tsukioka Yoshitoshi",
+        "category": "fine-art",
+        "aliases": ["Yoshitoshi", "Taiso Yoshitoshi"],
+        "descriptor": "late ukiyo-e woodblock of ghosts and moonlit solitude, taut nervous line with aniline crimson and indigo, psychological tension held in a still figure",
+    },
+    "sergio_leone": {
+        "label": "Sergio Leone",
+        "category": "film",
+        "aliases": ["Leone"],
+        "descriptor": "operatic western compositions alternating eye-filling extreme close-up with vast emptiness, sunburnt ochre and dust, tension stretched across long motionless takes",
+    },
+    "douglas_sirk": {
+        "label": "Douglas Sirk",
+        "category": "film",
+        "aliases": ["Sirk"],
+        "descriptor": "lush Technicolor melodrama in jewel-toned gel light, figures boxed by mirrors and window frames, immaculate glossy surfaces hiding emotional pressure",
     },
 }
 

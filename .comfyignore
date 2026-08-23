@@ -3,13 +3,35 @@
 # gitignored is excluded automatically. This drops files we keep in git
 # but do not want inside the registry package.
 
-tests/
-scripts/
-examples/
-user_styles.example.json
-package.json
-package-lock.json
+# A leading slash anchors a pattern to the repository root. These are
+# gitignore-style patterns, so an unanchored `tests/` would also match a
+# `js/tests/` added later -- and an unanchored `previews/` below would
+# match `js/previews/`, shipping a registry package whose style gallery
+# has no thumbnails at all. `node_modules/` stays unanchored on purpose:
+# a nested one is still node_modules.
+/tests/
+/scripts/
+/examples/
+/user_styles.example.json
+/package.json
+/package-lock.json
 node_modules/
+
+# Repository scaffolding. None of it is read at runtime and none of it is
+# linked from the README, so it is pure weight in a registry install.
+# ARCHITECTURE.md and docs/custom-styles.md are NOT here: the README links
+# both, and a dead link on the registry page is worse than the bytes.
+/.github/
+/AGENTS.md
+/CLAUDE.md
+/.gitattributes
+/.nojekyll
+
+# The preview build ledger: content hashes read only by
+# scripts/build_previews.py, which is itself excluded above. The atlases
+# the gallery actually draws from live in js/previews/ and stay -- hence
+# the leading slash, which is what keeps this from matching them too.
+/previews/
 
 # docs/ is NOT excluded wholesale: docs/images is what the README links
 # to. docs/worklog is gitignored, so it never reaches the package anyway.
@@ -18,7 +40,7 @@ node_modules/
 # GitHub Pages, and it is nearly 400 KB of duplicated style text that a
 # ComfyUI install has no use for -- the in-app picker reads the same data
 # from js/stylebook_data.js.
-docs/gallery/
+/docs/gallery/
 
 # js/previews/ is deliberately NOT excluded. Those atlases are what the
 # style gallery draws its thumbnails from, so a registry install without

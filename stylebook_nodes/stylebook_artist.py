@@ -81,7 +81,19 @@ def add_artist(
 
     if record is not None:
         artists = chain.get("artists", [])
-        if len(artists) >= ARTIST_MAX:
+        if any(a.get("label") == record["label"] for a in artists):
+            # Two Artist nodes both sitting on the shipped defaults (Random,
+            # seed 0) resolve to the same artist, and the chain used to
+            # carry it twice -- the descriptor rendered twice in the prompt
+            # and the duplicate counted against ARTIST_MAX. The Blend node
+            # already refuses to merge an artist the chain holds; this is
+            # the same rule at the point the artist is added.
+            warnings.append(
+                f"Artist: the chain already holds '{record['label']}', so it "
+                f"was not added twice. Change the seed, or switch this node "
+                f"to Pick."
+            )
+        elif len(artists) >= ARTIST_MAX:
             warnings.append(
                 f"Artist: the chain already holds {ARTIST_MAX} artists, which "
                 f"is the maximum. '{record['label']}' was not added."

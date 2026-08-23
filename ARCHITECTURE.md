@@ -110,6 +110,12 @@ Which one a given model prefers is the user's call; the pack deliberately
 does not name model families anywhere a user can see, because which
 family reads which way changes faster than this repository does.
 
+A `data/model_families.py` once mapped checkpoint-name substrings to a
+default `artist_detail`, and shipped to the registry for several releases
+without a single caller: the Artist node has always taken that setting
+from its own widget. It has been removed. Re-adding it means arguing
+against the paragraph above first, not just wiring it up.
+
 `placement` is `append` or `prepend`, defaulting to **append**. A model
 reading a sentence follows that sentence's subject, and our style blocks
 are paragraphs, so leading with one and naming the subject last is the
@@ -247,7 +253,7 @@ serves the whole repository, so the page reaches the atlases at
 every other generator here.
 
 One deliberate difference from the in-app gallery: this page shows each
-style's prose, keywords and negative. Shipping 460-odd prose blocks in
+style's prose, keywords and negative. Shipping the whole prose corpus in
 `stylebook_data.js` would roughly double the payload every ComfyUI user
 downloads, but on a page somebody chose to open it is the most useful
 thing on it.
@@ -640,8 +646,15 @@ Three things read it, which is the whole reason it is data and not a
 comment:
 
 - **`tests/validate_data.py`** rejects scene nouns in any style that has
-  *not* declared one. The lexicon is deliberately narrow and hand-verified
-  against every style in the pack, because the obvious wide version is
+  *not* declared one, and in **every modifier**, which gets no `scene`
+  escape at all — a modifier tilts one axis of the rendering and is never
+  the reason a place is in the picture. That second half was missing for
+  a while, and in the gap the Neon Noir lighting modifier shipped
+  "rain-slick streets" in its tags: a wet street added to every image it
+  touched, on an axis chosen for its colour. The lexicon had
+  `rain-slicked` but not the bare `rain-slick` the modifier actually
+  used, so even the styles-only pass would have missed it. The lexicon
+  is deliberately narrow and hand-verified against every style in the pack, because the obvious wide version is
   mostly false positives — "paper" is a substrate, "hand" is hand-pulled,
   "plate" is a printing plate, "field" is depth of field, "face" is a coin
   face and "plane" is the picture plane. A narrow gate that is always
@@ -678,6 +691,33 @@ is no scene-versus-scene equivalent and none is planned. Adding one would
 put real complexity into Blend and Sheet to prevent a combination nobody
 has yet reported wanting to avoid. Revisit if it is actually reported.
 
+## Styles named after a person
+
+Some styles carry somebody's name — `Akira Kurosawa Rain`,
+`Hitchcockian`, `Fellini-Esque`, `One Piece (Oda)`. Each one is a promise
+the Artist picker has to keep. Finding a style named for Kurosawa in the
+gallery and then getting nothing back for "Kurosawa" in the artist search
+is the pack contradicting itself, and a batch of these had no artist
+record at all until the map below was written.
+
+`tests/validate_data._PERSON_STYLES` maps each such style id to the
+artist label that must exist, and the validator fails on either half
+coming loose: an artist record that went away, or a style id that was
+renamed out from under the map.
+
+It is hand-maintained, exactly like `_SCENE_EXEMPT`, and for the same
+reason. A name detector would have to decide whether "Ligne Claire",
+"Superflat" and "Cowboy Bebop" name people, and it would be wrong about
+at least one of them. Styles named only for a work, a studio or a
+movement are deliberately absent — no person is named on the tile, so
+nothing is promised.
+
+The trade-off that buys: the check catches a **broken** promise, never a
+**missing** one. Adding a new person-named style means adding its line
+here too. That is the same bargain `_SCENE_EXEMPT` makes, and it is worth
+it for the same reason: a narrow gate that is always right beats a broad
+one that trains you to skim past it.
+
 ## Adding a style
 
 1. Add the record to the right module under `data/styles/`. Required
@@ -691,7 +731,9 @@ has yet reported wanting to avoid. Revisit if it is actually reported.
 4. Set `blocks` when the style already fixes an axis. A cyanotype fixes
    `color_grade`, so a Sepia modifier on top would fight it. Every style
    that is monochrome or single-hue by definition currently does this.
-5. Run the gate below, then `--build` the preview.
+5. If the label names a person, add the artist record and the
+   `_PERSON_STYLES` line — see above.
+6. Run the gate below, then `--build` the preview.
 
 ## Local gate
 

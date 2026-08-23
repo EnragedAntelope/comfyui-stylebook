@@ -37,10 +37,21 @@ from .stylebook_nodes.stylebook_modifier import StylebookModifier
 from .stylebook_nodes.stylebook_sheet import StylebookSheet
 from .stylebook_nodes.stylebook_style import StylebookStyle
 
+# The route is a convenience (the gallery's "Yours" tab); the five nodes
+# are the product. ImportError covers a test runner with no server/aiohttp.
+# The broad catch covers registration itself failing on an already-started
+# server -- aiohttp raises RuntimeError once its router is frozen, and
+# ValueError on a duplicate path, both reachable when a pack is reloaded
+# in place. Either one used to take all five nodes down with it.
 try:
     from .stylebook_nodes import routes  # noqa: F401
 except ImportError:  # pragma: no cover - no server/aiohttp in the test env
     pass
+except Exception as _route_error:  # noqa: BLE001 - never lose the nodes
+    print(
+        "[Stylebook] the /stylebook/user_data route could not be registered, "
+        f"so the gallery's 'Yours' tab will be empty: {_route_error}"
+    )
 
 #: Where ComfyUI finds this pack's frontend assets.
 WEB_DIRECTORY = "./js"

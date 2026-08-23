@@ -362,12 +362,29 @@ render();
 """
 
 
+def _embed(payload: dict) -> str:
+    """Serialise the payload for a ``<script type="application/json">`` block.
+
+    ``json.dumps`` escapes nothing HTML cares about, so a style whose text
+    ever contained ``</script>`` would close the block early and the rest
+    of the page would be parsed as markup. No shipped style does today;
+    that is a property of the current data, not of the code, and one
+    ASCII-art or HTML-themed entry is all it takes. ``<`` and ``&`` are
+    escaped as JSON string escapes, which JSON.parse decodes right back,
+    so the value the page reads is byte-identical either way.
+    """
+    return (
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        .replace("<", "\\u003c")
+        .replace("&", "\\u0026")
+    )
+
+
 def generate() -> str:
     payload = _payload()
     return (
         TEMPLATE
-        .replace("__PAYLOAD__", json.dumps(payload, ensure_ascii=False,
-                                           separators=(",", ":")))
+        .replace("__PAYLOAD__", _embed(payload))
         .replace("__STYLE_COUNT__", str(len(payload["styles"])))
         .replace("__ARTIST_COUNT__", str(payload["artistCount"]))
         .replace("__ASSET_PREFIX__", ASSET_PREFIX)

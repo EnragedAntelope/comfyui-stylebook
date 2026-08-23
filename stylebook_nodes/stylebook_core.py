@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import random
 import re
 from typing import Any
 
@@ -346,11 +345,22 @@ def _lower_opening(text: str) -> str:
 
 
 def _frame_style(text: str) -> str:
-    """Attach the rendering connective to a style block."""
+    """Attach the rendering connective to a style block.
+
+    An artist clause opens with "by", and with no style in the chain it
+    is the whole block, so the default connective produced "Rendered as
+    by Ansel Adams" - the plain case of an Artist node used on its own,
+    in the default prose format. Dropping the "as" is the whole fix:
+    "Rendered by Ansel Adams" reads correctly and keeps the connective
+    doing its real job of marking where the rendering description starts.
+    """
     text = text.strip()
     if not text:
         return ""
-    return f"{STYLE_FRAME} {_lower_opening(text)}"
+    lowered = _lower_opening(text)
+    if lowered.startswith("by "):
+        return f"{STYLE_FRAME.removesuffix(' as')} {lowered}"
+    return f"{STYLE_FRAME} {lowered}"
 
 
 def _frame_subject(text: str) -> str:
@@ -449,7 +459,10 @@ def _tidy(text: str) -> str:
     text = re.sub(r"\s+", " ", text).strip()
     text = re.sub(r"(,\s*){2,}", ", ", text)
     text = re.sub(r"\s+,", ",", text)
-    text = re.sub(r"\.\s*\.", ".", text)
+    # Period-space-period only: that is the artefact an empty part leaves
+    # between two joined sentences. A bare `\.\s*\.` also ate the user's
+    # own ellipsis, turning "a cat... at night" into "a cat.. at night".
+    text = re.sub(r"\.\s+\.", ".", text)
     return text.strip(" ,")
 
 
@@ -616,11 +629,6 @@ def filter_artist_pool(
                 matched.append(aid)
         ids = matched
     return sorted(ids)
-
-
-def seeded_rng(seed: int) -> random.Random:
-    """Return a ``random.Random`` seeded from *seed*."""
-    return random.Random(seed)
 
 
 def _score(seed: int, candidate: str) -> str:

@@ -1,6 +1,6 @@
 # Stylebook
 
-**500+ visual styles for ComfyUI, every one with a rendered preview you can
+**600+ visual styles for ComfyUI, every one with a rendered preview you can
 browse before you commit.**
 
 Stop guessing whether "wet plate collodion" or "risograph" will do what you
@@ -22,7 +22,7 @@ process because the subject leads the prompt and the style trails it.
 <br clear="right">
 
 Every style ships four things: a written description, a keyword list, a
-matching negative prompt, and a preview image. 700+ artists ship a written
+matching negative prompt, and a preview image. 750+ artists ship a written
 descriptor each, so the look still lands when the name means nothing to
 your model. No dependencies, no downloads, no network calls, no API keys.
 
@@ -67,8 +67,8 @@ something you landed on without setting up a `user_styles.json`.
 | Node | What it does |
 |---|---|
 | **Style** | The medium. Pick from the gallery, draw a seeded Random from a filtered pool, or Cycle a whole category by index. Exclusive: a second Style node replaces the first. |
-| **Artist** | Layers one artist. Chain up to five. Pick, Random or Cycle, same as Style. Search 700+ artists by name, movement, category, or by what their work actually looks like. |
-| **Modifier** | Tilts one axis: lighting, colour grade, era, finish or mood. 75+ modifiers, each with a description you can browse. One per axis. |
+| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 750+ artists by name, movement, category, or by what their work actually looks like. |
+| **Modifier** | Tilts one axis: lighting, colour grade, era, finish or mood. 100+ modifiers, each with a description you can browse. One per axis. |
 | **Blend** | Mixes two styles at a ratio that genuinely shifts the balance, not just the endpoints. |
 | **Sheet** | One subject rendered across many styles as a batch. Choose them yourself from the gallery, or leave the list empty and let a seeded draw fill it. |
 
@@ -157,7 +157,7 @@ searching `reverse harem` finds Otome Game.
 
 The artist picker searches descriptions too, so you can find someone by
 what their work looks like rather than needing to know who they are.
-Searching `ink` returns 86 of them.
+Searching `ink` turns up dozens of them.
 
 ![The artist picker](docs/images/artist-picker.png)
 

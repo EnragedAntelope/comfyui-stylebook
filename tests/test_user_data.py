@@ -21,8 +21,9 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from data.modifiers import AXES  # noqa: E402
 from data.user_data import (  # noqa: E402
-    apply_user_artists, apply_user_modifiers, apply_user_styles,
+    _AXES, apply_user_artists, apply_user_modifiers, apply_user_styles,
     validate_user_record,
 )
 from stylebook_nodes.user_data_payload import build_user_data_payload  # noqa: E402
@@ -102,6 +103,47 @@ class ApplyUserStylesTests(unittest.TestCase):
             apply_user_styles(styles, path=path)
         self.assertEqual(styles["cyanotype"]["label"], "Cyanotype (mine)")
 
+    def test_override_of_a_built_in_id_keeping_its_label_works(self):
+        """The test above renames the entry, which is what hid this: the
+        obvious way to override a built-in is to keep its name and change
+        the text underneath. The label-collision check counted the record
+        being replaced as a collision, so that rejected the override and
+        said "duplicates an existing style" about the very style it was
+        replacing. Only a rename got through."""
+        payload = {"styles": {"cyanotype": {
+            "label": "Cyanotype", "category": "photography",
+            "prose": "My own take on it.", "tags": "cyan, blueprint",
+        }}}
+        with TempUserFile(payload) as path, _not_ignoring():
+            styles = dict(BUILTIN_STYLES)
+            added = apply_user_styles(styles, path=path)
+        self.assertEqual(added, 1)
+        self.assertEqual(styles["cyanotype"]["prose"], "My own take on it.")
+
+    def test_a_duplicate_label_under_a_new_id_is_still_rejected(self):
+        """The override fix must not open the gate to two records sharing
+        a dropdown entry, which is the reason the check exists."""
+        payload = {"styles": {"my_own_cyanotype": {
+            "label": "Cyanotype", "category": "photography",
+        }}}
+        with TempUserFile(payload) as path, _not_ignoring():
+            styles = dict(BUILTIN_STYLES)
+            added = apply_user_styles(styles, path=path)
+        self.assertEqual(added, 0)
+        self.assertNotIn("my_own_cyanotype", styles)
+
+    def test_two_user_entries_claiming_one_label_still_collide(self):
+        """Recomputing the in-use labels per record reads the live dict,
+        so an entry merged earlier in the same file is still counted."""
+        payload = {"styles": {
+            "first": {"label": "Twin", "category": "photography"},
+            "second": {"label": "Twin", "category": "photography"},
+        }}
+        with TempUserFile(payload) as path, _not_ignoring():
+            styles = dict(BUILTIN_STYLES)
+            added = apply_user_styles(styles, path=path)
+        self.assertEqual(added, 1)
+
     def test_a_style_missing_id_gets_it_set_to_its_own_json_key(self):
         """Real bug, caught by hand in a browser, not by any test until
         this one: stylebook_style.py and stylebook_sheet.py both read
@@ -146,6 +188,70 @@ class ApplyUserStylesTests(unittest.TestCase):
                 added = apply_user_styles(styles, path=path)
         self.assertEqual(added, 0)
         self.assertEqual(styles, BUILTIN_STYLES)
+
+
+class BlocksAxisTests(unittest.TestCase):
+    """`blocks` fails silently when it is wrong.
+
+    A typo passes a bare list-of-strings check and then blocks nothing:
+    the user's modifier keeps applying, the style never says why, and no
+    console line points at the file.
+    """
+
+    def test_the_mirrored_axes_match_the_real_ones(self):
+        """data/user_data.py cannot import data/modifiers.py (that module
+        imports it back), so the axis list is mirrored. This is the bind
+        that stops the copy drifting from the original."""
+        self.assertEqual(_AXES, frozenset(AXES))
+
+    def test_a_valid_axis_merges(self):
+        payload = {"styles": {"mine": {
+            "label": "Mine", "category": "photography",
+            "blocks": ["color_grade"],
+        }}}
+        with TempUserFile(payload) as path, _not_ignoring():
+            styles = dict(BUILTIN_STYLES)
+            self.assertEqual(apply_user_styles(styles, path=path), 1)
+        self.assertEqual(styles["mine"]["blocks"], ["color_grade"])
+
+    def test_an_unknown_axis_is_rejected_by_name(self):
+        payload = {"styles": {"mine": {
+            "label": "Mine", "category": "photography",
+            "blocks": ["color_grading"],
+        }}}
+        with TempUserFile(payload) as path, _not_ignoring():
+            styles = dict(BUILTIN_STYLES)
+            self.assertEqual(apply_user_styles(styles, path=path), 0)
+        self.assertNotIn("mine", styles)
+
+    def test_one_bad_axis_rejects_the_whole_record(self):
+        payload = {"styles": {"mine": {
+            "label": "Mine", "category": "photography",
+            "blocks": ["lighting", "colour_grade"],
+        }}}
+        with TempUserFile(payload) as path, _not_ignoring():
+            styles = dict(BUILTIN_STYLES)
+            self.assertEqual(apply_user_styles(styles, path=path), 0)
+
+    def test_an_empty_blocks_list_is_fine(self):
+        payload = {"styles": {"mine": {
+            "label": "Mine", "category": "photography", "blocks": [],
+        }}}
+        with TempUserFile(payload) as path, _not_ignoring():
+            styles = dict(BUILTIN_STYLES)
+            self.assertEqual(apply_user_styles(styles, path=path), 1)
+
+    def test_the_reason_names_the_field_and_the_known_axes(self):
+        reason = validate_user_record(
+            "style",
+            {"label": "Mine", "category": "photography", "blocks": ["nope"]},
+            existing_labels=set(),
+            list_fields=("blocks",),
+            axis_list_field="blocks",
+        )
+        self.assertIn("blocks", reason)
+        self.assertIn("nope", reason)
+        self.assertIn("color_grade", reason)
 
 
 class RejectionTests(unittest.TestCase):

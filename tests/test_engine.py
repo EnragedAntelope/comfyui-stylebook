@@ -42,7 +42,8 @@ from stylebook_nodes.stylebook_sheet import (  # noqa: E402
 )
 from stylebook_nodes.stylebook_style import build_style_chain  # noqa: E402
 from tests.validate_data import (  # noqa: E402
-    _check_encoding, _check_negation, validate,
+    _PERSON_STYLES, _check_encoding, _check_negation, _check_person_styles,
+    validate,
 )
 
 TAG_META = {"format": "tags", "placement": "prepend", "strength": "normal",
@@ -136,9 +137,53 @@ class NegationGuardTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
+    def test_an_artist_descriptor_is_checked_too(self):
+        """An artist's positive text is spelled `descriptor`, and it goes
+        straight into the prompt via render_artist. Candida Hofer shipped
+        "endless bookshelves without a single figure" - a descriptor whose
+        whole point is the absence of people, asking for a figure."""
+        errors = _check_negation(
+            "artist",
+            {"probe": {"label": "Probe",
+                       "descriptor": "wide interiors without a single figure"}},
+            ("descriptor",),
+        )
+        self.assertTrue(any("say what is there" in e for e in errors))
+
     def test_the_shipped_data_is_clean(self):
         self.assertEqual(_check_negation("style", STYLES), [])
         self.assertEqual(_check_negation("modifier", MODIFIERS), [])
+        self.assertEqual(_check_negation("artist", ARTISTS, ("descriptor",)), [])
+
+
+class PersonNamedStyleTests(unittest.TestCase):
+    """A style named after somebody must be findable as an artist.
+
+    Fifteen were not: a user who found "Akira Kurosawa Rain" in the style
+    gallery and then searched the Artist picker for "Kurosawa" got
+    nothing back.
+    """
+
+    def test_the_shipped_data_is_clean(self):
+        self.assertEqual(_check_person_styles(STYLES, ARTISTS), [])
+
+    def test_every_mapped_style_is_still_shipped(self):
+        """The map is hand-maintained, so a renamed style id has to fail
+        loudly rather than quietly stop checking anything."""
+        for sid in _PERSON_STYLES:
+            with self.subTest(sid):
+                self.assertIn(sid, STYLES)
+
+    def test_a_missing_artist_record_is_reported(self):
+        thinned = {aid: rec for aid, rec in ARTISTS.items()
+                   if rec.get("label") != "Akira Kurosawa"}
+        errors = _check_person_styles(STYLES, thinned)
+        self.assertTrue(any("Akira Kurosawa" in e for e in errors))
+
+    def test_a_stale_style_id_in_the_map_is_reported(self):
+        thinned = {sid: rec for sid, rec in STYLES.items() if sid != "kurosawa"}
+        errors = _check_person_styles(thinned, ARTISTS)
+        self.assertTrue(any("no longer ships" in e for e in errors))
 
 
 class EncodingGuardTests(unittest.TestCase):
@@ -464,6 +509,14 @@ class RenderPromptTests(unittest.TestCase):
         )
         self.assertIn("The image shows a 43-year-old man", result)
 
+    def test_a_users_ellipsis_survives_tidying(self):
+        """_tidy collapses the ". ." an empty part leaves behind. A bare
+        two-dot pattern also ate the user's own "a cat... at night"."""
+        chain = parse_chain("")
+        chain["style"] = self.STYLE
+        result = render_prompt(chain, PROSE_META, "a cat... at night")
+        self.assertIn("A cat... at night", result)
+
     def test_an_acronym_keeps_its_capitals_when_framed(self):
         """Lowering the opening must not turn HDR into hDR."""
         chain = parse_chain("")
@@ -479,6 +532,30 @@ class RenderPromptTests(unittest.TestCase):
         result = render_prompt(chain, PROSE_META, "")
         self.assertNotIn("Rendered as", result)
         self.assertTrue(result.startswith("A test slide"))
+
+    def test_an_artist_alone_reads_as_rendered_by(self):
+        """An Artist node with no Style upstream is a plain, supported
+        setup, and the artist clause opens with "by". The generic
+        connective produced "Rendered as by Ansel Adams"."""
+        chain = parse_chain("")
+        chain["artists"] = [{"label": "Ansel Adams", "descriptor": "crisp"}]
+        for placement in ("append", "prepend"):
+            with self.subTest(placement):
+                result = render_prompt(
+                    chain, dict(PROSE_META, placement=placement), "a cat"
+                )
+                self.assertIn("Rendered by Ansel Adams", result)
+                self.assertNotIn("Rendered as by", result)
+
+    def test_a_style_still_takes_the_full_connective_alongside_an_artist(self):
+        """The 'by' special case must fire only when the artist clause is
+        the whole block, not whenever a chain happens to hold an artist."""
+        chain = parse_chain("")
+        chain["style"] = self.STYLE
+        chain["artists"] = [{"label": "Ansel Adams", "descriptor": "crisp"}]
+        result = render_prompt(chain, PROSE_META, "a cat")
+        self.assertIn("Rendered as a test slide", result)
+        self.assertIn("By Ansel Adams", result)
 
     def test_tags_carry_no_frame_in_either_direction(self):
         """A keyword list has no grammar to confuse, so a connective would
@@ -813,6 +890,25 @@ class ArtistNodeTests(unittest.TestCase):
         overflow, warnings = pick_artist(chain_json, "Claude Monet")
         self.assertEqual(len(overflow["artists"]), opt.ARTIST_MAX)
         self.assertTrue(any("maximum" in w for w in warnings))
+
+    def test_the_same_artist_is_not_added_twice(self):
+        """Two Artist nodes on the shipped defaults (Random, seed 0)
+        resolve to the same artist, so the chain carried it twice: the
+        descriptor rendered twice in the prompt and the duplicate counted
+        against ARTIST_MAX. Blend already refused to merge an artist the
+        chain holds; this is the same rule where the artist is added."""
+        chain, _ = pick_artist("", "Claude Monet")
+        again, warnings = pick_artist(dump_chain(chain), "Claude Monet")
+        self.assertEqual(len(again["artists"]), 1)
+        self.assertTrue(any("already holds" in w for w in warnings))
+
+    def test_a_different_artist_still_stacks(self):
+        chain, _ = pick_artist("", "Claude Monet")
+        both, _ = pick_artist(dump_chain(chain), "Ansel Adams")
+        self.assertEqual(
+            [a["label"] for a in both["artists"]],
+            ["Claude Monet", "Ansel Adams"],
+        )
 
     def test_warns_past_the_threshold(self):
         chain_json = ""
@@ -1273,9 +1369,10 @@ class SchemaOptionTests(unittest.TestCase):
     #: Era reads by date, not by name. Sorting alphabetically drops 1920s
     #: between "Ancient Classical" and "Edwardian", and insertion order
     #: once put 1970s ahead of 1920s.
-    ERA_ORDER = ["Ancient Classical", "Medieval", "Victorian", "Edwardian",
-                 "1920s", "1930s-40s", "1950s", "1960s", "1970s", "1980s",
-                 "1990s", "2000s", "2010s", "Near Future", "Far Future"]
+    ERA_ORDER = ["Ancient Classical", "Medieval", "Renaissance",
+                 "Baroque (17th Century)", "Georgian (18th Century)",
+                 "Victorian", "Edwardian", "1910s", "1920s", "1930s-40s", "1950s", "1960s", "1970s", "1980s",
+                 "1990s", "2000s", "2010s", "2020s", "Near Future", "Far Future"]
 
     def test_era_modifiers_are_chronological(self):
         self.assertEqual(opt.modifier_options("era")[1:], self.ERA_ORDER)
