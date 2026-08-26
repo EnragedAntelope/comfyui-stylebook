@@ -1326,6 +1326,7 @@ ADDED_IN: dict[str, dict[str, str]] = {
         "remedios_varo": "0.1.0",
         "rene_burri": "0.1.0",
         "rene_gruau": "0.10.0",
+        "rene_laloux": "0.11.0",
         "richard_avedon": "0.1.0",
         "richard_corben": "0.3.0",
         "richard_diebenkorn": "0.6.0",

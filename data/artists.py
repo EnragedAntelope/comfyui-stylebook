@@ -3942,6 +3942,12 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["folk horror", "period exact"],
         "descriptor": "period-exact candlelit interiors, near-monochrome cold northern light, boxy squared-off framing, austere folk-horror texture",
     },
+    "rene_laloux": {
+        "label": "René Laloux",
+        "category": "film",
+        "aliases": ["Fantastic Planet", "cutout animation", "French surrealism"],
+        "descriptor": "surrealist cutout animation, flat painted paper figures in stiff deliberate poses, hand-painted backdrops of impossible flora, scratchy ink outlines over muted gouache colour",
+    },
 
     # --- Outsider, symbolist, surreal and lowbrow ---
     "mc_escher": {

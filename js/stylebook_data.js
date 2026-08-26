@@ -15,7 +15,7 @@ export const CATEGORIES = ["photography", "illustration", "comics", "film_cinema
 export const CATEGORY_LABELS = {"photography": "Photography", "illustration": "Illustration", "comics": "Comics", "film_cinema": "Film & Cinema", "painting": "Painting", "art_movements": "Art Movements", "anime_manga": "Anime & Manga", "three_d_digital": "3D & Digital", "print_graphic": "Print & Graphic", "object_artifact": "Object & Artifact", "craft_material": "Craft & Material", "collage_mixed": "Collage & Mixed"};
 
 export const STYLE_COUNT = 628;
-export const ARTIST_COUNT = 876;
+export const ARTIST_COUNT = 877;
 
 // The release this build is, and every release before it, oldest
 // first. The gallery's "New" tab means CURRENT_VERSION; the

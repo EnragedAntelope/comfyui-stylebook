@@ -779,7 +779,7 @@ four admits "Ross", "Wood", "Lee" and "Ray", each of which collides with
 a style word ("Wood Engraving", "Ray Traced Render") while naming nobody.
 Parenthetical qualifiers are stripped from artist labels first, or
 "Moebius (Comics)" would flag every style with "Comics" in its name.
-Across 628 styles and 876 artists it produces exactly two false
+Across 628 styles and 877 artists it produces exactly two false
 positives, both about Clyfford Still and both exempted.
 
 The hole that remains, stated plainly: an adjectival label — "Sirkian
