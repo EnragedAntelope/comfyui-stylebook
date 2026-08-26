@@ -230,6 +230,6 @@ if _COMFY_AVAILABLE:
                 prompt,
                 modifier=on_axis["label"] if on_axis else None,
                 axis=axis,
-                cycle_pool_size=len(sorted(MODIFIERS_BY_AXIS.get(axis, []))),
+                cycle_pool_size=len(MODIFIERS_BY_AXIS.get(axis, [])),
             )
             return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))
