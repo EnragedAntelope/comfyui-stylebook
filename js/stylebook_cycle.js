@@ -18,9 +18,12 @@ import {
  * size the backend reports in the `stylebook.resolved` event.
  *
  * It is a node *property*, not a widget, so it changes nothing about the saved
- * graph schema: old workflows load and run exactly as before, and the toggle
- * defaults to off. That is deliberate -- the pack's contract is no breaking
- * changes to existing graphs.
+ * graph schema: old workflows load and run exactly as before. The toggle
+ * defaults to ON for any node that has a cycle index (Style / Artist /
+ * Modifier), because "Cycle" is expected to actually step through the pool --
+ * that is the fix for the "every run stays the same" report. Turn it off from
+ * the same menu entry to hold a fixed index. Blend and Sheet have no cycle
+ * index, so they never show the toggle.
  */
 
 const EXT_NAME = "stylebook.cycle";
@@ -29,7 +32,14 @@ const EVENT_NAME = "stylebook.resolved";
 const warn = makeWarn(EXT_NAME);
 
 function autoAdvanceOn(node) {
-  return Boolean(node.properties && node.properties[PROP]);
+  const props = node.properties || {};
+  // Default ON: Cycle mode is expected to step through the pool. An explicit
+  // false (set via the menu toggle) is honored; absence means "advance".
+  return props[PROP] === undefined ? true : Boolean(props[PROP]);
+}
+
+function hasCycleWidget(node) {
+  return Boolean(widgetsByName(node)["cycle_index"]);
 }
 
 function setupCycleNode(node) {
@@ -39,6 +49,7 @@ function setupCycleNode(node) {
     if (typeof originalMenu === "function") {
       originalMenu.call(node, ctx, result);
     }
+    if (!hasCycleWidget(node)) return result;
     const on = autoAdvanceOn(node);
     result.push({
       content: on ? "Auto-advance cycle: ON" : "Auto-advance cycle: OFF",
@@ -86,16 +97,19 @@ function setupCycleNode(node) {
         warn(`draw error: ${err}`);
       }
     }
-    if (autoAdvanceOn(node) && ctx) {
-      try {
-        ctx.save();
-        ctx.font = "11px sans-serif";
-        ctx.fillStyle = "#ffcf5a";
-        ctx.fillText("↻", node.size[0] - 16, 14);
-        ctx.restore();
-      } catch (err) {
-        // Canvas drawing is best-effort; the toggle in the menu is the
-        // source of truth and must never depend on it.
+    if (autoAdvanceOn(node) && hasCycleWidget(node) && ctx) {
+      const modeWidget = widgetsByName(node)["mode"];
+      if (!modeWidget || modeWidget.value === "Cycle") {
+        try {
+          ctx.save();
+          ctx.font = "11px sans-serif";
+          ctx.fillStyle = "#ffcf5a";
+          ctx.fillText("↻", node.size[0] - 16, 14);
+          ctx.restore();
+        } catch (err) {
+          // Canvas drawing is best-effort; the toggle in the menu is the
+          // source of truth and must never depend on it.
+        }
       }
     }
   };

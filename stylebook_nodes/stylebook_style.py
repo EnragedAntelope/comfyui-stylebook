@@ -215,8 +215,9 @@ if _COMFY_AVAILABLE:
                             "an alphabetical list, so adding styles to the "
                             "pack shifts what a given index returns. Use "
                             "Cycle to sweep, and Random to reproduce. "
-                            "Right-click the node and choose 'Auto-advance "
-                            "cycle' to step the index automatically each run."
+                            "Cycle mode steps the index automatically each run "
+                            "(right-click the node to turn 'Auto-advance cycle' "
+                            "off if you want to hold a fixed index)."
                         ),
                     ),
                     io.Combo.Input(

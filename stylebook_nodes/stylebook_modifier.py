@@ -174,8 +174,9 @@ if _COMFY_AVAILABLE:
                             "first on this axis and the index wraps at the "
                             "end. This is a list position, not a seed, so "
                             "adding modifiers to an axis shifts it. "
-                            "Right-click the node and choose 'Auto-advance "
-                            "cycle' to step the index automatically each run."
+                            "Cycle mode steps the index automatically each run "
+                            "(right-click the node to turn 'Auto-advance cycle' "
+                            "off if you want to hold a fixed index)."
                         ),
                     ),
                 ],

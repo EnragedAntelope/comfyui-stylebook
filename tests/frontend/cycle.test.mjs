@@ -3,7 +3,8 @@
  * actually advances cycle_index on a resolved Cycle-mode run, wrapping at the
  * pool size the backend reports. Also proves a non-Cycle run (or the toggle
  * off) leaves the index alone, and that the toggle is a node property -- not a
- * schema change -- so it defaults to off on a fresh node.
+ * schema change -- so it defaults to ON (advances) on a fresh Cycle-capable
+ * node; the menu toggle turns it off to hold a fixed index.
  */
 
 import { test, before } from "node:test";
@@ -38,7 +39,7 @@ test("stylebook.cycle registers and adds an Auto-advance menu toggle on Styleboo
   node.getExtraMenuOptions({}, options);
   const entry = options.find((o) => o.content.startsWith("Auto-advance cycle:"));
   assert.ok(entry, "Auto-advance cycle entry was not added");
-  assert.equal(entry.content, "Auto-advance cycle: OFF");
+  assert.equal(entry.content, "Auto-advance cycle: ON");
   assert.equal(typeof entry.callback, "function");
 });
 
@@ -51,18 +52,22 @@ test("the toggle flips the stylebook_auto_advance node property", async () => {
   node.getExtraMenuOptions({}, options);
   const entry = options.find((o) => o.content.startsWith("Auto-advance cycle:"));
 
+  // Defaults to ON: Cycle mode is expected to advance.
+  assert.equal(entry.content, "Auto-advance cycle: ON");
+
+  // First click turns it OFF.
   entry.callback();
-  assert.equal(node.properties["stylebook_auto_advance"], true);
+  assert.equal(node.properties["stylebook_auto_advance"], false);
   const options2 = [];
   node.getExtraMenuOptions({}, options2);
   assert.equal(
     options2.find((o) => o.content.startsWith("Auto-advance cycle:")).content,
-    "Auto-advance cycle: ON"
+    "Auto-advance cycle: OFF"
   );
 
-  // Toggle back off.
+  // Second click turns it back ON.
   options2.find((o) => o.content.startsWith("Auto-advance cycle:")).callback();
-  assert.equal(node.properties["stylebook_auto_advance"], false);
+  assert.equal(node.properties["stylebook_auto_advance"], true);
 });
 
 test("auto-advance steps cycle_index by one and wraps at the pool size", async () => {
@@ -90,7 +95,8 @@ test("auto-advance does nothing when the toggle is off or mode is not Cycle", as
   const ext = app.__getExtension("stylebook.cycle");
   const node = makeNode("StylebookStyle");
   await ext.nodeCreated(node);
-  // Toggle off by default.
+  // Explicitly off (default is now on).
+  node.properties = { stylebook_auto_advance: false };
   const widgets = widgetsByName(node);
   const cycleWidget = widgets["cycle_index"];
   widgets["mode"].value = "Cycle";
