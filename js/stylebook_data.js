@@ -14,15 +14,15 @@ export const CATEGORIES = ["photography", "illustration", "comics", "film_cinema
 // Display names. Title-casing the id gives "Three D Digital".
 export const CATEGORY_LABELS = {"photography": "Photography", "illustration": "Illustration", "comics": "Comics", "film_cinema": "Film & Cinema", "painting": "Painting", "art_movements": "Art Movements", "anime_manga": "Anime & Manga", "three_d_digital": "3D & Digital", "print_graphic": "Print & Graphic", "object_artifact": "Object & Artifact", "craft_material": "Craft & Material", "collage_mixed": "Collage & Mixed"};
 
-export const STYLE_COUNT = 627;
-export const ARTIST_COUNT = 875;
+export const STYLE_COUNT = 628;
+export const ARTIST_COUNT = 877;
 
 // The release this build is, and every release before it, oldest
 // first. The gallery's "New" tab means CURRENT_VERSION; the
 // newest-first sort ranks by position in RELEASES rather than
 // parsing version strings in JavaScript.
-export const CURRENT_VERSION = "0.10.0";
-export const RELEASES = ["0.1.0", "0.3.0", "0.4.0", "0.4.1", "0.5.0", "0.5.1", "0.6.0", "0.7.0", "0.8.0", "0.9.0", "0.10.0"];
+export const CURRENT_VERSION = "0.11.0";
+export const RELEASES = ["0.1.0", "0.3.0", "0.4.0", "0.4.1", "0.5.0", "0.5.1", "0.6.0", "0.7.0", "0.8.0", "0.9.0", "0.10.0", "0.11.0"];
 
 // The axis-to-modifier map gates the Modifier node's dropdown as
 // soon as the node exists, before any dialog is opened, so unlike

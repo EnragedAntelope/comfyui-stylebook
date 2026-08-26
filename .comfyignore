@@ -42,6 +42,10 @@ node_modules/
 # from js/stylebook_data.js.
 /docs/gallery/
 
+# docs/reference is excluded for the same reason: generated web-only
+# reference pages served by GitHub Pages, of no use in an install.
+/docs/reference/
+
 # js/previews/ is deliberately NOT excluded. Those atlases are what the
 # style gallery draws its thumbnails from, so a registry install without
 # them would open an empty gallery. They total about 4 MB and keep the

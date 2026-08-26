@@ -8,13 +8,12 @@
 
 ## Current state
 
-_Last verified: 2026-08-23_
+_Last verified: 2026-08-26_
 
-- **Status:** in active development, released at v0.10.0 (`pyproject.toml`). Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships needs no bump. `.comfyignore` says what the registry package leaves out; its patterns are gitignore-style, so root-only ones carry a leading slash.
-- **Works:** all five nodes (Style, Artist, Modifier, Blend, Sheet) over the `STYLEBOOK_CHAIN` protocol; every style ships a rendered preview tile packed into WebP sprite atlases; the two-line node-face readout plus Copy-resolved-prompt (with success/failure feedback) and Pin-this-pick context items; a "New in x.y.z" tab, a new ribbon and an A-Z/Newest sort in every picker, driven by `data/versions.py`; optional `user_styles.json` validated and merged at load; a public browsable gallery served by GitHub Pages from the repo root; the full CI gate including a jsdom frontend suite and a no-GPU preview `--check`.
+- **Status:** in active development, released at v0.11.0 (`pyproject.toml`). Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships needs no bump. `.comfyignore` says what the registry package leaves out; its patterns are gitignore-style, so root-only ones carry a leading slash.
+- **Works:** all five nodes (Style, Artist, Modifier, Blend, Sheet) over the `STYLEBOOK_CHAIN` protocol; every style ships a rendered preview tile packed into WebP sprite atlases; the two-line node-face readout plus Copy-resolved-prompt (with success/failure feedback) and Pin-this-pick context items; a right-click Auto-advance cycle toggle on Style/Artist/Modifier (on by default for Cycle mode) that steps `cycle_index` by one each run, wrapping at the pool size the backend reports (a node property, so old graphs load unchanged, and it can be turned off to hold a fixed index); a "New in x.y.z" tab, a new ribbon and an A-Z/Newest sort in every picker, driven by `data/versions.py`; optional `user_styles.json` validated and merged at load; a public browsable gallery plus public artist and modifier reference pages served by GitHub Pages from the repo root; the full CI gate including a jsdom frontend suite and a no-GPU preview `--check`.
 - **In progress:** style and artist curation is the steady-state work rather than a milestone — each release adds entries and re-renders the affected tiles. 0.8.0 made the "describe the rendering, not the subject" rule enforceable via the optional `scene` field; 0.9.0 extended that check to modifiers (which get no `scene` escape) and rejected negated clauses in artist descriptors; 0.10.0 moved the person-named-style map out of the tests into the data as the optional `namesake` field, added a detector for the *missing* half of that promise, and moved the 300 KB corpus out of ComfyUI's `**/*.js` extension glob into a lazily fetched `js/stylebook_data.json`.
-- **Known gaps / next steps:** rendering new preview tiles needs a running ComfyUI and a Chroma checkpoint, and a full run takes hours — always pass `--model` explicitly, because substring model resolution has silently grabbed a Turbo merge and produced plausible-but-wrong tiles; ComfyUI caches the Python data layer at startup, so a newly added style or artist is rejected by node validation until it is restarted; the namesake detector cannot see an adjectival label ("Sirkian Melodrama" shares no word with "Douglas Sirk"), so those still need declaring by hand; there is no CONDITIONING-output node and that is a settled decision, not a gap (see `ARCHITECTURE.md`).
-- **Deep docs:** `ARCHITECTURE.md` (chain protocol, ordering rule, seed stability, design rationale — read before engine changes), `docs/custom-styles.md` (field reference for `user_styles.json`).
+- **Known gaps / next steps:** rendering new preview tiles needs a running ComfyUI and a Chroma checkpoint, and a full run takes hours — `build_previews.py` refuses to render without an explicit `--model`, because substring model resolution once silently grabbed a Turbo merge and produced plausible-but-wrong tiles; ComfyUI caches the Python data layer at startup, so a newly added style or artist is rejected by node validation until it is restarted; the namesake detector cannot see an adjectival label ("Sirkian Melodrama" shares no word with "Douglas Sirk"), so those still need declaring by hand; there is no CONDITIONING-output node and that is a settled decision, not a gap (see `ARCHITECTURE.md`).
 
 ## Architecture in 60 seconds
 
@@ -43,6 +42,7 @@ _Last verified: 2026-08-23_
 | `tests/` | unittest suite, data-layer validator, comfy_stub, jsdom frontend tests |
 | `docs/` | custom-styles.md (user_styles.json field reference) |
 | `docs/gallery/` | Generated public style gallery, served by GitHub Pages from `main` |
+| `docs/reference/` | Generated public artist + modifier reference pages, same serving |
 
 ## Build / test / run
 
@@ -64,12 +64,13 @@ python scripts/generate_js_data.py --check
 python scripts/dump_frontend_fixtures.py --check
 python scripts/build_previews.py --check    # no GPU needed for --check
 python scripts/build_gallery_page.py --check
+python scripts/build_reference_pages.py --check
 npm run test:frontend
 python -m ruff check .
 ```
 
 Rendering new preview tiles (`build_previews.py --build`) needs a running ComfyUI
-and a Chroma checkpoint; `--check` needs neither.
+and a Chroma checkpoint named explicitly via `--model`; `--check` needs neither.
 
 ## Conventions & gotchas
 

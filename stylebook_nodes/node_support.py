@@ -73,6 +73,7 @@ def send_resolved_event(
     artist: str | None = None,
     modifier: str | None = None,
     axis: str | None = None,
+    cycle_pool_size: int | None = None,
 ) -> None:
     """Tell the frontend what this node resolved, for Copy and Pin.
 
@@ -96,6 +97,7 @@ def send_resolved_event(
             "artist": artist,
             "modifier": modifier,
             "axis": axis,
+            "cycle_pool_size": cycle_pool_size,
         })
     except Exception as error:  # noqa: BLE001 - never break a render over this
         print(f"[Stylebook] could not send the resolved event: {error}")

@@ -1382,6 +1382,12 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["mid-century modern", "bold flat colour"],
         "descriptor": "bold flat colour shapes with graphic composition, vibrant primary palette, stylized mid-century modern aesthetic with childlike wonder",
     },
+    "ayami_kojima": {
+        "label": "Ayami Kojima",
+        "category": "illustration",
+        "aliases": ["Castlevania artist", "gothic bishonen", "vampire elegance"],
+        "descriptor": "ornate gothic-baroque character portraits, elegant androgynous figures in lace and brocade, decadent jewel tones over deep shadow, painterly oil texture",
+    },
 
     # --- Concept Art ---
     "craig_mullins": {
@@ -3935,6 +3941,12 @@ ARTISTS: dict[str, dict] = {
         "category": "film",
         "aliases": ["folk horror", "period exact"],
         "descriptor": "period-exact candlelit interiors, near-monochrome cold northern light, boxy squared-off framing, austere folk-horror texture",
+    },
+    "rene_laloux": {
+        "label": "René Laloux",
+        "category": "film",
+        "aliases": ["Fantastic Planet", "cutout animation", "French surrealism"],
+        "descriptor": "surrealist cutout animation, flat painted paper figures in stiff deliberate poses, hand-painted backdrops of impossible flora, scratchy ink outlines over muted gouache colour",
     },
 
     # --- Outsider, symbolist, surreal and lowbrow ---

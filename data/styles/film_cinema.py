@@ -639,6 +639,18 @@ _FILM_CINEMA_STYLE_DATA: dict[str, dict] = {
         "preview": "film_cinema#69",
         "blocks": [],
     },
+    "fantastic_planet": {
+        "id": "fantastic_planet",
+        "label": "Fantastic Planet Surrealism",
+        "category": "film_cinema",
+        "aliases": ["La Planète Sauvage", "cutout animation surrealism",
+                    "Roland Topor", "René Laloux"],
+        "tags": "surrealist cutout animation, flat painted paper figures held in stiff deliberate poses, visible hatched and stippled texture on every surface, scratchy ink outlines, hand-painted backdrop with impossible flora, muted gouache palette of dusty blues ochres and flesh pinks, 1970s European art animation, dreamlike scale shifts between figure and setting, strange creature silhouettes at the frame edges",
+        "prose": "Rendered as vintage surrealist cutout animation: flat painted paper figures held in stiff deliberate poses over a hand-painted backdrop of impossible flora, every surface carrying visible hatched and stippled texture inside scratchy ink outlines, muted gouache colours of dusty blue ochre and flesh pink, dreamlike scale shifts between figure and setting in the manner of 1970s European art animation.",
+        "negative": "smooth digital gradients, photorealistic rendering, modern CGI polish, uniform clean linework, saturated primary colours",
+        "preview": "film_cinema#70",
+        "blocks": [],
+    },
 }
 
 FILM_CINEMA_STYLES = _FILM_CINEMA_STYLE_DATA

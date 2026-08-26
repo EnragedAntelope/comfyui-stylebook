@@ -17,8 +17,8 @@ try:
     from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
         ARTIST_MAX, ARTIST_WARN_THRESHOLD, cycle_artist_id, dump_chain,
-        parse_chain, random_artist_id, readout_detail, render_negative,
-        render_prompt, resolve_meta, resolved_summary,
+        filter_artist_pool, parse_chain, random_artist_id, readout_detail,
+        render_negative, render_prompt, resolve_meta, resolved_summary,
     )
 except ImportError:  # pragma: no cover - standalone/test context
     from data.artists import ARTISTS, get_artist
@@ -211,7 +211,10 @@ if _COMFY_AVAILABLE:
                             "the pool. Unlike a seed, this is a position in "
                             "an alphabetical list, so adding artists to the "
                             "pack shifts what a given index returns. Use "
-                            "Cycle to sweep, and Random to reproduce."
+                            "Cycle to sweep, and Random to reproduce. "
+                            "Cycle mode steps the index automatically each run "
+                            "(right-click the node to turn 'Auto-advance cycle' "
+                            "off if you want to hold a fixed index)."
                         ),
                     ),
                     io.Combo.Input(
@@ -281,5 +284,6 @@ if _COMFY_AVAILABLE:
                 cls.hidden.unique_id,
                 prompt,
                 artist=artists[-1]["label"] if artists else None,
+                cycle_pool_size=len(filter_artist_pool(opt.artist_category_id(category), tag_filter)),
             )
             return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))

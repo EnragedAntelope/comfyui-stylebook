@@ -11,9 +11,9 @@ try:
     from . import schema_options as opt
     from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
-        cycle_style_id, dump_chain, filter_modifiers, get_blocked_axes,
-        parse_chain, random_style_id, readout_detail, render_negative,
-        render_prompt, resolve_meta, resolved_summary,
+        cycle_style_id, dump_chain, filter_modifiers, filter_pool,
+        get_blocked_axes, parse_chain, random_style_id, readout_detail,
+        render_negative, render_prompt, resolve_meta, resolved_summary,
     )
 except ImportError:  # pragma: no cover - standalone/test context
     from data.styles import STYLES, get_style
@@ -214,7 +214,10 @@ if _COMFY_AVAILABLE:
                             "the pool. Unlike a seed, this is a position in "
                             "an alphabetical list, so adding styles to the "
                             "pack shifts what a given index returns. Use "
-                            "Cycle to sweep, and Random to reproduce."
+                            "Cycle to sweep, and Random to reproduce. "
+                            "Cycle mode steps the index automatically each run "
+                            "(right-click the node to turn 'Auto-advance cycle' "
+                            "off if you want to hold a fixed index)."
                         ),
                     ),
                     io.Combo.Input(
@@ -320,5 +323,6 @@ if _COMFY_AVAILABLE:
                 cls.hidden.unique_id,
                 prompt,
                 style=(chain.get("style") or {}).get("label"),
+                cycle_pool_size=len(filter_pool(opt.category_id(category), tag_filter)),
             )
             return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))

@@ -28,6 +28,7 @@ RELEASES: tuple[str, ...] = (
     "0.8.0",
     "0.9.0",
     "0.10.0",
+    "0.11.0",
 )
 
 #: Entry id -> the release it first shipped in.
@@ -206,6 +207,7 @@ ADDED_IN: dict[str, dict[str, str]] = {
         "expressionism": "0.1.0",
         "exquisite_corpse": "0.1.0",
         "extreme_nineties": "0.10.0",
+        "fantastic_planet": "0.11.0",
         "fashion": "0.1.0",
         "fashion_illustration": "0.9.0",
         "fauvism": "0.1.0",
@@ -734,6 +736,7 @@ ADDED_IN: dict[str, dict[str, str]] = {
         "austin_osman_spare": "0.3.0",
         "axel_hutte": "0.1.0",
         "aya_takano": "0.1.0",
+        "ayami_kojima": "0.11.0",
         "bacon": "0.1.0",
         "banksy": "0.1.0",
         "barbara_cooney": "0.1.0",
@@ -1323,6 +1326,7 @@ ADDED_IN: dict[str, dict[str, str]] = {
         "remedios_varo": "0.1.0",
         "rene_burri": "0.1.0",
         "rene_gruau": "0.10.0",
+        "rene_laloux": "0.11.0",
         "richard_avedon": "0.1.0",
         "richard_corben": "0.3.0",
         "richard_diebenkorn": "0.6.0",
