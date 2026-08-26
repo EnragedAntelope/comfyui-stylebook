@@ -173,7 +173,9 @@ if _COMFY_AVAILABLE:
                             "Which modifier to take in Cycle mode. 0 is the "
                             "first on this axis and the index wraps at the "
                             "end. This is a list position, not a seed, so "
-                            "adding modifiers to an axis shifts it."
+                            "adding modifiers to an axis shifts it. "
+                            "Right-click the node and choose 'Auto-advance "
+                            "cycle' to step the index automatically each run."
                         ),
                     ),
                 ],
@@ -227,5 +229,6 @@ if _COMFY_AVAILABLE:
                 prompt,
                 modifier=on_axis["label"] if on_axis else None,
                 axis=axis,
+                cycle_pool_size=len(sorted(MODIFIERS_BY_AXIS.get(axis, []))),
             )
             return io.NodeOutput(prompt, render_negative(chain), dump_chain(chain))

@@ -1382,6 +1382,12 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["mid-century modern", "bold flat colour"],
         "descriptor": "bold flat colour shapes with graphic composition, vibrant primary palette, stylized mid-century modern aesthetic with childlike wonder",
     },
+    "ayami_kojima": {
+        "label": "Ayami Kojima",
+        "category": "illustration",
+        "aliases": ["Castlevania artist", "gothic bishonen", "vampire elegance"],
+        "descriptor": "ornate gothic-baroque character portraits, elegant androgynous figures in lace and brocade, decadent jewel tones over deep shadow, painterly oil texture",
+    },
 
     # --- Concept Art ---
     "craig_mullins": {

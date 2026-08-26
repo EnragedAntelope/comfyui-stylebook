@@ -10,6 +10,12 @@ want. Open the gallery, look at it, click it.
 — all of them, with the preview each one ships and the exact prompt text it
 emits. No install needed.
 
+Two companion references, same deal: the
+**[artist reference](https://enragedantelope.github.io/comfyui-stylebook/docs/reference/artists.html)**
+lists every name with its written descriptor, and the
+**[modifier reference](https://enragedantelope.github.io/comfyui-stylebook/docs/reference/modifiers.html)**
+shows every lighting, colour, era, finish and mood tilt verbatim.
+
 ![Style, Artist and Modifier chained together](docs/images/chain.png)
 
 <img src="docs/images/example-output.png" width="420" align="right" alt="Cyanotype example output">

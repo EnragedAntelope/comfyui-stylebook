@@ -18,8 +18,10 @@ tile whose inputs have changed is rebuilt.
 the manifest against the data layer and fails when they have drifted, so
 adding or editing a style tells you its thumbnail is now a lie.
 
-Rendering needs a running ComfyUI. Point at it with --url, and pick the
-checkpoint with --model (defaults to the first Chroma model it finds).
+Rendering needs a running ComfyUI. Point at it with --url, and name the
+checkpoint with --model (a filename or a unique substring). It is
+required whenever tiles will be rendered: guessing a checkpoint has
+already produced hours of plausible-looking, wrong tiles once.
 """
 
 from __future__ import annotations
@@ -659,24 +661,32 @@ def build_contact_sheets(only: str | None = None) -> int:
 # ---------------------------------------------------------------------------
 
 def resolve_model(client: ComfyClient, requested: str) -> str | None:
+    """Resolve ``--model`` against the instance's checkpoints.
+
+    Rendering guesses nothing. An exact filename wins; a substring must
+    match exactly one checkpoint or the run is refused with the full
+    list. There is deliberately no fallback pick: this script once chose
+    between base model and Turbo merge on its own and rendered hours of
+    plausible-looking, wrong tiles before anyone noticed.
+    """
     names = client.unet_names()
+    if requested in names:
+        return requested
+    matches = [n for n in names if requested.lower() in n.lower()]
+    if len(matches) == 1:
+        return matches[0]
     if requested:
-        if requested in names:
-            return requested
-        matches = [n for n in names if requested.lower() in n.lower()]
-        if len(matches) == 1:
-            return matches[0]
-        print(f"Model {requested!r} not found. Available: {names[:10]}")
-        return None
-    # Prefer the shortest match, which is the base checkpoint. Picking the
-    # first match instead grabs merges like "Chroma1-HD-<something>-Hyper-
-    # Flash-Turbo", and a Turbo merge needs far fewer steps and a much
-    # lower CFG than RENDER specifies, so every tile would come out wrong
-    # while still looking plausible enough to miss.
-    chroma = sorted((n for n in names if "chroma1-hd" in n.lower()), key=len)
-    if chroma:
-        return chroma[0]
-    print(f"No Chroma model found. Pass --model. Available: {names[:10]}")
+        print(f"Model {requested!r} matched {len(matches)} checkpoints. "
+              "Pass enough of the name to match exactly one:")
+        candidates = matches or names
+    else:
+        print("--model is required to render: refusing to guess a "
+              "checkpoint. Pass one of:")
+        candidates = names
+    for n in candidates[:25]:
+        print(f"  {n}")
+    if len(candidates) > 25:
+        print(f"  ... and {len(candidates) - 25} more")
     return None
 
 
@@ -704,7 +714,8 @@ def main() -> int:
     parser.add_argument("--url", default=DEFAULT_URL,
                         help=f"ComfyUI address (default {DEFAULT_URL}).")
     parser.add_argument("--model", default="",
-                        help="UNet filename or a substring of one.")
+                        help="UNet filename or unique substring of one. "
+                             "Required whenever rendering (--build/--style).")
     args = parser.parse_args()
 
     if not (args.check or args.build or args.pack or args.contact_sheet

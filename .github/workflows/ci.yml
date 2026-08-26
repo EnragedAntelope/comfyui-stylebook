@@ -52,6 +52,8 @@ jobs:
         run: python scripts/build_previews.py --check
       - name: Check the public gallery page is current
         run: python scripts/build_gallery_page.py --check
+      - name: Check the reference pages are current
+        run: python scripts/build_reference_pages.py --check
 
   frontend:
     name: Frontend smoke tests
