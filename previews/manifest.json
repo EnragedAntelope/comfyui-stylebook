@@ -80,7 +80,7 @@
       "hash": "43fbf0690351926a"
     },
     "anime_key_visual": {
-      "hash": "595934541e84fae2"
+      "hash": "40486944e6c22f51"
     },
     "aquatint": {
       "hash": "55bf83295c8108b7"
@@ -195,6 +195,9 @@
     },
     "bonsai": {
       "hash": "17d78ae1e8688152"
+    },
+    "book_jacket": {
+      "hash": "9812aa5a6fcc2c4b"
     },
     "bookbinding_codex": {
       "hash": "5f8a376a8e4b375b"
@@ -421,6 +424,9 @@
     "depth_pass": {
       "hash": "10e99890be8d2ebe"
     },
+    "die_cut_vinyl_sticker": {
+      "hash": "145acce21c307deb"
+    },
     "die_cut_window": {
       "hash": "443d14e0bb986079"
     },
@@ -545,7 +551,10 @@
       "hash": "08454ef8e1995a81"
     },
     "film_noir": {
-      "hash": "b17b07886e23086b"
+      "hash": "7f2fd04f1c323ae9"
+    },
+    "film_one_sheet": {
+      "hash": "17de559eec19c165"
     },
     "film_strip_frame": {
       "hash": "14873d32ef585ac1"
@@ -1742,7 +1751,7 @@
       "hash": "874710a3f511213d"
     },
     "vhs_box_cover": {
-      "hash": "d83a1c88aba18735"
+      "hash": "0da9c2bec262a836"
     },
     "video_game_cartridge": {
       "hash": "58e9d4132768c363"
@@ -1874,7 +1883,7 @@
       "hash": "08cddbe0b4d6032c"
     },
     "yotsuba_azuma": {
-      "hash": "97b0a1c743622a21"
+      "hash": "31b56fe271532825"
     },
     "yuri_gl_style": {
       "hash": "50e2ceb0f84147d1"

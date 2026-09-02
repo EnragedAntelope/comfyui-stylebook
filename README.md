@@ -28,7 +28,7 @@ process because the subject leads the prompt and the style trails it.
 <br clear="right">
 
 Every style ships four things: a written description, a keyword list, a
-matching negative prompt, and a preview image. 850+ artists ship a written
+matching negative prompt, and a preview image. 900+ artists ship a written
 descriptor each, so the look still lands when the name means nothing to
 your model. No dependencies, no downloads, no network calls, no API keys.
 
@@ -89,8 +89,8 @@ an artist it does not have.
 | Node | What it does |
 |---|---|
 | **Style** | The medium. Pick from the gallery, draw a seeded Random from a filtered pool, or Cycle a whole category by index. Exclusive: a second Style node replaces the first. |
-| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 850+ artists by name, movement, category, or by what their work actually looks like. |
-| **Modifier** | Tilts one axis: lighting, colour grade, era, finish or mood. 100+ modifiers, each with a description you can browse. One per axis. |
+| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 900+ artists by name, movement, category, or by what their work actually looks like. |
+| **Modifier** | Tilts one axis: lighting, colour grade, era, period dress, finish or mood. 130+ modifiers, each with a description you can browse. One per axis. **Era** tilts how the image is rendered — palette, light, surface, finish — and puts nothing new in the frame, so it is safe on any subject; **Period Dress** is the axis that adds the period wardrobe. Pair them, or use Era alone. |
 | **Blend** | Mixes two styles at a ratio that genuinely shifts the balance, not just the endpoints. |
 | **Sheet** | One subject rendered across many styles as a batch. Choose them yourself from the gallery, or leave the list empty and let a seeded draw fill it. |
 

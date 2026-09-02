@@ -744,6 +744,132 @@ is no scene-versus-scene equivalent and none is planned. Adding one would
 put real complexity into Blend and Sheet to prevent a combination nobody
 has yet reported wanting to avoid. Revisit if it is actually reported.
 
+## Modifiers must not add an entity
+
+The scene rule above catches *places*. It walked straight past the defect
+that prompted 0.12.0, because a wig is not a place.
+
+**Eleven of the twenty `era` modifiers enumerated garments, furniture and
+light fixtures as free-standing nouns.** `baroque_17c` listed wigs, collars,
+sleeves, silks, lace, oak furniture and drapery. `georgian_18c` listed
+powdered wigs, frock coats, panniered gowns, fans, shoes and mahogany.
+`victorian` listed gaslight, dark wood, brass fixtures, etched glass,
+velvet drapes and oil-lamp ambiance. Two `mood` modifiers had it too:
+`heroic` asserted a figure held dead centre with wind lifting fabric and
+hair, and `lonely` asserted a single figure alone in the frame.
+
+On Randomize, that axis is applied to whatever the user asked for. A text
+encoder cannot render a wig without a head or a frock coat without
+shoulders, so it invents them: mannequins wearing wigs, gaslit parlours
+around a subject that was never in a parlour, a small human figure
+standing on a mountain the user asked to be alone.
+
+### The rule
+
+**Name the light's behaviour, never its fixture** — and more generally,
+**convert every entity noun into an attribute of whatever is already in
+frame.**
+
+There are two different things hiding under "light". A *fixture* —
+candlelight, gaslight, an oil lamp, an exposed filament bulb — can be
+instantiated as an object in the picture. A light's *behaviour* cannot:
+colour temperature, direction, softness, falloff rate, contrast ratio and
+ambient fill are properties of the rendering, and there is no object for
+the model to draw. The same split holds for surface, ornament, palette and
+process.
+
+```
+victorian, BEFORE
+  "gaslight casting a warm amber glow over dark wood and brass, ornate
+   filigree and etched glass catching the light, velvet drapes and
+   oil-lamp ambiance softening every surface..."
+      ^ gas lamp   ^ furniture      ^ glass panes  ^ curtains  ^ oil lamp
+
+victorian, AFTER
+  "carrying nineteenth-century warmth: low amber light falling off fast
+   into deep shadow with barely any fill, a sepia-leaning palette of
+   umber, oxblood and bottle green, every surface densely ornamented,
+   hand-finished and slightly darkened with age, the detail softened as
+   though by a long exposure."
+      ^ light behaviour  ^ palette  ^ surface treatment  ^ process
+```
+
+Nothing in the second version can become an object. "Densely ornamented
+and hand-finished" applies itself to whatever the subject already is,
+which is what a modifier axis is for.
+
+**Stated honestly: this cannot be driven to zero.** A text encoder attends
+to every token, and "gilt" will gild things. The bar that is achievable
+and testable is narrower, and it is the one the validator enforces: *an
+era modifier must never add an entity — no body, no lamp, no chair, no
+room.* Altering the colour, light, surface and finish of what is already
+there is the axis doing its job.
+
+### What enforces it
+
+`tests/validate_data._check_entity_content` runs `_ENTITY_NOUNS` — worn
+things, furniture and soft furnishing, light fixtures, appliances — over
+every modifier's `tags` and `prose`, reusing the same word-boundary
+matcher as the scene rule. It is **hot on modifiers** and exempts only the
+`period_dress` axis, whose whole job is entities. A per-record
+`_ENTITY_EXEMPT` map exists on the same written-reason contract as
+`_SCENE_EXEMPT`, and is currently empty.
+
+Over **styles** it runs in report mode only: `validate_data.py` prints the
+count and never fails on it. A style may legitimately *be* the object —
+Vinyl Record Sleeve, Furniture Design Render, Candle Making, Cameo Brooch
+— so a hot rule there needs an exemption map that nobody has written yet.
+
+The noun list is narrow and hand-verified, like `_SCENE_NOUNS`, and the
+absences are as deliberate as the entries: `drape` is the fall of cloth
+(Cloth Simulation and Knitwear both use it correctly), `uniform` matches
+inside "uniform-weight", and `panel` and `screen` collide with the picture
+plane, screen printing and screentone.
+
+`room` **is** in `_SCENE_NOUNS`, including the idioms. That is on purpose:
+a text encoder has no idiom, so "leaving room for a title" is a request
+for a room. All four styles it hit were reworded rather than exempted.
+`interior` is **not** in the list, because half its occurrences are the
+geometric sense — "unshaded interiors", "washed interior shading", "every
+interior a single flat tone" — which is correct rendering vocabulary.
+
+## `era` and `period_dress` are one axis split in two
+
+Deleting the wardrobe would have been a real capability loss: Identity
+Forge owns the subject, but it does identity and framing, not period
+costume, so nothing else in the toolchain covers it. So the text moved
+rather than going away. Every garment, hairpiece, fabric, fastening and
+accessory cut from `era` in 0.12.0 lives on its `period_dress` partner,
+one per era, in the same chronological order.
+
+`era` tilts **how the image is rendered** and names no object, so it is
+safe to randomize on any subject. `period_dress` **puts period wardrobe
+and its fittings in the picture**, which is exactly what the entity rule
+forbids everywhere else — hence `_ENTITY_EXEMPT_AXES`.
+
+Keeping both on one axis was considered and rejected. `axis` has no
+`Random` option and `stable_choice` picks *within* the chosen axis, so
+Randomize on `era` can never reach a dress record. Shipping "Victorian"
+and "Victorian Dress" side by side on one axis would hand Randomize a coin
+flip and reproduce the original complaint exactly.
+
+Adding the axis broke nothing, and each path was checked rather than
+assumed: no preview tile is affected (`build_previews.tile_hash` covers
+styles only, and modifiers have no tiles); the `axis` widget is a combo
+built from `axis_options()`, so a new option is additive and a saved
+`"era"` still resolves; no widget is added, removed or reordered, so no
+saved `widgets_values` moves; `stable_choice` hashes per candidate, so no
+existing seed moves; and only `color_grade` is ever named in a style's
+`blocks`, so no style needed a `blocks` change.
+
+Four places had to learn the new axis and none of them is the gallery,
+which reads `MODIFIER_AXES` out of generated data and title-cases the id:
+`data/modifiers.AXES`, `tests/validate_data._EXPECTED_AXES`,
+`data/user_data._AXES` (a deliberate mirror, kept honest by
+`tests/test_user_data.BlocksAxisTests`), and the `axis_labels` map in
+`scripts/build_reference_pages.py`, which indexes rather than `.get()`s
+and so raises rather than quietly omitting.
+
 ## Styles named after a person
 
 Some styles carry somebody's name — `Akira Kurosawa Rain`,
@@ -779,8 +905,10 @@ four admits "Ross", "Wood", "Lee" and "Ray", each of which collides with
 a style word ("Wood Engraving", "Ray Traced Render") while naming nobody.
 Parenthetical qualifiers are stripped from artist labels first, or
 "Moebius (Comics)" would flag every style with "Comics" in its name.
-Across 628 styles and 877 artists it produces exactly two false
-positives, both about Clyfford Still and both exempted.
+Across every style and artist the pack ships it produces exactly two
+false positives, both about Clyfford Still and both exempted.
+(`tests/validate_data.py` reports the true totals; a number written
+here would go stale silently.)
 
 The hole that remains, stated plainly: an adjectival label — "Sirkian
 Melodrama", "Hitchcockian" — shares no whole word with "Douglas Sirk" or

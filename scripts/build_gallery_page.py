@@ -243,7 +243,8 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px 40px; color: var(--m
   node pack for ComfyUI, each with the preview it ships. Click any tile for the
   exact prose, keywords and negative prompt the node emits.</p>
   <p class="lede">The pack also ships __ARTIST_COUNT__ artists with written
-  descriptors, and modifiers for lighting, colour, era, finish and mood.</p>
+  descriptors, and modifiers for lighting, colour, era, period dress,
+  finish and mood.</p>
 </header>
 
 <div class="controls"><div class="controls-inner">

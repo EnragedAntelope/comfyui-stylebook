@@ -42,8 +42,9 @@ from stylebook_nodes.stylebook_sheet import (  # noqa: E402
 )
 from stylebook_nodes.stylebook_style import build_style_chain  # noqa: E402
 from tests.validate_data import (  # noqa: E402
-    _NAMESAKE_EXEMPT, _check_encoding, _check_negation, _check_person_styles,
-    _check_undeclared_namesakes, validate,
+    _ENTITY_EXEMPT, _ENTITY_NOUNS, _NAMESAKE_EXEMPT, _SCENE_EXEMPT,
+    _check_encoding, _check_entity_content, _check_negation,
+    _check_person_styles, _check_undeclared_namesakes, validate,
 )
 
 TAG_META = {"format": "tags", "placement": "prepend", "strength": "normal",
@@ -202,6 +203,91 @@ class PersonNamedStyleTests(unittest.TestCase):
             with self.subTest(sid):
                 self.assertIn(sid, STYLES)
                 self.assertTrue(reason.strip())
+
+
+class EntityContentTests(unittest.TestCase):
+    """A modifier tilts the rendering; it must not add an object.
+
+    11 of the 20 era modifiers enumerated garments, furniture and light
+    fixtures as free-standing nouns, so Randomize on `era` put wigs on
+    mannequins and gaslit drapery around subjects that were neither.
+    _SCENE_NOUNS could not catch it: it lists places, and a wig is not a
+    place.
+    """
+
+    def test_a_garment_in_a_modifier_is_rejected(self):
+        bad = {"probe": {"label": "P", "axis": "era",
+                         "tags": "powdered wigs and embroidered frock coats",
+                         "prose": "P."}}
+        errors = _check_entity_content(bad)
+        self.assertTrue(any("wig" in e for e in errors), errors)
+
+    def test_a_light_fixture_in_a_modifier_is_rejected(self):
+        """The catch that sharpened the rule: a *fixture* is an entity, a
+        light's *behaviour* is not. "gaslight casting a warm amber glow"
+        can put a gas lamp in the frame; "low amber light falling off fast
+        into deep shadow" cannot, because falloff is not an object."""
+        bad = {"probe": {"label": "P", "axis": "era",
+                         "tags": "oil lamp ambiance over velvet drapes",
+                         "prose": "P."}}
+        errors = _check_entity_content(bad)
+        self.assertTrue(errors, errors)
+
+    def test_light_behaviour_is_not_an_entity(self):
+        ok = {"probe": {"label": "P", "axis": "era",
+                        "tags": "low amber light falling off fast into deep "
+                                "shadow with barely any fill, a sepia-leaning "
+                                "palette, densely ornamented hand-finished "
+                                "surfaces darkened with age",
+                        "prose": "P."}}
+        self.assertEqual(_check_entity_content(ok), [])
+
+    def test_period_dress_is_exempt_by_definition(self):
+        """It is the one axis whose job *is* entities. Splitting it off
+        era is what makes the era fix non-lossy."""
+        bad = {"probe": {"label": "P", "axis": "period_dress",
+                         "tags": "powdered wig and embroidered frock coat",
+                         "prose": "P."}}
+        self.assertEqual(_check_entity_content(bad), [])
+
+    def test_the_shipped_modifiers_name_no_entity(self):
+        self.assertEqual(_check_entity_content(MODIFIERS), [])
+
+    def test_every_entity_exemption_carries_a_written_reason(self):
+        for mid, reason in _ENTITY_EXEMPT.items():
+            with self.subTest(mid):
+                self.assertIn(mid, MODIFIERS)
+                self.assertTrue(reason.strip())
+
+    def test_every_scene_exemption_carries_a_written_reason(self):
+        """_SCENE_EXEMPT had this contract in its comment and nothing
+        checked it."""
+        for sid, reason in _SCENE_EXEMPT.items():
+            with self.subTest(sid):
+                self.assertIn(sid, STYLES)
+                self.assertTrue(reason.strip())
+
+    def test_the_noun_list_uses_word_boundaries(self):
+        """Substring matching lies in both directions: it once matched
+        "alley" inside *gallery*. The matcher is shared with
+        _check_scene_content, so this pins the shared behaviour."""
+        ok = {"probe": {"label": "P", "axis": "finish",
+                        "tags": "uniform-weight contour and screentone",
+                        "prose": "P."}}
+        self.assertEqual(_check_entity_content(ok), [])
+
+    def test_the_noun_list_still_matches_plurals(self):
+        """Adding \\b once silently stopped matching plurals and quietly
+        shrank the report. A shrinking report looks like progress."""
+        for singular in ("wig", "chair", "lamp"):
+            with self.subTest(singular):
+                bad = {"probe": {"label": "P", "axis": "era",
+                                 "tags": f"a row of {singular}s",
+                                 "prose": "P."}}
+                self.assertTrue(_check_entity_content(bad))
+
+    def test_no_noun_is_listed_twice(self):
+        self.assertEqual(len(_ENTITY_NOUNS), len(set(_ENTITY_NOUNS)))
 
 
 class EncodingGuardTests(unittest.TestCase):
@@ -1392,12 +1478,45 @@ class SchemaOptionTests(unittest.TestCase):
                  "Victorian", "Edwardian", "1910s", "1920s", "1930s-40s", "1950s", "1960s", "1970s", "1980s",
                  "1990s", "2000s", "2010s", "2020s", "Near Future", "Far Future"]
 
+    #: period_dress is era's sibling: it reads by the same dates, so it is
+    #: exempt from the alphabetical rule for the same reason. Keeping the
+    #: two lists side by side is also how the pairing is checked - one
+    #: dress entry per era, in the same order.
+    PERIOD_DRESS_ORDER = ["Ancient Classical Dress", "Medieval Dress",
+                          "Renaissance Dress", "Baroque Dress (17th Century)",
+                          "Georgian Dress (18th Century)", "Victorian Dress",
+                          "Edwardian Dress", "1910s Dress", "1920s Dress",
+                          "1930s-40s Dress", "1950s Dress", "1960s Dress",
+                          "1970s Dress", "1980s Dress", "1990s Dress",
+                          "2000s Dress", "2010s Dress", "2020s Dress",
+                          "Near Future Dress", "Far Future Dress"]
+
+    #: The axes that read by date rather than by name.
+    CHRONOLOGICAL_AXES = {"era", "period_dress"}
+
     def test_era_modifiers_are_chronological(self):
         self.assertEqual(opt.modifier_options("era")[1:], self.ERA_ORDER)
 
-    def test_non_era_modifiers_are_alphabetical(self):
+    def test_period_dress_modifiers_are_chronological(self):
+        self.assertEqual(opt.modifier_options("period_dress")[1:],
+                         self.PERIOD_DRESS_ORDER)
+
+    def test_every_era_has_exactly_one_period_dress_partner(self):
+        """The split is only non-lossy if the pairing is complete.
+
+        era stopped naming garments in 0.12.0 and period_dress is where
+        that text went. An era with no dress partner is wardrobe the pack
+        used to be able to produce and now cannot.
+        """
+        self.assertEqual(len(self.PERIOD_DRESS_ORDER), len(self.ERA_ORDER))
+        for era, dress in zip(self.ERA_ORDER, self.PERIOD_DRESS_ORDER):
+            with self.subTest(era):
+                stem = era.split(" (")[0]
+                self.assertIn(stem, dress)
+
+    def test_non_chronological_modifiers_are_alphabetical(self):
         for axis in opt.axis_options():
-            if axis == "era":
+            if axis in self.CHRONOLOGICAL_AXES:
                 continue
             labels = opt.modifier_options(axis)[1:]
             with self.subTest(axis):

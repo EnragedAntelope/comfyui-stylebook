@@ -11,7 +11,7 @@ _FILM_CINEMA_STYLE_DATA: dict[str, dict] = {
         "category": "film_cinema",
         "aliases": ["noir", "hardboiled", "detective film"],
         "tags": "film noir, monochrome, high-contrast, chiaroscuro, deep shadow, silhouette, low-key lighting, film grain, letterbox, venetian blind shadows, smoke haze",
-        "prose": "A film noir frame: monochrome high-contrast lighting carving faces from deep shadow, venetian blind stripes raking across a smoke-hazed room, the low-key chiaroscuro turning every surface into a moral landscape where nothing is quite what it seems.",
+        "prose": "A film noir frame: monochrome high-contrast lighting carving faces from deep shadow, venetian blind stripes raking across a smoke-hazed air, the low-key chiaroscuro turning every surface into a moral landscape where nothing is quite what it seems.",
         "negative": "colour, flat lighting, even exposure, bright cheerful palette, soft focus, modern digital look",
         "preview": "film_cinema#01",
         "blocks": ["color_grade"],

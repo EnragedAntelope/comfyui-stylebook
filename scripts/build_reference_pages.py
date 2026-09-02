@@ -282,7 +282,8 @@ def _modifiers_payload() -> dict:
 
     axis_labels = {
         "lighting": "Lighting", "color_grade": "Colour Grade",
-        "era": "Era", "finish": "Finish", "mood": "Mood",
+        "era": "Era", "period_dress": "Period Dress",
+        "finish": "Finish", "mood": "Mood",
     }
     entries = []
     for axis in AXES:
@@ -337,7 +338,8 @@ def generate_all() -> dict[str, str]:
         "modifiers": _page(
             heading="Stylebook modifiers",
             title="Stylebook — every modifier, verbatim",
-            lede="Every lighting, colour-grade, era, finish and mood "
+            lede="Every lighting, colour-grade, era, period-dress, "
+                 "finish and mood "
                  "modifier in the Stylebook node pack for ComfyUI, shown "
                  "as the exact prose, keyword and negative text the node "
                  "emits.",

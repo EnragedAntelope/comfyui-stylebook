@@ -657,6 +657,17 @@ PRINT_GRAPHIC_STYLES: dict[str, dict] = {
         "preview": "print_graphic#59",
         "blocks": [],
     },
+    "film_one_sheet": {
+        "id": "film_one_sheet",
+        "label": "Film One-Sheet",
+        "category": "print_graphic",
+        "aliases": ["movie poster", "theatrical one sheet", "key art"],
+        "tags": "modern theatrical film one-sheet, tall portrait format with the subject built into a photographic composite, teal and orange grade with a hard rim glow, a large title lockup low in the frame above a dense condensed billing block, credits and release date set in thin caps, glossy coated stock",
+        "prose": "Laid out as a modern theatrical film one-sheet: a tall portrait composition built as a photographic composite, graded teal and orange with a hard rim glow separating the subject, a large title lockup sitting low above a dense condensed billing block, thin capitals carrying the credits across glossy coated stock.",
+        "negative": "hand-painted brushwork, square format, flat limited palette, decorative border",
+        "preview": "print_graphic#60",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = PRINT_GRAPHIC_STYLES

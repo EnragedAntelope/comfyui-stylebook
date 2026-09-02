@@ -2850,6 +2850,12 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["horror illustrator", "swamp thing"],
         "descriptor": "detailed horror illustration with intricate crosshatching, gothic atmosphere, grotesque creature design and masterful black and white ink work",
     },
+    "frank_cho": {
+        "label": "Frank Cho",
+        "category": "illustration",
+        "aliases": ["Liberty Meadows", "Marvel pin-up"],
+        "descriptor": "brush-and-ink drawing with heavy black spotting, dense feathered crosshatching modelling the form, weighty naturalistic anatomy and clean confident contours in the adventure-strip tradition",
+    },
     "frank_frazetta": {
         "label": "Frank Frazetta",
         "category": "illustration",
@@ -4538,6 +4544,12 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["Tschichold", "New Typography", "Penguin covers"],
         "descriptor": "asymmetric typographic composition on a rigid grid, sanserif type in a few decisive sizes, thick rules and generous white field",
     },
+    "roger_hargreaves": {
+        "label": "Roger Hargreaves",
+        "category": "illustration",
+        "aliases": ["Mr Men", "Little Miss", "Timbuctoo"],
+        "descriptor": "simple rounded blob forms in thick even black outline, flat unmodulated fills of bright primary colour, generous plain white ground, cheerful naive geometry",
+    },
     "roger_dean": {
         "label": "Roger Dean",
         "category": "illustration",
@@ -5405,6 +5417,134 @@ ARTISTS: dict[str, dict] = {
         "category": "digital",
         "aliases": ["Angelarium", "Mohrbacher"],
         "descriptor": "ornate digital painting of impossible anatomy, symmetrical radiant structures, jewelled colour and layered translucent geometric halos",
+    },
+
+    # --- Fine art, illustration and photography (0.12.0) ---
+    "rosa_bonheur": {
+        "label": "Rosa Bonheur",
+        "category": "fine-art",
+        "aliases": ["animal painting", "Horse Fair", "animalier"],
+        "descriptor": "closely observed animal painting with anatomical exactness, warm earth palette and a low horizon, muscular forms modelled in raking daylight against loose atmospheric ground",
+    },
+    "thomas_gainsborough": {
+        "label": "Thomas Gainsborough",
+        "category": "fine-art",
+        "aliases": ["English portraiture", "Blue Boy", "rococo portrait"],
+        "descriptor": "feathery translucent brushwork in silvery blue-green tones, full-length figures set against loosely dissolved foliage, cool pearly flesh and rapid flickering strokes over thin ground",
+    },
+    "claude_lorrain": {
+        "label": "Claude Lorrain",
+        "category": "fine-art",
+        "aliases": ["Claude Gellee", "claudean light", "classical landscape"],
+        "descriptor": "idealised classical landscape bathed in golden hazy light with the sun low and near the centre, warm framing devices in front and pale receding aerial distance behind",
+    },
+    "chardin": {
+        "label": "Jean-Baptiste-Simeon Chardin",
+        "category": "fine-art",
+        "aliases": ["Chardin", "Jean-Baptiste-Simeon Chardin", "domestic still life"],
+        "descriptor": "quiet domestic still life in matte granular paint, restrained warm greys and ochres under soft diffused light, forms built from thick scumbled touches rather than blended edges",
+    },
+    "ivan_aivazovsky": {
+        "label": "Ivan Aivazovsky",
+        "category": "fine-art",
+        "aliases": ["marine painting", "Ninth Wave", "romantic seascape"],
+        "descriptor": "luminous romantic seascape with translucent glazed waves lit from within, foam laid in thin scumbled white, a vast glowing sky and dramatic atmospheric contrast",
+    },
+    "mikhail_vrubel": {
+        "label": "Mikhail Vrubel",
+        "category": "fine-art",
+        "aliases": ["Demon Seated", "Russian symbolism", "crystalline brushwork"],
+        "descriptor": "crystalline faceted brushwork breaking every form into angular mosaic planes, a deep violet and bronze palette, sombre symbolist figures glittering with jewelled surface texture",
+    },
+    "anders_zorn": {
+        "label": "Anders Zorn",
+        "category": "fine-art",
+        "aliases": ["Zorn palette", "Swedish portraiture", "bravura brushwork"],
+        "descriptor": "bravura oil portraiture from a restricted palette of yellow ochre, ivory black, vermilion and white, broad confident brushwork and sparkling reflections across moving water",
+    },
+    "carl_larsson": {
+        "label": "Carl Larsson",
+        "category": "illustration",
+        "aliases": ["Sundborn", "Swedish watercolour", "Ett Hem"],
+        "descriptor": "clear luminous watercolour laid over confident ink outline, flat decorative pattern and sunlit domestic warmth in soft Falu red, leaf green and cream",
+    },
+    "akseli_gallen_kallela": {
+        "label": "Akseli Gallen-Kallela",
+        "category": "fine-art",
+        "aliases": ["Kalevala", "Finnish national romanticism", "Gallen Kallela"],
+        "descriptor": "hard-edged national romantic painting with flattened decorative form, cold northern light, stark black contours and a severe palette of pine green, ochre and iron grey",
+    },
+    "helene_schjerfbeck": {
+        "label": "Helene Schjerfbeck",
+        "category": "fine-art",
+        "aliases": ["Finnish modernism", "reduced portrait", "self-portrait series"],
+        "descriptor": "radically reduced portraiture pared back to a few flat planes, chalky scraped surfaces in muted rose, grey and bone, the features dissolving into the ground",
+    },
+    "vilhelm_hammershoi": {
+        "label": "Vilhelm Hammershoi",
+        "category": "fine-art",
+        "aliases": ["Hammershoi", "Hammershøi", "Danish interior painting"],
+        "descriptor": "hushed grey-toned painting in a narrow palette of pearl, ash and umber, cool north light falling across bare walls, a lone figure seen quietly from behind",
+    },
+    "felix_vallotton": {
+        "label": "Felix Vallotton",
+        "category": "fine-art",
+        "aliases": ["Felix Vallotton", "Nabis woodcut", "flat black silhouette"],
+        "descriptor": "stark flat black shapes cut against bare white, silhouetted forms reduced to pure contour, hard woodcut edges and a cold airless colour sense in the painted work",
+    },
+    "ferdinand_hodler": {
+        "label": "Ferdinand Hodler",
+        "category": "fine-art",
+        "aliases": ["parallelism", "Swiss symbolism", "alpine landscape"],
+        "descriptor": "symbolist figure painting built on rhythmic repetition and mirrored symmetry, hard clean contours filled with luminous flat colour, alpine light and severe frontal arrangement",
+    },
+    "giorgio_morandi": {
+        "label": "Giorgio Morandi",
+        "category": "fine-art",
+        "aliases": ["Bologna still life", "bottles and jars", "tonal still life"],
+        "descriptor": "muted still life in chalky dust-toned ochre, grey and pale rose, simple vessels clustered close together under soft flattened light, delicate feathered brushwork throughout",
+    },
+    "chaim_soutine": {
+        "label": "Chaim Soutine",
+        "category": "fine-art",
+        "aliases": ["Chaim Soutine", "expressionist impasto", "Ecole de Paris"],
+        "descriptor": "violently loaded impasto in blood red and deep green, forms twisted and lurching, thick writhing brushstrokes carrying the paint into an unstable heaving surface",
+    },
+    "jean_dubuffet": {
+        "label": "Jean Dubuffet",
+        "category": "fine-art",
+        "aliases": ["art brut", "Hourloupe", "raw art"],
+        "descriptor": "art brut surfaces of thick gritty impasto scratched into crude graffiti figures, tarry browns and dirty whites, raw childlike marks incised through heavy matter",
+    },
+    "pierre_soulages": {
+        "label": "Pierre Soulages",
+        "category": "fine-art",
+        "aliases": ["outrenoir", "beyond black", "black relief painting"],
+        "descriptor": "outrenoir painting worked entirely in black, wide ridged furrows raked across thick paint so light returns off the ribbed relief in shifting silver bands",
+    },
+    "paula_modersohn_becker": {
+        "label": "Paula Modersohn-Becker",
+        "category": "fine-art",
+        "aliases": ["Worpswede", "early expressionism", "Modersohn Becker"],
+        "descriptor": "heavy simplified figures modelled in earthy ochre, moss green and brick red, thick matte paint and blunt outline, a still frontal gaze and monumental calm",
+    },
+    "hal_foster": {
+        "label": "Hal Foster",
+        "category": "comics",
+        "aliases": ["Prince Valiant", "Tarzan strip", "adventure strip"],
+        "descriptor": "stately adventure-strip draughtsmanship in fine pen line, meticulous historical detail and deep receding landscape, elegant naturalistic anatomy, prose captions carrying the story",
+    },
+    "chester_gould": {
+        "label": "Chester Gould",
+        "category": "comics",
+        "aliases": ["Dick Tracy", "crime strip", "grotesque villains"],
+        "descriptor": "stark newspaper-strip crime cartooning, brutal grotesque profiles reduced to hard geometry, heavy solid black shadow, flat primary colour and blunt angular staging",
+    },
+    "shirin_neshat": {
+        "label": "Shirin Neshat",
+        "category": "photography",
+        "aliases": ["Women of Allah", "calligraphy portrait", "Iranian contemporary"],
+        "descriptor": "stark black and white portraiture with Persian calligraphy inked densely across skin, a direct confrontational gaze, high contrast and stilled ceremonial composition",
     },
 }
 

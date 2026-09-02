@@ -46,7 +46,8 @@ _SENTINELS = frozenset({"None", "Off", "Random"})
 #: "color_grading" passes a bare list-of-strings check, then blocks
 #: nothing: the user's modifier keeps applying, the style never says why,
 #: and there is no console line anywhere to look at.
-_AXES = frozenset({"lighting", "color_grade", "era", "finish", "mood"})
+_AXES = frozenset({"lighting", "color_grade", "era", "period_dress",
+                   "finish", "mood"})
 
 #: What the user file added, recorded as it merges.
 USER_ADDED_STYLES: set[str] = set()

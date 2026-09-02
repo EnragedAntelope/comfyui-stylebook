@@ -32,7 +32,8 @@ _MIN_STYLES_PER_CATEGORY = 8
 _MIN_TOTAL_STYLES = 25
 
 #: Expected modifier axes.
-_EXPECTED_AXES = {"lighting", "color_grade", "era", "finish", "mood"}
+_EXPECTED_AXES = {"lighting", "color_grade", "era", "period_dress",
+                  "finish", "mood"}
 
 #: Reserved sentinel values that must not appear in data.
 _SENTINELS = {"Random", "None", "Off"}
@@ -252,6 +253,11 @@ def validate() -> list[str]:
     errors.extend(_check_scene_content(MODIFIERS, "modifier"))
     errors.extend(_check_scene_field(STYLES))
 
+    # --- entity content ---
+    # A modifier tilts the rendering. Naming a wig renders a head to wear
+    # it. Hot on modifiers; styles are reported by main(), not failed.
+    errors.extend(_check_entity_content(MODIFIERS))
+
     # --- a style named after somebody must be findable as an artist ---
     errors.extend(_check_person_styles(STYLES, ARTISTS))
     errors.extend(_check_undeclared_namesakes(STYLES, ARTISTS))
@@ -402,6 +408,19 @@ _SCENE_NOUNS = (
     # Props that caused real contamination once already
     "trenchcoat", "cherry blossom", "water droplet crown",
     "bullet through", "insect scale",
+    # Rooms and grounds the era axis leaked past this list in 0.11.0:
+    # edwardian said "a soft garden light", _1920s "a smoky room",
+    # practical_glow "lit by what is in the room".
+    # "room" catches the idioms too - "breathing room", "leaving room for
+    # a title" - and that is on purpose: a text encoder has no idiom, so
+    # "leaving room for a title" is a request for a room. All four style
+    # hits were reworded rather than exempted.
+    # "interior" is deliberately NOT here. Half its hits in the pack are
+    # the geometric sense - "unshaded interiors", "large open white
+    # interiors", "washed interior shading", "every interior a single
+    # flat tone" - which is correct rendering vocabulary. A gate that is
+    # always right beats one a maintainer learns to skim past.
+    "garden", "parlour", "parlor", "room",
 )
 
 #: Styles that name a term above for a reason unrelated to scene content.
@@ -409,7 +428,125 @@ _SCENE_NOUNS = (
 #: check quietly stops meaning anything.
 _SCENE_EXEMPT: dict[str, str] = {
     "long_exposure": "star trails are an exposure artefact, not sky content",
+    "terrarium_miniature_garden": "a miniature garden is the craft artefact "
+                                  "the subject is rendered as, not a setting "
+                                  "it is placed in",
 }
+
+
+#: Things a modifier must never *add* to the picture: bodies, garments,
+#: hairpieces, furniture, light fixtures, appliances. Its companion rule
+#: to ``_SCENE_NOUNS``, and the same shape of defect - ``_SCENE_NOUNS``
+#: lists *places*, and the era axis walked straight through the gap
+#: because a wig is not a place.
+#:
+#: 11 of the 20 era modifiers enumerated garments, furniture and light
+#: fixtures as free-standing nouns, so a subject that was not wearing a
+#: wig got one, and a subject nowhere near a parlour got gaslit drapery.
+#: A text encoder cannot render a frock coat without shoulders, so it
+#: invents the shoulders.
+#:
+#: The rule an era modifier now follows: **name the light's behaviour,
+#: never its fixture**, and more generally convert every entity noun into
+#: an attribute of whatever is already in frame. Colour temperature,
+#: direction, softness, falloff, contrast ratio, surface finish and
+#: ornament density cannot be instantiated as separate objects, because
+#: they are not objects.
+#:
+#: Stated honestly: this cannot be driven to zero. A text encoder attends
+#: to every token and "gilt" will gild things. The testable bar is
+#: narrower - a modifier must never add an *entity*.
+#:
+#: Narrow and hand-verified, like ``_SCENE_NOUNS``. Deliberately absent:
+#: "drape" (the fall of cloth - Cloth Simulation and Knitwear both use it
+#: correctly), "uniform" (``\b`` matches inside "uniform-weight", which is
+#: line vocabulary), "hose" and bare "suit" (too many innocent senses),
+#: "panel" and "screen" (picture plane, screen printing, screentone).
+_ENTITY_NOUNS = (
+    # Worn
+    "wig", "hairpiece", "toupee", "caul", "hairstyle",
+    "gown", "dress", "doublet", "corset", "corsetry", "crinoline",
+    "pannier", "petticoat", "bodice", "frock coat", "waistcoat",
+    "collar", "sleeve", "skirt", "trouser", "tailoring",
+    "hat", "bonnet", "cloche", "plumed hat",
+    "shoe", "boot", "glove", "cravat", "necktie", "apron",
+    "tunic", "robe", "cape", "cloak", "costume", "wardrobe",
+    "clothing", "garment", "outfit", "jewellery", "jewelry", "brooch",
+    "mannequin",
+    # Furniture and soft furnishing
+    "furniture", "chair", "armchair", "sofa", "settee", "table", "desk",
+    "bookcase", "cabinet", "sideboard", "stool",
+    "drapery", "curtain", "upholstery", "cushion",
+    # Light fixtures
+    "lamp", "lantern", "chandelier", "candelabra", "sconce",
+    "light fixture", "fixture", "bulb", "lightbulb", "streetlight",
+    "candlestick", "candle",
+    # Appliances
+    "monitor", "appliance", "television", "loudspeaker",
+)
+
+#: Axes exempt from ``_ENTITY_NOUNS`` by definition. ``period_dress``
+#: exists precisely to put wardrobe in the picture; running the rule over
+#: it would flag every record it ships.
+_ENTITY_EXEMPT_AXES = frozenset({"period_dress"})
+
+#: Modifiers that name an entity term for an unrelated reason, mapped to
+#: that reason. Same contract as ``_SCENE_EXEMPT``: an exemption without a
+#: written reason is how a check quietly stops meaning anything.
+_ENTITY_EXEMPT: dict[str, str] = {}
+
+
+def _check_entity_content(
+    coll: dict[str, dict],
+    kind: str = "modifier",
+) -> list[str]:
+    """Reject entity nouns in a modifier's positive text.
+
+    A modifier tilts one axis of the rendering. It is never the reason a
+    body, a garment, a chair or a lamp is in the frame, and on Randomize
+    it is applied to subjects its author never pictured.
+
+    Enforced on modifiers. Run over styles in report mode only
+    (``_report_entity_content``): a style may legitimately *be* the
+    object - Vinyl Record Sleeve, Furniture Design Render, Candle Making -
+    so a hot rule there would need a large exemption map, and building
+    that is not this revision's job.
+    """
+    errors: list[str] = []
+    for rid, rec in coll.items():
+        if rid in _ENTITY_EXEMPT:
+            continue
+        if rec.get("axis") in _ENTITY_EXEMPT_AXES:
+            continue
+        blob = f"{rec.get('tags', '')} {rec.get('prose', '')}".lower()
+        for noun in _ENTITY_NOUNS:
+            # Same matcher as _check_scene_content, for the same reasons:
+            # word boundaries so "alley" does not match "gallery", and a
+            # trailing `s?` so a plural is not silently missed.
+            if re.search(rf"\b{re.escape(noun)}s?\b", blob):
+                errors.append(
+                    f"{kind} '{rid}': names the entity '{noun}'. A modifier "
+                    f"tilts the rendering and must not add an object to the "
+                    f"picture - a text encoder cannot draw that without "
+                    f"inventing whatever wears or holds it. Say what it does "
+                    f"to the colour, light, surface or finish of what is "
+                    f"already there instead."
+                )
+                break
+    return errors
+
+
+def report_entity_content(coll: dict[str, dict]) -> list[str]:
+    """Report-mode counterpart of ``_check_entity_content`` for styles."""
+    findings: list[str] = []
+    for sid, rec in coll.items():
+        blob = f"{rec.get('tags', '')} {rec.get('prose', '')}".lower()
+        for noun in _ENTITY_NOUNS:
+            if re.search(rf"\b{re.escape(noun)}s?\b", blob):
+                findings.append(f"{sid}: {noun}")
+                break
+    return findings
+
 
 
 #: Style labels that share a word with an artist label without being named
@@ -670,6 +807,11 @@ def main() -> int:
     print(f"  Categories: {len(CATEGORIES)}")
     print(f"  Modifiers:  {len(MODIFIERS)}")
     print(f"  Artists:    {len(ARTISTS)}")
+    # Report-only, never a failure: see _check_entity_content's docstring
+    # for why styles are not gated on this.
+    entity_report = report_entity_content(STYLES)
+    print(f"  Styles naming an entity noun (report only): "
+          f"{len(entity_report)}")
     return 0
 
 

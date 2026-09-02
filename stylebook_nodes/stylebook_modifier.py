@@ -1,7 +1,13 @@
 """StylebookModifier node - additive, one modifier per axis.
 
-Add a lighting, colour grade, era, finish or mood tilt. Each node
-targets one axis; a second modifier on the same axis replaces the first.
+Add a lighting, colour grade, era, period dress, finish or mood tilt.
+Each node targets one axis; a second modifier on the same axis replaces
+the first.
+
+``era`` and ``period_dress`` are a deliberate pair: era tilts how the
+image is rendered and names no object, so it is safe on any subject;
+period_dress is the one axis whose job is to put period wardrobe in the
+picture.
 """
 
 from __future__ import annotations
@@ -109,8 +115,9 @@ if _COMFY_AVAILABLE:
                 category="conditioning/stylebook",
                 description=(
                     "Tilt the rendering on one axis: lighting, colour grade, "
-                    "era, finish or mood. One modifier per axis; a second on "
-                    "the same axis replaces the first. Defaults to Off."
+                    "era, period dress, finish or mood. One modifier per "
+                    "axis; a second on the same axis replaces the first. "
+                    "Defaults to Off."
                 ),
                 inputs=[
                     io.Custom(opt.CHAIN_TYPE).Input(
@@ -126,7 +133,12 @@ if _COMFY_AVAILABLE:
                         tooltip=(
                             "Which rendering axis this node tilts. Each axis "
                             "holds exactly one modifier, so use one Modifier "
-                            "node per axis you want to set."
+                            "node per axis you want to set. Era tilts how the "
+                            "image is rendered - palette, light, surface, "
+                            "finish - and adds nothing to the picture; Period "
+                            "Dress is the axis that puts period wardrobe and "
+                            "its fittings in it. Pair them for a full period "
+                            "look, or use Era alone on any subject."
                         ),
                     ),
                     # Mode sits above the widgets it swaps, so the control

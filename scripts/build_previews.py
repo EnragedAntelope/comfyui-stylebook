@@ -211,6 +211,25 @@ STYLE_SUBJECT = {
     "uv_texture_layout": "the separated flat pieces of a character model - "
                          "head, torso, arms, legs - laid out side by side "
                          "across a chequered sheet",
+    # 0.12.0. All three are printed or cut objects whose whole point is
+    # their format, and the category subject shows the picture rather than
+    # the artefact: memory records a poster style rendering as a poster
+    # hung on a gallery wall. Each override says what should FILL the
+    # frame, edge to edge.
+    "film_one_sheet": "a tall printed sheet filling the whole frame edge to "
+                      "edge, one person's head and shoulders large in the "
+                      "upper half, big display lettering across the lower "
+                      "half",
+    # Retry after contact-sheet review: "slightly turned" plus "the spine
+    # just visible" turned the book almost edge-on, so the tile showed a
+    # spine rather than a jacket design.
+    "book_jacket": "the front cover of a hardback book seen flat and "
+                   "straight on, filling the whole frame edge to edge, one "
+                   "bold landscape image across the middle and large title "
+                   "lettering above it",
+    "die_cut_vinyl_sticker": "one single sticker of a smiling cartoon cat "
+                             "filling the whole frame, lying flat on a plain "
+                             "pale surface",
 }
 
 # Applied on top of each style's own negative, never instead of it. The
