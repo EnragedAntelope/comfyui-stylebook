@@ -97,6 +97,7 @@ def _payload() -> dict:
                 "category": rec.get("category", ""),
                 "aliases": list(rec.get("aliases", [])),
                 "scene": rec.get("scene", ""),
+                "depicts": rec.get("depicts", ""),
                 "added": ADDED_IN["styles"].get(rec["id"], ""),
                 "namesake": rec.get("namesake", ""),
                 "prose": rec.get("prose", ""),
@@ -188,6 +189,15 @@ main { max-width: 1180px; margin: 0 auto; padding: 18px 20px 60px; }
    and has to stay legible on every one of them. */
 .scene {
   position: absolute; left: 4px; bottom: 4px; padding: 1px 5px;
+  border-radius: 3px; background: rgba(12,12,12,.72); color: #f2f2f2;
+  font-size: 9px; font-weight: 600; line-height: 1.4; letter-spacing: .06em;
+  text-transform: uppercase;
+}
+/* Top-left: the one corner still free. .scene holds bottom-left and
+   .newbadge holds top-right, so no two badges can collide. Own colours
+   for the same reason as .scene -- an arbitrary photograph underneath. */
+.adds {
+  position: absolute; left: 4px; top: 4px; padding: 1px 5px;
   border-radius: 3px; background: rgba(12,12,12,.72); color: #f2f2f2;
   font-size: 9px; font-weight: 600; line-height: 1.4; letter-spacing: .06em;
   text-transform: uppercase;
@@ -310,7 +320,15 @@ function applySprite(el, category, id) {
   if (!cell || !entry.cols || !entry.rows) return false;
   const x = entry.cols > 1 ? (cell[0] / (entry.cols - 1)) * 100 : 0;
   const y = entry.rows > 1 ? (cell[1] / (entry.rows - 1)) * 100 : 0;
-  el.style.backgroundImage = "url('" + ASSETS + entry.atlas + "')";
+  /* The atlas filename is stable, so a repack that changes a category's
+     grid gets composited over the browser's cached copy of the old sheet:
+     wrong tiles, not missing ones. `rev` is the atlas content hash and
+     changes exactly when the pixels do. An older index.json carries no
+     rev and the bare URL is the right fallback. The offsets need no
+     equivalent here -- they are inlined in this page, and Pages
+     revalidates HTML. */
+  const src = ASSETS + entry.atlas + (entry.rev ? "?v=" + entry.rev : "");
+  el.style.backgroundImage = "url('" + src + "')";
   el.style.backgroundSize = entry.cols * 100 + "% " + entry.rows * 100 + "%";
   el.style.backgroundPosition = x + "% " + y + "%";
   return true;
@@ -321,6 +339,7 @@ const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: tr
 function matches(s, needle) {
   if (!needle) return true;
   return (s.label + " " + s.id + " " + s.aliases.join(" ") + " " + s.scene +
+          " " + s.depicts +
           " " + (DATA.categoryLabels[s.category] || "") + " " + s.prose +
           " " + s.tags)
          .toLowerCase().includes(needle);
@@ -363,6 +382,13 @@ function render() {
       b.textContent = "scene";
       art.append(b);
       tips.push("Places your subject in " + s.scene + ".");
+    }
+    if (s.depicts) {
+      const d = document.createElement("span");
+      d.className = "adds";
+      d.textContent = "adds";
+      art.append(d);
+      tips.push("Adds " + s.depicts + " to the frame.");
     }
     if (isNew(s)) {
       const n = document.createElement("span");
@@ -422,6 +448,12 @@ function open(s) {
       "This style places your subject in " + s.scene +
       ". Most styles only change how your subject is rendered; this one " +
       "also decides where it is.", false));
+  }
+  if (s.depicts) {
+    body.append(field("Adds to the frame",
+      "This style puts " + s.depicts + " in the picture whatever subject " +
+      "you give it. Most styles only change how your subject is rendered; " +
+      "this one also brings something with it.", false));
   }
   if (s.prose) body.append(field("Prose", s.prose, true));
   if (s.tags) body.append(field("Keywords", s.tags, true));

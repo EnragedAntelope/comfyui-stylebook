@@ -105,16 +105,6 @@ _PRIMITIVE_VOCAB: dict[str, set[str]] = {
     },
 }
 
-#: Terms that are jargon unless accompanied by primitive vocabulary.
-_JARGON_TERMS: set[str] = {
-    "ligne claire", "chiaroscuro", "sfumato", "tenebrism",
-    "pointillism", "divisionism", "fauvism", "cubism",
-    "surrealism", "dada", "bauhaus", "constructivism",
-    "abstract expressionism", "pop art", "minimalism",
-    "hyperrealism", "photorealism",
-}
-
-
 def _word_count(text: str) -> int:
     return len(text.split())
 
@@ -255,8 +245,11 @@ def validate() -> list[str]:
 
     # --- entity content ---
     # A modifier tilts the rendering. Naming a wig renders a head to wear
-    # it. Hot on modifiers; styles are reported by main(), not failed.
+    # it. Hot on both now: a style's escape is the declared `depicts`
+    # field, which 0.12.0 lacked and which is why it could only report.
     errors.extend(_check_entity_content(MODIFIERS))
+    errors.extend(_check_entity_content(STYLES, "style"))
+    errors.extend(_check_depicts_field(STYLES))
 
     # --- a style named after somebody must be findable as an artist ---
     errors.extend(_check_person_styles(STYLES, ARTISTS))
@@ -490,6 +483,15 @@ _ENTITY_NOUNS = (
 #: it would flag every record it ships.
 _ENTITY_EXEMPT_AXES = frozenset({"period_dress"})
 
+#: Style categories exempt from ``_ENTITY_NOUNS`` by definition. Both mean
+#: "the subject is rendered *as* the thing", so naming the thing is the
+#: whole record: Candle Making, Furniture Design Render, Vinyl Record
+#: Sleeve. ``ARCHITECTURE.md`` already argues these two categories out of
+#: the ``scene`` rule for exactly this reason, and the gallery's category
+#: chip already tells the user. A second signal for a case that has one is
+#: surface area with no information.
+_ENTITY_EXEMPT_CATEGORIES = frozenset({"object_artifact", "craft_material"})
+
 #: Modifiers that name an entity term for an unrelated reason, mapped to
 #: that reason. Same contract as ``_SCENE_EXEMPT``: an exemption without a
 #: written reason is how a check quietly stops meaning anything.
@@ -500,52 +502,109 @@ def _check_entity_content(
     coll: dict[str, dict],
     kind: str = "modifier",
 ) -> list[str]:
-    """Reject entity nouns in a modifier's positive text.
+    """Reject entity nouns a record has not declared.
 
     A modifier tilts one axis of the rendering. It is never the reason a
     body, a garment, a chair or a lamp is in the frame, and on Randomize
-    it is applied to subjects its author never pictured.
+    it is applied to subjects its author never pictured. There is no
+    escape hatch: a modifier that needs one is written wrong.
 
-    Enforced on modifiers. Run over styles in report mode only
-    (``_report_entity_content``): a style may legitimately *be* the
-    object - Vinyl Record Sleeve, Furniture Design Render, Candle Making -
-    so a hot rule there would need a large exemption map, and building
-    that is not this revision's job.
+    A style is different, and 0.12.0 could only report on styles for want
+    of a way to say so. A style may legitimately *be* the object. The
+    escape is the optional ``depicts`` field -- exactly parallel to
+    ``scene``, and a declaration on the record rather than an exemption in
+    this file. That distinction is the whole design:
+
+    * an exemption id is never checked against a live record, so it rots
+      into a lie the moment the style is renamed or dropped;
+    * an exemption is invisible to the user, while ``depicts`` becomes a
+      gallery badge that says what is about to appear in their frame;
+    * and an agent that writes a costume clause writes its own exemption
+      sentence thirty seconds later, so a private list gates nothing.
+
+    ``depicts`` costs a declaration the user can see. That is the point.
     """
     errors: list[str] = []
+    is_style = kind == "style"
     for rid, rec in coll.items():
         if rid in _ENTITY_EXEMPT:
             continue
-        if rec.get("axis") in _ENTITY_EXEMPT_AXES:
-            continue
+        if is_style:
+            if rec.get("depicts", "").strip():
+                continue
+            if rec.get("category") in _ENTITY_EXEMPT_CATEGORIES:
+                continue
+        else:
+            if rec.get("axis") in _ENTITY_EXEMPT_AXES:
+                continue
+            if "depicts" in rec:
+                # Nothing reads `depicts` off a modifier - the gallery
+                # badges styles only - so declaring one here buys no
+                # exemption and silently does nothing. Say so rather than
+                # honour it. Same contract as `scene`.
+                errors.append(
+                    f"{kind} '{rid}': declares a 'depicts', which only a "
+                    f"style may do. A modifier tilts one axis of the "
+                    f"rendering and is never the reason an object is in "
+                    f"the picture."
+                )
         blob = f"{rec.get('tags', '')} {rec.get('prose', '')}".lower()
         for noun in _ENTITY_NOUNS:
             # Same matcher as _check_scene_content, for the same reasons:
             # word boundaries so "alley" does not match "gallery", and a
             # trailing `s?` so a plural is not silently missed.
             if re.search(rf"\b{re.escape(noun)}s?\b", blob):
-                errors.append(
-                    f"{kind} '{rid}': names the entity '{noun}'. A modifier "
-                    f"tilts the rendering and must not add an object to the "
-                    f"picture - a text encoder cannot draw that without "
-                    f"inventing whatever wears or holds it. Say what it does "
-                    f"to the colour, light, surface or finish of what is "
-                    f"already there instead."
-                )
+                if is_style:
+                    errors.append(
+                        f"style '{rid}': names the entity '{noun}' but "
+                        f"declares no 'depicts'. Either cut it (a style "
+                        f"describes rendering, not what is in the picture) "
+                        f"or, if the style genuinely puts that object in "
+                        f"every frame, declare `depicts` so the gallery can "
+                        f"warn the user."
+                    )
+                else:
+                    errors.append(
+                        f"{kind} '{rid}': names the entity '{noun}'. A "
+                        f"modifier tilts the rendering and must not add an "
+                        f"object to the picture - a text encoder cannot draw "
+                        f"that without inventing whatever wears or holds it. "
+                        f"Say what it does to the colour, light, surface or "
+                        f"finish of what is already there instead."
+                    )
                 break
     return errors
 
 
-def report_entity_content(coll: dict[str, dict]) -> list[str]:
-    """Report-mode counterpart of ``_check_entity_content`` for styles."""
-    findings: list[str] = []
+def _check_depicts_field(coll: dict[str, dict]) -> list[str]:
+    """`depicts` must be a short affirmative phrase when present.
+
+    Same contract as `_check_scene_field`, because it is the same kind of
+    thing: a badge caption, read by a human in a tooltip.
+    """
+    errors: list[str] = []
     for sid, rec in coll.items():
-        blob = f"{rec.get('tags', '')} {rec.get('prose', '')}".lower()
-        for noun in _ENTITY_NOUNS:
-            if re.search(rf"\b{re.escape(noun)}s?\b", blob):
-                findings.append(f"{sid}: {noun}")
-                break
-    return findings
+        if "depicts" not in rec:
+            continue
+        depicts = rec["depicts"]
+        if not isinstance(depicts, str) or not depicts.strip():
+            errors.append(
+                f"style '{sid}': 'depicts' must be a non-empty string, or be "
+                f"omitted entirely"
+            )
+            continue
+        if _word_count(depicts) > 12:
+            errors.append(
+                f"style '{sid}': 'depicts' has {_word_count(depicts)} words; "
+                f"it is a badge caption, keep it under 12"
+            )
+        if depicts[:1].isupper() and not depicts.startswith(("A ", "An ", "The ")):
+            errors.append(
+                f"style '{sid}': 'depicts' reads {depicts!r}; write it "
+                f"lower-case as a noun phrase so it reads naturally after "
+                f"'adds'"
+            )
+    return errors
 
 
 
@@ -807,11 +866,14 @@ def main() -> int:
     print(f"  Categories: {len(CATEGORIES)}")
     print(f"  Modifiers:  {len(MODIFIERS)}")
     print(f"  Artists:    {len(ARTISTS)}")
-    # Report-only, never a failure: see _check_entity_content's docstring
-    # for why styles are not gated on this.
-    entity_report = report_entity_content(STYLES)
-    print(f"  Styles naming an entity noun (report only): "
-          f"{len(entity_report)}")
+    # The entity rule is hot on styles now, so there is nothing left to
+    # report: a style that names an entity either declares `depicts` or
+    # fails above. What is worth printing is how many carry the
+    # declaration, because a number climbing towards the share ceiling in
+    # test_scene.DepictsFieldTests means the field is becoming a dumping
+    # ground and the badge is losing its meaning.
+    declared = [sid for sid, rec in STYLES.items() if rec.get("depicts")]
+    print(f"  Styles declaring `depicts`: {len(declared)}")
     return 0
 
 

@@ -107,6 +107,13 @@ def _preview_sprites() -> dict:
         rows = max(t["y"] + t["h"] for t in tiles.values()) // tile_h
         out[category] = {
             "atlas": entry.get("atlas", f"{category}.webp"),
+            # Content hash of the atlas, appended to its URL as ?v=<rev>.
+            # The filename is stable, so without this a browser holding a
+            # cached atlas composites these fresh offsets over stale
+            # pixels and draws visibly wrong tiles. An index written
+            # before "rev" existed omits it and the consumers fall back
+            # to the bare URL.
+            "rev": entry.get("rev", ""),
             "cols": cols,
             "rows": rows,
             "tiles": {
@@ -162,6 +169,7 @@ def generate() -> tuple[str, str]:
             # great majority that only change how it is rendered. Drives
             # the gallery's scene badge.
             "scenes": [STYLES[sid].get("scene", "") for sid in ids],
+            "depicts": [STYLES[sid].get("depicts", "") for sid in ids],
         }
 
     artists = sorted(ARTISTS.values(), key=lambda rec: label_sort_key(rec["label"]))

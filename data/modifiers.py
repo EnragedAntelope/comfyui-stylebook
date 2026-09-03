@@ -236,6 +236,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "lit through water: rippling nets of caustic light dancing across every surface, colour draining toward blue-green with depth and particles drifting through the shafts.",
         "negative": "dry air, hard direct light, warm tones, crisp clarity",
     },
+    "uv_fluorescence": {
+        "label": "UV Fluorescence",
+        "axis": "lighting",
+        "aliases": ["blacklight", "ultraviolet", "fluorescent glow"],
+        "tags": "ultraviolet fluorescence, deep violet ambient wash across the whole frame, whites and pale pigments blazing electric cyan-white, saturated fluorescent greens and magentas glowing where they occur, everything that does not fluoresce falling away to near-black, hard fast falloff with barely any fill",
+        "prose": "lit by ultraviolet fluorescence: a deep violet wash laid across everything, whites and pale pigments blazing electric cyan-white while saturated greens and magentas glow wherever they occur, everything that does not fluoresce dropping away to near-black with barely any fill.",
+        "negative": "warm tungsten light, daylight colour balance, even ambient fill, natural skin tone",
+    },
 
     # --- color_grade ---
     "black_and_white": {
@@ -294,6 +302,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "graded loud: every hue pushed to the edge of clipping, contrast punched up, the colour doing as much work as the composition.",
         "negative": "muted, desaturated, pastel, monochrome",
     },
+    "inverted_negative": {
+        "label": "Inverted Negative",
+        "axis": "color_grade",
+        "aliases": ["colour inversion", "film negative", "reversed tones"],
+        "tags": "inverted negative grade, every tone reversed so highlights read dark and shadows read bright, hues flipped to their complements, skin rendering cyan-blue, warm orange where the sky would be cool, dense inverted black across the brightest areas, unfamiliar reversed colour relationships throughout",
+        "prose": "graded as an inverted negative: every tone reversed so the highlights sit dark and the shadows sit bright, hues flipped to their complements with skin turning cyan-blue and cool areas turning warm orange, the whole colour relationship reading unfamiliar.",
+        "negative": "natural colour, correct skin tone, positive tonal range, conventional grading",
+    },
     "kodachrome": {
         "label": "Kodachrome",
         "axis": "color_grade",
@@ -333,6 +349,14 @@ MODIFIERS: dict[str, dict] = {
         "tags": "pastel grade, lifted blacks, low saturation across pale pinks and mints and butter yellows, airy high-key feel, gentle contrast",
         "prose": "graded into pastel: blacks lifted to soft grey, the palette drifting through pale pink and mint and butter yellow with contrast kept deliberately gentle.",
         "negative": "deep blacks, saturated colour, high contrast, dark",
+    },
+    "portra_soft_negative": {
+        "label": "Portra Soft Negative",
+        "axis": "color_grade",
+        "aliases": ["colour negative stock", "soft portrait film", "low contrast film"],
+        "tags": "soft colour negative grade, warm neutral skin held accurate, gentle low contrast with the blacks kept intact, wide forgiving highlight latitude rolling off softly, secondaries desaturating gently around the skin, fine even grain, creamy smooth tonal transitions",
+        "prose": "graded like a soft colour negative: warm neutral skin held accurate while the secondaries desaturate gently around it, contrast low but the blacks kept intact, highlights rolling off with wide forgiving latitude over a fine even grain.",
+        "negative": "punchy saturation, crushed contrast, magenta age cast, lifted milky blacks, coarse grain",
     },
     "selective_colour": {
         "label": "Selective Colour",

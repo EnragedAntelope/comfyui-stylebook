@@ -66,7 +66,7 @@ its initials instead of a rendered thumbnail.
 | `label '…' is reserved` | `None`, `Off` and `Random` are control words the pack itself uses in its dropdowns — no entry may claim one. |
 | `'…' must be text, not …` | A field that must be a string (see the tables below) was a number, list, or other type. |
 | `'…' must be a list of text…` | `aliases` or `blocks` was not a JSON array, or contained something other than a string. |
-| `'blocks' names '…', which is not a modifier axis` | A `blocks` entry is not one of the five axes. Usually a spelling slip: `color_grading` for `color_grade`. |
+| `'blocks' names '…', which is not a modifier axis` | A `blocks` entry is not one of the six axes. Usually a spelling slip: `color_grading` for `color_grade`. |
 | `category '…' is not one the pack ships` / `axis '…' is not one the pack ships` | See the valid lists below. An unrecognised category doesn't crash anything, but the entry never surfaces under Random/Cycle-by-category and never gets its own gallery tab — it becomes hard to find, which is worth avoiding. |
 | `label '…' duplicates an existing style/artist/modifier` | Another entry — built-in, or an earlier entry in the same file — already claims that label (case-insensitive). Only the first one wins; rename the later one. |
 
@@ -97,8 +97,9 @@ its initials instead of a rendered thumbnail.
 | `prose` | no | string | Sentence form. Used when `format` is `prose`. Ship at least one of `tags`/`prose` or the style renders as nothing. |
 | `negative` | no | string | What the style excludes, wired into a node's `negative` output. |
 | `aliases` | no | list of strings | Extra search terms; do not need to be unique. |
-| `blocks` | no | list of strings | Modifier axes this style already fixes, so a Modifier node on that axis is dropped with a warning instead of fighting the style. Each entry must be one of `lighting`, `color_grade`, `era`, `finish`, `mood` — a name outside that set is rejected, because a typo here would otherwise block nothing and say nothing. |
+| `blocks` | no | list of strings | Modifier axes this style already fixes, so a Modifier node on that axis is dropped with a warning instead of fighting the style. Each entry must be one of `lighting`, `color_grade`, `era`, `period_dress`, `finish`, `mood` — a name outside that set is rejected, because a typo here would otherwise block nothing and say nothing. |
 | `scene` | no | string | Only for a style that decides *where* the subject is, not just how it is drawn. A short lower-case noun phrase — `"a deserted transitional interior"` — shown as a **scene** badge on the gallery tile and spelled out in its tooltip. Leave it out for the great majority of styles: one that merely changes the rendering has no scene, and a badge on everything tells the user nothing. |
+| `depicts` | no | string | `scene`'s sibling, and only for a style that puts a specific **object** in the frame whatever subject you give it. A short lower-case noun phrase — `"an elaborate transformation costume"` — shown as an **adds** badge on the gallery tile and spelled out in its tooltip. `scene` says where your subject ends up; `depicts` says what turns up beside it. Leave it out for the great majority of styles: one that merely changes the rendering adds nothing, and a badge on everything tells the user nothing. |
 | `preview` | no | string | Cosmetic only; the pack does not render a preview image for a custom style regardless of this value. |
 | `id` (JSON key) | — | string | The key in the `"styles"` object *is* the id; don't also write an `"id"` field inside the record — it's set automatically from the key (and corrected if it disagrees), so there's nothing to keep in sync. Note that a saved workflow's Pick dropdown actually stores the *label*, not the id — so renaming `label` later still means re-picking the style in any workflow that already used it, the same as it would for a built-in. |
 
@@ -144,7 +145,7 @@ its initials instead of a rendered thumbnail.
 | Field | Required | Type | Notes |
 |---|---|---|---|
 | `label` | yes | string | Must be unique. |
-| `axis` | yes | string | Exactly one of: `lighting`, `color_grade`, `era`, `finish`, `mood`. A Modifier node holds one modifier per axis; a second on the same axis replaces the first. |
+| `axis` | yes | string | Exactly one of: `lighting`, `color_grade`, `era`, `period_dress`, `finish`, `mood`. A Modifier node holds one modifier per axis; a second on the same axis replaces the first. |
 | `tags` / `prose` | no | string | Same contract as styles: ship at least one. |
 | `negative` | no | string | Same contract as styles. |
 | `aliases` | no | list of strings | Extra search terms. |

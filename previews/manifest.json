@@ -80,7 +80,7 @@
       "hash": "43fbf0690351926a"
     },
     "anime_key_visual": {
-      "hash": "40486944e6c22f51"
+      "hash": "a5bd466873f11403"
     },
     "aquatint": {
       "hash": "55bf83295c8108b7"
@@ -165,6 +165,9 @@
     },
     "blackout_poetry": {
       "hash": "baa151039aec2ffe"
+    },
+    "blacksmith_forged_metal": {
+      "hash": "2f78df682669712b"
     },
     "blaxploitation": {
       "hash": "c840769fe10c20ad"
@@ -268,6 +271,9 @@
     "cereal_box": {
       "hash": "a5a91e1b15baab3b"
     },
+    "chalkboard_drawing": {
+      "hash": "13f0fae969100dec"
+    },
     "charcoal": {
       "hash": "4bc2ad2a9f7a8fbc"
     },
@@ -349,6 +355,9 @@
     "contact_sheet": {
       "hash": "00c83178ae4cd41a"
     },
+    "continuous_single_line": {
+      "hash": "ddc3dd944ddf86f8"
+    },
     "cooking_manga": {
       "hash": "77d99c9d58168eef"
     },
@@ -421,6 +430,9 @@
     "delftware_blue": {
       "hash": "f55301f74c7e6694"
     },
+    "demoscene": {
+      "hash": "c37c3bd6a87aa4af"
+    },
     "depth_pass": {
       "hash": "10e99890be8d2ebe"
     },
@@ -442,6 +454,9 @@
     "digital_photomontage": {
       "hash": "4af5f40e29bba320"
     },
+    "diner_menu": {
+      "hash": "d0dffe2fbe8f3ee5"
+    },
     "displacement_mapping": {
       "hash": "69aa5f06a240bae5"
     },
@@ -462,6 +477,9 @@
     },
     "double_exposure": {
       "hash": "6e9b75e3dac3438f"
+    },
+    "drone_fpv_flythrough": {
+      "hash": "3f13a9701893c014"
     },
     "dry_brush": {
       "hash": "56fc55e7076f2ba9"
@@ -517,6 +535,9 @@
     "ex_libris": {
       "hash": "66b77c02ee63f35f"
     },
+    "exploded_view_diagram": {
+      "hash": "5d1403622cc80b6d"
+    },
     "expressionism": {
       "hash": "1307c57dab1430e2"
     },
@@ -567,6 +588,9 @@
     },
     "flexography_package": {
       "hash": "ecdff7358c1c47f2"
+    },
+    "floppy_disk_label": {
+      "hash": "0664b7162787f5bc"
     },
     "flow_field": {
       "hash": "3639797a1a6a5644"
@@ -624,6 +648,9 @@
     },
     "gaspar_noe": {
       "hash": "8c8e4f98b3d5c4e0"
+    },
+    "gaussian_splat": {
+      "hash": "5254c67550df7756"
     },
     "gekiga_mature": {
       "hash": "2091775feab0ffb0"
@@ -697,6 +724,12 @@
     "gum_bichromate": {
       "hash": "d3f92c49096c5700"
     },
+    "gutai": {
+      "hash": "d7064097a3a6339d"
+    },
+    "hand_tinted_trick_film": {
+      "hash": "f62f47b4c33b5b7e"
+    },
     "handheld_shaky_cam": {
       "hash": "3cf8fb9d0f370e09"
     },
@@ -711,6 +744,9 @@
     },
     "hdri_environment_lighting": {
       "hash": "b8934384e19ee9bb"
+    },
+    "henna_mehndi": {
+      "hash": "9dbd315468de23b3"
     },
     "high_renaissance": {
       "hash": "8677afb3fda5adb1"
@@ -738,6 +774,9 @@
     },
     "hyperrealism": {
       "hash": "74a0bbb41307038a"
+    },
+    "ice_sculpture": {
+      "hash": "973db3a4e896d076"
     },
     "ikebana": {
       "hash": "358d4875e13d714a"
@@ -770,7 +809,7 @@
       "hash": "8a3a01f0ec288c4e"
     },
     "intimism": {
-      "hash": "172f35c23f8b267f"
+      "hash": "d022c7b314a8247e"
     },
     "iris_shot": {
       "hash": "ebdf83f4a5cdae0e"
@@ -788,7 +827,7 @@
       "hash": "22d1344129e6620a"
     },
     "italian_neorealism": {
-      "hash": "86d05244f9c6be23"
+      "hash": "045ddbecfac31516"
     },
     "iznik_ceramic": {
       "hash": "3a99a7a9d5c2014a"
@@ -807,6 +846,9 @@
     },
     "junk_journal": {
       "hash": "521d638fcf280277"
+    },
+    "kalamkari": {
+      "hash": "4caac18b69474d07"
     },
     "kalighat": {
       "hash": "f8613ed9fa6fe50e"
@@ -988,6 +1030,9 @@
     "mezzotint": {
       "hash": "7dd314617d70239b"
     },
+    "midcentury_print_ad": {
+      "hash": "26abe25d62c26e99"
+    },
     "milk_carton": {
       "hash": "84b907798f01bd18"
     },
@@ -1040,7 +1085,7 @@
       "hash": "2b0eda51bae08457"
     },
     "nabis": {
-      "hash": "081b9561be5d0811"
+      "hash": "a65af412a2681309"
     },
     "naive_art": {
       "hash": "63e448502a70ebf2"
@@ -1188,6 +1233,9 @@
     },
     "penny_dreadful": {
       "hash": "2ee765d8d9a6ce4f"
+    },
+    "persian_carpet_knotting": {
+      "hash": "4f0a3ffe95fa72f3"
     },
     "persian_miniature": {
       "hash": "285b28e85bb1cb92"
@@ -1405,6 +1453,9 @@
     "sand_painting": {
       "hash": "4acbe0eed26099a5"
     },
+    "sanguine_red_chalk": {
+      "hash": "2a4e75cf71a63a7a"
+    },
     "sashiko": {
       "hash": "f147252f91967892"
     },
@@ -1426,6 +1477,9 @@
     "screen_print_poster": {
       "hash": "ce3b47978503263e"
     },
+    "screenlife_desktop_film": {
+      "hash": "41059992ea8ca6e1"
+    },
     "scribble_art": {
       "hash": "c5964d93196cedab"
     },
@@ -1444,11 +1498,17 @@
     "sfumato": {
       "hash": "40452fa3adc5db64"
     },
+    "sgraffito_pottery": {
+      "hash": "a401517118f9dc15"
+    },
     "shadow_box_frame": {
       "hash": "5583360e5dd6c0f8"
     },
     "shan_shui": {
       "hash": "bbeb180de455e139"
+    },
+    "sheet_music_cover": {
+      "hash": "af75b37c77f597eb"
     },
     "shin_hanga": {
       "hash": "c04ec944ca100043"
@@ -1640,7 +1700,7 @@
       "hash": "efb8a9303b1b9587"
     },
     "technicolor": {
-      "hash": "eb2828356788d8fd"
+      "hash": "b1983a9a7c3eb978"
     },
     "teletext_mosaic": {
       "hash": "124037c3eb187721"
@@ -1680,6 +1740,12 @@
     },
     "tilt_shift": {
       "hash": "23a0f4bc0cf21662"
+    },
+    "tin_litho_toy": {
+      "hash": "a8c203ca85ca94f6"
+    },
+    "tingatinga": {
+      "hash": "5562cf60756d744d"
     },
     "tintype_ferrotype": {
       "hash": "69c77bbf94c6fd76"
@@ -1850,7 +1916,7 @@
       "hash": "e482f1ac1635a0ad"
     },
     "woven_label_damask": {
-      "hash": "43e8345aaeeb5d06"
+      "hash": "d76fcba330d9aefd"
     },
     "woven_tapestry": {
       "hash": "b9f6fb5a843729ee"
@@ -1859,7 +1925,7 @@
       "hash": "707059ce8a9f9ae2"
     },
     "wuxia_wire_fu": {
-      "hash": "0cc307d60226fc8c"
+      "hash": "646878c67e5eebda"
     },
     "xerox_art": {
       "hash": "414617349806923c"

@@ -179,6 +179,14 @@ STYLE_SUBJECT = {
     "land_art": "a vast spiral of heaped stone reaching out across a dry lake "
                 "bed, seen from high above",
     "shan_shui": "a tall mountain rising above still water and drifting mist",
+    # 0.13.0. Both are domestic-interior movements: the room is the
+    # identity, not a setting the style happens to allow. The category
+    # subject would put a person front and centre, which is the one thing
+    # Vuillard's and Bonnard's interiors are not about.
+    "nabis": "a cluttered domestic sitting room with patterned wallpaper, "
+             "a table and a curtained window",
+    "intimism": "a quiet domestic room with a table beside a softly lit "
+                "window",
     # 0.10.0. Each of these is a layout, a diagram or a tradition with its
     # own canonical subject, and the category subject shows the subject
     # rather than the style.
@@ -230,6 +238,63 @@ STYLE_SUBJECT = {
     "die_cut_vinyl_sticker": "one single sticker of a smiling cartoon cat "
                              "filling the whole frame, lying flat on a plain "
                              "pale surface",
+    # 0.13.0. Only where the category subject would show the wrong thing.
+    # The five craft_material additions get none: "a mountain and a flying
+    # bird as the worked motif" is already exactly what a henna design, a
+    # forged panel, a knotted pile, an ice carving and a slip-scratched pot
+    # should each be rendering, and that is how every other craft tradition
+    # in the pack is previewed.
+    #
+    # Camera behaviour needs something to move past.
+    "drone_fpv_flythrough": "a low fast view rushing between tall rock "
+                            "formations toward open sky",
+    # A person pulled apart into components is not what this diagram is.
+    "exploded_view_diagram": "a small mechanical device separated into its "
+                             "component parts along straight axis lines",
+    # The frame is a screen, which is exactly what `depicts` declares.
+    "screenlife_desktop_film": "a computer screen filling the whole frame "
+                               "edge to edge, several overlapping "
+                               "application windows and one small video "
+                               "call panel",
+    # Gutai is material action on a surface, not a seated sitter.
+    "gutai": "a broad expanse of thickly worked painted surface filling the "
+             "whole frame",
+    # Both painting additions are flat traditions the category's window and
+    # tabletop would fight: one wants depth, the other has none.
+    "tingatinga": "one large bird perched in a leafy tree, filling the whole "
+                  "frame",
+    "kalamkari": "a standing figure in flat frontal profile inside a wide "
+                 "floral border",
+    # A rendered figure is the one thing demoscene graphics are not.
+    "demoscene": "a chrome bevelled logo above a starfield, colour bars "
+                 "sweeping across the frame",
+    # Printed and formed artefacts, same lesson as the 0.12.0 three above:
+    # say what FILLS the frame, and say "flat and straight on", because
+    # book_jacket's "slightly turned" put the tile edge-on.
+    # Retry after contact-sheet review: naming the title first produced an
+    # ornate heading over a blank cream page. Leading with the illustration,
+    # and saying what is in it, fills the cover.
+    "sheet_music_cover": "the front of a sheet music cover seen flat and "
+                         "straight on, filling the whole frame edge to edge, "
+                         "a large illustrated vignette of a mountain and a "
+                         "bird across the middle with decorative title "
+                         "lettering above it",
+    "diner_menu": "a menu card seen flat and straight on, filling the whole "
+                  "frame edge to edge, headings above columns of listed "
+                  "items and prices",
+    "tin_litho_toy": "a small pressed tin wind-up toy, three-quarter view, "
+                     "filling the whole frame on a plain pale surface",
+    # Retry after contact-sheet review: framing the disk produced a correct
+    # disk carrying a completely blank label, which advertises nothing.
+    "floppy_disk_label": "the printed paper label on a 3.5-inch floppy disk, "
+                         "seen flat and straight on and filling the whole "
+                         "frame edge to edge, a small logo and a title in "
+                         "two flat spot colours above a ruled handwriting "
+                         "strip",
+    "midcentury_print_ad": "a full magazine advertisement page seen flat and "
+                           "straight on, filling the whole frame edge to "
+                           "edge, a headline above an illustration and two "
+                           "columns of small text",
 }
 
 # Applied on top of each style's own negative, never instead of it. The
@@ -239,6 +304,12 @@ STYLE_SUBJECT = {
 BASE_NEGATIVE = "nsfw, nude, text, watermark, signature, deformed, blurry"
 
 MANIFEST_VERSION = 2
+
+#: Schema version of js/previews/index.json. 2 added a per-category "rev",
+#: the content hash of that category's atlas, so the gallery can cache-bust
+#: a stable filename. Every consumer treats a missing "rev" as "no suffix",
+#: so an index written at version 1 still works.
+INDEX_VERSION = 2
 
 
 # ---------------------------------------------------------------------------
@@ -295,6 +366,45 @@ def save_manifest(manifest: dict) -> None:
     )
 
 
+def atlas_rev(path: Path) -> str:
+    """Short content hash of a packed atlas, used to cache-bust its URL.
+
+    The atlas filenames are stable (``object_artifact.webp``), so a browser
+    that has one cached will keep serving it while the *offsets* around it
+    change -- and a repack that alters a category's grid shifts every cell
+    index. The result is not a missing image but a visibly wrong one. The
+    gallery appends this as ``?v=<rev>``, which changes the URL exactly when
+    the pixels change and leaves it alone when they do not.
+    """
+    return hashlib.sha256(path.read_bytes()).hexdigest()[:8]
+
+
+def stale_atlas_revs() -> list[str]:
+    """Categories whose recorded ``rev`` disagrees with the atlas on disk.
+
+    Catches "repacked and forgot to regenerate" in CI rather than in a
+    user's browser. A category with no ``rev`` at all is an index written
+    before this existed and is not an error -- the consumers fall back to
+    the bare URL.
+    """
+    index_path = OUT_DIR / "index.json"
+    if not index_path.is_file():
+        return []
+    try:
+        raw = json.loads(index_path.read_text(encoding="utf-8"))
+    except ValueError:
+        return []
+    bad = []
+    for category, entry in sorted(raw.get("categories", {}).items()):
+        recorded = entry.get("rev")
+        if not recorded:
+            continue
+        atlas = OUT_DIR / entry.get("atlas", f"{category}.webp")
+        if not atlas.is_file() or atlas_rev(atlas) != recorded:
+            bad.append(category)
+    return bad
+
+
 def survey(model: str) -> tuple[list[str], list[str], list[str]]:
     """Return (missing, stale, orphan) style ids against the manifest.
 
@@ -340,8 +450,12 @@ def survey(model: str) -> tuple[list[str], list[str], list[str]]:
 # ---------------------------------------------------------------------------
 
 class ComfyClient:
-    def __init__(self, url: str):
+    def __init__(self, url: str, front: bool = False):
         self.url = url.rstrip("/")
+        #: Submit front-of-queue. Off by default: a build run should not
+        #: quietly push in front of whatever the machine's owner already
+        #: queued. On, it removes the need to hand-check GET /queue first.
+        self.front = front
 
     def _get(self, path: str, timeout: int = 10) -> bytes:
         with urllib.request.urlopen(self.url + path, timeout=timeout) as response:
@@ -365,9 +479,14 @@ class ComfyClient:
             return []
 
     def queue(self, workflow: dict) -> str | None:
-        body = json.dumps(
-            {"prompt": workflow, "client_id": "stylebook-preview-builder"}
-        ).encode("utf-8")
+        payload = {"prompt": workflow,
+                   "client_id": "stylebook-preview-builder"}
+        if self.front:
+            # ComfyUI honours this on POST /prompt. It inserts ahead of
+            # PENDING work; it never deletes or reorders anything already
+            # running, and nothing already queued is removed.
+            payload["front"] = True
+        body = json.dumps(payload).encode("utf-8")
         request = urllib.request.Request(
             self.url + "/prompt", data=body,
             headers={"Content-Type": "application/json"},
@@ -555,7 +674,10 @@ def pack_atlases() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     index = {
-        "version": 1,
+        # Bumped to 2 when per-category "rev" was added. A consumer reading
+        # an older index simply finds no "rev" and falls back to the bare
+        # atlas URL, so this is informational rather than a gate.
+        "version": INDEX_VERSION,
         "model": load_manifest().get("model", ""),
         "tile": TILE_SIZE,
         "categories": {},
@@ -588,7 +710,11 @@ def pack_atlases() -> int:
 
         atlas_name = f"{category}.webp"
         sheet.save(OUT_DIR / atlas_name, "WEBP", quality=82, method=6)
-        index["categories"][category] = {"atlas": atlas_name, "tiles": tiles}
+        index["categories"][category] = {
+            "atlas": atlas_name,
+            "rev": atlas_rev(OUT_DIR / atlas_name),
+            "tiles": tiles,
+        }
         size_kb = (OUT_DIR / atlas_name).stat().st_size // 1024
         print(f"  {category}: {len(present)} tiles, "
               f"{columns}x{rows}, {size_kb} KB")
@@ -735,6 +861,12 @@ def main() -> int:
     parser.add_argument("--model", default="",
                         help="UNet filename or unique substring of one. "
                              "Required whenever rendering (--build/--style).")
+    parser.add_argument("--front", action="store_true",
+                        help="Submit each job front-of-queue. Off by "
+                             "default, because a build run should not push "
+                             "in front of work the machine's owner already "
+                             "queued. Inserts ahead of pending jobs only; "
+                             "nothing queued is deleted or reordered.")
     args = parser.parse_args()
 
     if not (args.check or args.build or args.pack or args.contact_sheet
@@ -768,6 +900,15 @@ def main() -> int:
         if missing or stale:
             print("\nRun: python scripts/build_previews.py --build")
             return 1
+        bad_revs = stale_atlas_revs()
+        if bad_revs:
+            print(f"  atlas rev mismatch: {len(bad_revs)}")
+            for category in bad_revs:
+                print(f"    rev: {category}")
+            print("\nThe index.json 'rev' no longer matches the atlas bytes, "
+                  "so the gallery would cache-bust to the wrong URL.")
+            print("Run: python scripts/build_previews.py --pack")
+            return 1
         print("\nAll preview tiles are current.")
         return 0
 
@@ -775,7 +916,7 @@ def main() -> int:
         return build_contact_sheets(args.only)
 
     if args.build:
-        client = ComfyClient(args.url)
+        client = ComfyClient(args.url, front=args.front)
         if not client.reachable():
             print(f"No ComfyUI at {args.url}. Start it, or pass --url.")
             return 1

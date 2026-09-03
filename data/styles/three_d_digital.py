@@ -585,6 +585,28 @@ THREE_D_DIGITAL_ENTRIES: dict[str, dict] = {
         "preview": "three_d_digital#63",
         "blocks": [],
     },
+    "gaussian_splat": {
+        "id": "gaussian_splat",
+        "label": "Gaussian Splat",
+        "category": "three_d_digital",
+        "aliases": ["3D gaussian splatting", "radiance field", "splat render"],
+        "tags": "3D gaussian splat render, form built from thousands of overlapping soft translucent ellipses rather than solid surfaces, edges dissolving into fuzzy semi-transparent fringe, stray floating artefacts hanging in empty space, view-dependent colour shifting across each blob, smeared unresolved regions where coverage thinned, crisp centre fading into cloudy periphery",
+        "prose": "Rendered as a 3D gaussian splat: the form assembled from thousands of overlapping soft translucent ellipses instead of solid surfaces, every edge dissolving into a fuzzy semi-transparent fringe, stray floaters hanging in the empty space around it and whole regions smeared and unresolved where the coverage thinned out.",
+        "negative": "clean polygon silhouette, hard surface edges, ray-traced reflection, solid opaque geometry, studio product finish",
+        "preview": "three_d_digital#64",
+        "blocks": [],
+    },
+    "demoscene": {
+        "id": "demoscene",
+        "label": "Demoscene",
+        "category": "three_d_digital",
+        "aliases": ["copper bars", "amiga demo", "cracktro"],
+        "tags": "demoscene graphics, horizontal copper bars of banded gradient colour sweeping across the frame, swirling plasma fields of cycling magenta and cyan and lime, limited indexed palette with visible ordered dither patterning, hard chunky pixel edges stepping in visible squares, chrome bevelled logo lettering, starfield and scrolling text strip along the bottom",
+        "prose": "Rendered as demoscene graphics: horizontal copper bars of banded gradient colour sweeping across the frame over swirling plasma fields of cycling magenta, cyan and lime, everything held in a limited indexed palette with visible ordered dither, hard chunky pixel edges, chrome bevelled lettering and a scrolling text strip along the bottom.",
+        "negative": "photorealistic shading, smooth antialiased edges, subtle naturalistic palette, high dynamic range, soft focus",
+        "preview": "three_d_digital#65",
+        "blocks": [],
+    },
 }
 
 THREE_D_DIGITAL_STYLES = THREE_D_DIGITAL_ENTRIES

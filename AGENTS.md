@@ -1,6 +1,6 @@
 # AGENTS.md — comfyui-stylebook
 
-600+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list, a matching negative prompt, plus 900+ artists with descriptors. Zero dependencies, fully offline. Built on ComfyUI V3 API, category: `conditioning/stylebook`.
+650+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list, a matching negative prompt, plus 900+ artists with descriptors. Zero dependencies, fully offline. Built on ComfyUI V3 API, category: `conditioning/stylebook`.
 
 **Deep references:**
 - `ARCHITECTURE.md` (chain protocol, layout, design rationale — read before engine changes)
@@ -8,11 +8,11 @@
 
 ## Current state
 
-_Last verified: 2026-09-02_
+_Last verified: 2026-09-03_
 
-- **Status:** in active development, `pyproject.toml` at v0.12.0 (unreleased; 0.11.0 is the last tag). Work in progress on the `add-frank-cho-roger-hargreaves` branch. Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships needs no bump. `.comfyignore` says what the registry package leaves out; its patterns are gitignore-style, so root-only ones carry a leading slash.
+- **Status:** in active development, `pyproject.toml` at v0.13.0 (unreleased; 0.12.0 is the last release on `main`). Work in progress on the `revision-0.13.0` branch. Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships needs no bump. `.comfyignore` says what the registry package leaves out; its patterns are gitignore-style, so root-only ones carry a leading slash.
 - **Works:** all five nodes (Style, Artist, Modifier, Blend, Sheet) over the `STYLEBOOK_CHAIN` protocol; every style ships a rendered preview tile packed into WebP sprite atlases; the two-line node-face readout plus Copy-resolved-prompt (with success/failure feedback) and Pin-this-pick context items; a right-click Auto-advance cycle toggle on Style/Artist/Modifier (on by default for Cycle mode) that steps `cycle_index` by one each run, wrapping at the pool size the backend reports (a node property, so old graphs load unchanged, and it can be turned off to hold a fixed index); a "New in x.y.z" tab, a new ribbon and an A-Z/Newest sort in every picker, driven by `data/versions.py`; optional `user_styles.json` validated and merged at load; a public browsable gallery plus public artist and modifier reference pages served by GitHub Pages from the repo root; the full CI gate including a jsdom frontend suite and a no-GPU preview `--check`.
-- **In progress:** style and artist curation is the steady-state work rather than a milestone — each release adds entries and re-renders the affected tiles. 0.8.0 made the "describe the rendering, not the subject" rule enforceable via the optional `scene` field; 0.9.0 extended that check to modifiers (which get no `scene` escape) and rejected negated clauses in artist descriptors; 0.10.0 moved the person-named-style map out of the tests into the data as the optional `namesake` field, added a detector for the *missing* half of that promise, and moved the 300 KB corpus out of ComfyUI's `**/*.js` extension glob into a lazily fetched `js/stylebook_data.json`. 0.12.0 closes the companion hole the `scene` rule could not see: `_ENTITY_NOUNS` in `tests/validate_data.py` rejects garments, furniture and light fixtures in a modifier's positive text, all twenty `era` records were rewritten to describe light *behaviour* rather than fixtures, and the wardrobe text moved onto a new `period_dress` axis so nothing was lost.
+- **In progress:** style and artist curation is the steady-state work rather than a milestone — each release adds entries and re-renders the affected tiles. 0.8.0 made the "describe the rendering, not the subject" rule enforceable via the optional `scene` field; 0.9.0 extended that check to modifiers (which get no `scene` escape) and rejected negated clauses in artist descriptors; 0.10.0 moved the person-named-style map out of the tests into the data as the optional `namesake` field, added a detector for the *missing* half of that promise, and moved the 300 KB corpus out of ComfyUI's `**/*.js` extension glob into a lazily fetched `js/stylebook_data.json`. 0.12.0 closes the companion hole the `scene` rule could not see: `_ENTITY_NOUNS` in `tests/validate_data.py` rejects garments, furniture and light fixtures in a modifier's positive text, all twenty `era` records were rewritten to describe light *behaviour* rather than fixtures, and the wardrobe text moved onto a new `period_dress` axis so nothing was lost. 0.13.0 makes that entity rule hot on **styles** too: the escape is the optional `depicts` field — a declaration on the record, badged in both galleries, rather than an exemption map nothing can keep honest — with `object_artifact` and `craft_material` exempt by category. It also cache-busts the sprite atlases with a content-hashed `?v=` (their filenames are stable, so a repack that changed a category's grid drew visibly *wrong* tiles for a returning visitor, not missing ones).
 - **Known gaps / next steps:** rendering new preview tiles needs a running ComfyUI and a Chroma checkpoint, and a full run takes hours — `build_previews.py` refuses to render without an explicit `--model`, because substring model resolution once silently grabbed a Turbo merge and produced plausible-but-wrong tiles; ComfyUI caches the Python data layer at startup, so a newly added style or artist is rejected by node validation until it is restarted; the namesake detector cannot see an adjectival label ("Sirkian Melodrama" shares no word with "Douglas Sirk"), so those still need declaring by hand; there is no CONDITIONING-output node and that is a settled decision, not a gap (see `ARCHITECTURE.md`).
 
 ## Architecture in 60 seconds
@@ -99,6 +99,14 @@ and a Chroma checkpoint named explicitly via `--model`; `--check` needs neither.
   declares an optional `scene` phrase instead; the validator rejects scene
   nouns in any style that has not, and the gallery badges the ones that
   have. Full rule and rationale in `ARCHITECTURE.md`.
+- **Nor may it add an object.** Same rule, different noun list: a garment,
+  a chair or a lamp in a style's positive text puts one in the frame. A
+  style that genuinely brings an object with it (Fashion Photography,
+  Magical Girl Transformation) declares the optional `depicts` phrase, and
+  gets an `adds` badge. `object_artifact` and `craft_material` are exempt
+  by category — both already mean "the subject is rendered *as* the thing".
+  The rule is hot on modifiers with no escape at all. Rationale, and why a
+  declared field beat an exemption map, in `ARCHITECTURE.md`.
 - `user_styles.json` is optional — `data/user_data.py` validates and merges it.
 - Tests run without ComfyUI installed (comfy_stub provides a stand-in `comfy_api.latest.io`).
 

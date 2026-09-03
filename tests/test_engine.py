@@ -42,7 +42,8 @@ from stylebook_nodes.stylebook_sheet import (  # noqa: E402
 )
 from stylebook_nodes.stylebook_style import build_style_chain  # noqa: E402
 from tests.validate_data import (  # noqa: E402
-    _ENTITY_EXEMPT, _ENTITY_NOUNS, _NAMESAKE_EXEMPT, _SCENE_EXEMPT,
+    _ENTITY_EXEMPT, _ENTITY_EXEMPT_CATEGORIES, _ENTITY_NOUNS,
+    _NAMESAKE_EXEMPT, _SCENE_EXEMPT,
     _check_encoding, _check_entity_content, _check_negation,
     _check_person_styles, _check_undeclared_namesakes, validate,
 )
@@ -288,6 +289,78 @@ class EntityContentTests(unittest.TestCase):
 
     def test_no_noun_is_listed_twice(self):
         self.assertEqual(len(_ENTITY_NOUNS), len(set(_ENTITY_NOUNS)))
+
+
+class StyleEntityContentTests(unittest.TestCase):
+    """The styles half of the entity rule, hot since 0.13.0.
+
+    0.12.0 could only *report* on styles -- it printed a count of 39 and
+    offered no way to act on it -- because a style may legitimately be the
+    object. The escape is the declared `depicts` field rather than an
+    exemption map in this file, for three reasons the map cannot fix:
+    nothing checks that an exemption id still points at a live record, an
+    exemption is invisible to the user, and an agent that writes a costume
+    clause writes its own exemption sentence thirty seconds later.
+    """
+
+    def test_a_style_naming_an_entity_without_depicts_is_rejected(self):
+        bad = {"probe": {"label": "P", "category": "painting",
+                         "tags": "a velvet armchair beside a lamp",
+                         "prose": "P."}}
+        errors = _check_entity_content(bad, "style")
+        self.assertTrue(any("armchair" in e for e in errors), errors)
+        self.assertTrue(any("depicts" in e for e in errors), errors)
+
+    def test_declaring_depicts_clears_it(self):
+        ok = {"probe": {"label": "P", "category": "painting",
+                        "depicts": "an armchair and a lamp",
+                        "tags": "a velvet armchair beside a lamp",
+                        "prose": "P."}}
+        self.assertEqual(_check_entity_content(ok, "style"), [])
+
+    def test_a_blank_depicts_buys_no_exemption(self):
+        """The quiet failure this guards: a declared-but-empty field that
+        silences the rule and renders no badge, so the user is told
+        nothing and the check reports nothing."""
+        for blank in ("", "   "):
+            with self.subTest(repr(blank)):
+                bad = {"probe": {"label": "P", "category": "painting",
+                                 "depicts": blank,
+                                 "tags": "a velvet armchair",
+                                 "prose": "P."}}
+                self.assertTrue(_check_entity_content(bad, "style"))
+
+    def test_the_container_categories_are_exempt_by_definition(self):
+        """Both mean "the subject is rendered *as* the thing", so naming
+        the thing is the whole record. ARCHITECTURE.md already argues them
+        out of the `scene` rule on the same grounds, and the gallery's
+        category chip already tells the user."""
+        for category in _ENTITY_EXEMPT_CATEGORIES:
+            with self.subTest(category):
+                bad = {"probe": {"label": "P", "category": category,
+                                 "tags": "a hand-poured candle in a mould",
+                                 "prose": "P."}}
+                self.assertEqual(_check_entity_content(bad, "style"), [])
+
+    def test_a_modifier_may_not_declare_depicts(self):
+        """Nothing reads `depicts` off a modifier, so honouring one would
+        be a silent exemption. Same contract `scene` already carries."""
+        bad = {"probe": {"label": "P", "axis": "mood", "depicts": "a chair",
+                         "tags": "warm and calm", "prose": "P."}}
+        errors = _check_entity_content(bad, "modifier")
+        self.assertTrue(any("only a style may do" in e for e in errors), errors)
+
+    def test_the_shipped_styles_pass_the_hot_rule(self):
+        self.assertEqual(_check_entity_content(STYLES, "style"), [])
+
+    def test_every_exempt_category_is_a_real_category(self):
+        """The failure an exemption *map* has and this does not: an entry
+        that no longer points at anything. Categories are few and stable,
+        so pin them."""
+        from data.styles import CATEGORIES
+        for category in _ENTITY_EXEMPT_CATEGORIES:
+            with self.subTest(category):
+                self.assertIn(category, CATEGORIES)
 
 
 class EncodingGuardTests(unittest.TestCase):

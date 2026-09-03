@@ -815,10 +815,72 @@ matcher as the scene rule. It is **hot on modifiers** and exempts only the
 `_ENTITY_EXEMPT` map exists on the same written-reason contract as
 `_SCENE_EXEMPT`, and is currently empty.
 
-Over **styles** it runs in report mode only: `validate_data.py` prints the
-count and never fails on it. A style may legitimately *be* the object —
-Vinyl Record Sleeve, Furniture Design Render, Candle Making, Cameo Brooch
-— so a hot rule there needs an exemption map that nobody has written yet.
+Over **styles** it is hot too, since 0.13.0. The escape is the declared
+`depicts` field, described below — not an exemption map.
+
+### Why a declared field beat an exemption map
+
+0.12.0 ran this rule over styles in report mode only, printing a count and
+offering no way to act on it, because a style may legitimately *be* the
+object: Vinyl Record Sleeve, Furniture Design Render, Candle Making, Cameo
+Brooch. The obvious fix is an exemption map in `validate_data.py`. It was
+considered and rejected, for three reasons an agent-maintained repo makes
+sharp:
+
+- **Nothing checks an exemption still points at a live record.** The
+  existing `_SCENE_EXEMPT` contract only asserts that a *reason* exists.
+  Rename or drop the style and the entry rots into a lie that still
+  silences the rule.
+- **An exemption is invisible to the user.** The thing being exempted is
+  precisely the thing worth telling them: this style will put an object in
+  your frame. A private list turns a user-visible signal into a
+  maintainer's note.
+- **The gate is trivially self-granted.** Whoever writes a costume clause
+  writes the exemption sentence thirty seconds later, and CI goes green.
+
+Declaring on the record fixes all three at once. A `depicts` phrase is
+checked against the live record by definition — it *is* the record — it
+becomes a gallery badge, and it costs a sentence the user reads rather
+than one only a maintainer sees. It is the same move `scene` already made,
+for the same reason.
+
+Two categories are exempt **by definition** rather than by declaration:
+`object_artifact` and `craft_material`, in
+`_ENTITY_EXEMPT_CATEGORIES`. Both already mean "the subject is rendered
+*as* the thing", which is the same argument that keeps them out of the
+`scene` rule, and the gallery's category chip already tells the user. A
+second signal for a case that has one is surface area with no information.
+
+### `depicts`: what the style brings with it
+
+```python
+"depicts": "an elaborate transformation costume",
+```
+
+`scene` answers *where this style puts your subject*. `depicts` answers
+*what this style puts in the frame whatever your subject is*. Fashion
+Photography is not relocating you, but it is definitely dressing you;
+Magical Girl Transformation brings a costume to a picture of a mountain.
+The two are independent and a style may carry both — Vanitas declares an
+arranged tabletop still life **and** a skull, a candle and an hourglass.
+
+Like `scene`, it is **declaration only and never reaches the prompt**.
+Nothing under `stylebook_nodes/` reads it; only the validator, the
+generator and the two galleries do. So declaring it on an existing style
+does not move `tile_hash` and costs no render — only the styles whose text
+is actually reworded go stale. (It *does* ride along in the serialized
+`style_chain` JSON, because a Style node puts the whole record on the
+socket, exactly as `scene` and `namesake` already do. No consumer reads
+it.)
+
+The badge sits **top-left** on a gallery tile: `scene` holds bottom-left
+and `new` holds top-right, so no two can collide. `tests/test_scene.py`
+holds it to the same contract as `scene` — a non-blank lower-case noun
+phrase of at most twelve words, no trailing period — plus a share ceiling.
+The ceiling matters more here than it does for `scene`, because `depicts`
+is an escape from a *hot* rule: the cheapest way to silence that rule is
+to declare the field instead of fixing the record. If the count climbs,
+the badge has stopped carrying information.
 
 The noun list is narrow and hand-verified, like `_SCENE_NOUNS`, and the
 absences are as deliberate as the entries: `drape` is the fall of cloth
