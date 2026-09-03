@@ -5546,6 +5546,102 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["Women of Allah", "calligraphy portrait", "Iranian contemporary"],
         "descriptor": "stark black and white portraiture with Persian calligraphy inked densely across skin, a direct confrontational gaze, high contrast and stilled ceremonial composition",
     },
+    "armin_hofmann": {
+        "label": "Armin Hofmann",
+        "category": "illustration",
+        "aliases": ["Basel School", "Swiss poster", "black and white graphic"],
+        "descriptor": "stark black and white poster design built from pure contrast of form and counterform, bold gestural mark against precise geometry, dense figure-ground tension",
+    },
+    "wim_crouwel": {
+        "label": "Wim Crouwel",
+        "category": "illustration",
+        "aliases": ["Gridnik", "New Alphabet", "Dutch modernist"],
+        "descriptor": "rigorous grid-built layout with letterforms drawn on a visible modular matrix, squared terminals and even stroke weight, cool systematic restraint",
+    },
+    "april_greiman": {
+        "label": "April Greiman",
+        "category": "illustration",
+        "aliases": ["New Wave", "hybrid imagery", "early digital design"],
+        "descriptor": "layered new-wave composition mixing coarse bitmap texture with photographic fragments, tilted type on free axes, gradient washes of hot pink and cyan",
+    },
+    "alvin_lustig": {
+        "label": "Alvin Lustig",
+        "category": "illustration",
+        "aliases": ["New Directions covers", "modernist book jacket"],
+        "descriptor": "abstract symbolic book-cover design in flat spare shapes, hand-drawn marks standing for the whole subject, restrained mid-century palette on open ground",
+    },
+    "isaac_levitan": {
+        "label": "Isaac Levitan",
+        "category": "fine-art",
+        "aliases": ["Isaak Levitan", "mood landscape", "Russian landscape"],
+        "descriptor": "elegiac Russian landscape in soft tonal harmony, wide quiet horizon under a heavy sky, muted greens and silvery greys carrying an atmosphere of melancholy",
+    },
+    "valentin_serov": {
+        "label": "Valentin Serov",
+        "category": "fine-art",
+        "aliases": ["Serov", "Russian portraiture"],
+        "descriptor": "fluent naturalistic portraiture in fresh broken brushwork, luminous flesh against loosely scumbled ground, silvery daylight and easy unforced likeness",
+    },
+    "zinaida_serebriakova": {
+        "label": "Zinaida Serebriakova",
+        "category": "fine-art",
+        "aliases": ["Serebriakova", "Serebryakova", "neoclassical Russian"],
+        "descriptor": "warm neoclassical figure painting in clear rounded modelling, smooth luminous skin and simplified drapery folds, calm intimate domestic warmth",
+    },
+    "marie_laurencin": {
+        "label": "Marie Laurencin",
+        "category": "fine-art",
+        "aliases": ["Laurencin", "pastel cubism"],
+        "descriptor": "delicate decorative figure painting in a hushed pastel palette of rose, dove grey and pale blue, soft flattened forms with dark almond eyes",
+    },
+    "oswaldo_guayasamin": {
+        "label": "Oswaldo Guayasamin",
+        "category": "fine-art",
+        "aliases": ["Guayasamín", "Guayasamin", "La Edad de la Ira"],
+        "descriptor": "anguished expressionist figuration in angular elongated forms, enormous hands and hollowed faces, raw earth palette of ochre, bone and deep blue-black",
+    },
+    "joshua_reynolds": {
+        "label": "Joshua Reynolds",
+        "category": "fine-art",
+        "aliases": ["Sir Joshua Reynolds", "grand manner portrait"],
+        "descriptor": "grand-manner portraiture in warm golden glazes, the sitter posed against loose stormy landscape, rich shadow and softly modelled classical dignity",
+    },
+    "giovanni_segantini": {
+        "label": "Giovanni Segantini",
+        "category": "fine-art",
+        "aliases": ["Segantini", "Alpine divisionism"],
+        "descriptor": "Alpine divisionist painting laid in long separated threads of pure colour, brilliant thin high-altitude light, crystalline detail across vast cold distance",
+    },
+    "nicolas_de_stael": {
+        "label": "Nicolas de Stael",
+        "category": "fine-art",
+        "aliases": ["Nicolas de Staël", "de Stael", "abstract slabs"],
+        "descriptor": "thick palette-knife slabs of dense colour laid edge to edge, forms reduced to blocks that hover between abstraction and landscape, luminous chalky surface",
+    },
+    "beauford_delaney": {
+        "label": "Beauford Delaney",
+        "category": "fine-art",
+        "aliases": ["Delaney", "abstract expressionist yellow"],
+        "descriptor": "radiant abstraction built from swirling impasto yellows and hot golds, thick circular strokes packed edge to edge, light treated as the whole subject",
+    },
+    "sidney_sime": {
+        "label": "Sidney Sime",
+        "category": "illustration",
+        "aliases": ["Sime", "Lord Dunsany illustrations", "weird fantasy"],
+        "descriptor": "grotesque fantasy pen drawing in dense black masses and fine white scratch, impossible architecture and attenuated creatures, decorative silhouetted design",
+    },
+    "john_buscema": {
+        "label": "John Buscema",
+        "category": "comics",
+        "aliases": ["Big John", "Conan the Barbarian", "Silver Age Marvel"],
+        "descriptor": "heroic comic-book draughtsmanship in powerful classical anatomy and sweeping dynamic figure gesture, deep staging and confident weighted contours",
+    },
+    "jim_steranko": {
+        "label": "Jim Steranko",
+        "category": "comics",
+        "aliases": ["Steranko", "Nick Fury", "psychedelic comics"],
+        "descriptor": "cinematic pop-surreal comics design with op-art pattern and hard graphic shadow, montage panels and bold zip-a-tone colour, dramatic photographic angles",
+    },
 }
 
 # Merge user-supplied artists so they survive a git pull.

@@ -15,7 +15,7 @@
       "name": "style",
       "type": "combo",
       "value": "None",
-      "optionCount": 632
+      "optionCount": 654
     },
     {
       "name": "category",
@@ -112,7 +112,7 @@
       "name": "artist",
       "type": "combo",
       "value": "None",
-      "optionCount": 901
+      "optionCount": 917
     },
     {
       "name": "category",
@@ -222,6 +222,7 @@
         "Stage Spotlight",
         "Studio Softbox",
         "Underwater Caustics",
+        "UV Fluorescence",
         "Black & White",
         "Bleach Bypass",
         "Cool Blue",
@@ -229,11 +230,13 @@
         "Duotone",
         "Faded Film",
         "High Saturation",
+        "Inverted Negative",
         "Kodachrome",
         "Monochrome Green",
         "Muted Earth",
         "Orthochromatic",
         "Pastel Wash",
+        "Portra Soft Negative",
         "Selective Colour",
         "Sepia",
         "Split Tone",

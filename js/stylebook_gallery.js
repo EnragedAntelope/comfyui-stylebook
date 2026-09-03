@@ -126,7 +126,11 @@ let bulkPromise = null;
 function loadBulkData() {
   if (bulk) return Promise.resolve(bulk);
   if (!bulkPromise) {
-    bulkPromise = fetch(assetURL("./" + BULK_DATA_FILE))
+    // `no-cache` revalidates rather than refetching: the offsets and the
+    // atlas revs live in this payload, so a stale cached copy of it would
+    // slice a *fresh* atlas at old coordinates -- the reverse of the bug
+    // ?v= fixes. A 304 costs ~0 bytes and the 300 KB stays cached.
+    bulkPromise = fetch(assetURL("./" + BULK_DATA_FILE), { cache: "no-cache" })
       .then((response) => {
         if (!response.ok) throw new Error("HTTP " + response.status);
         return response.json();
@@ -378,7 +382,13 @@ function previewFor(category, styleId) {
   if (!entry || !entry.tiles) return null;
   const cell = entry.tiles[styleId];
   if (!cell) return null;
-  return { atlas: entry.atlas, cols: entry.cols, rows: entry.rows, cell: cell };
+  return {
+    atlas: entry.atlas,
+    rev: entry.rev || "",
+    cols: entry.cols,
+    rows: entry.rows,
+    cell: cell,
+  };
 }
 
 /**
@@ -396,8 +406,14 @@ function applySprite(element, preview) {
   if (!cols || !rows) return false;
   const x = cols > 1 ? (cell[0] / (cols - 1)) * 100 : 0;
   const y = rows > 1 ? (cell[1] / (rows - 1)) * 100 : 0;
-  element.style.backgroundImage =
-    "url('" + assetURL("./previews/" + preview.atlas) + "')";
+  // The atlas filename is stable, so a repack that changes a category's
+  // grid would otherwise be composited over the browser's cached copy of
+  // the old sheet -- wrong tiles, not missing ones. `rev` is the atlas
+  // content hash and changes exactly when the pixels do. An older
+  // index.json carries no rev; the bare URL is the correct fallback.
+  const src = assetURL("./previews/" + preview.atlas) +
+    (preview.rev ? "?v=" + preview.rev : "");
+  element.style.backgroundImage = "url('" + src + "')";
   element.style.backgroundRepeat = "no-repeat";
   element.style.backgroundSize = cols * 100 + "% " + rows * 100 + "%";
   element.style.backgroundPosition = x + "% " + y + "%";
@@ -459,6 +475,7 @@ const styleItems = memoiseItems(function buildStyleItems() {
         group: category,
         aliases: (data.aliases && data.aliases[i]) || [],
         scene: (data.scenes && data.scenes[i]) || "",
+        depicts: (data.depicts && data.depicts[i]) || "",
         added: (data.added && data.added[i]) || "",
         namesake: (data.namesakes && data.namesakes[i]) || "",
       }));
@@ -475,6 +492,7 @@ const styleItems = memoiseItems(function buildStyleItems() {
       group: entry.category,
       aliases: [],
       scene: entry.scene || "",
+      depicts: entry.depicts || "",
       // A custom style has no release: it shipped with whoever wrote it.
       // Leaving it blank keeps it out of the "New" tab, which is about
       // what *this pack* added, and sorts it last under newest-first.
@@ -1099,6 +1117,10 @@ class StylebookPicker {
     // Said in full in the tooltip, because the badge itself only has room
     // for one word and "scene" alone does not explain what will happen.
     if (item.scene) titleLines.push("Places your subject in " + item.scene + ".");
+    // `scene` says where your subject ends up; `depicts` says what turns
+    // up beside it whatever the subject is. Both are declarations on the
+    // record, and both are worth knowing before you spend a render.
+    if (item.depicts) titleLines.push("Adds " + item.depicts + " to the frame.");
     // The style gallery promises an artist by naming one on the tile. Say
     // who, so the connection is visible here rather than only to whoever
     // thinks to search the Artist reference for the same name.
@@ -1131,6 +1153,17 @@ class StylebookPicker {
       const badge = document.createElement("div");
       badge.className = "stylebook-tile-scene";
       badge.textContent = "scene";
+      badge.setAttribute("aria-hidden", "true");
+      art.appendChild(badge);
+    }
+
+    // Top-left, the one corner still free: `scene` holds bottom-left and
+    // `new` holds top-right. Absolutely positioned for the same reason as
+    // the scene badge -- a new line inside a tile clips the label.
+    if (item.depicts) {
+      const badge = document.createElement("div");
+      badge.className = "stylebook-tile-adds";
+      badge.textContent = "adds";
       badge.setAttribute("aria-hidden", "true");
       art.appendChild(badge);
     }

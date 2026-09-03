@@ -326,6 +326,28 @@
     pointer-events: none;
 }
 
+/* Marks a style that puts a specific object in the frame whatever your
+ * subject is -- `scene` says where you end up, `adds` says what turns up
+ * beside you. Top-left is the one free corner: `scene` holds bottom-left
+ * and `new` holds top-right, so no two badges can collide. Same
+ * absolute-overlay reasoning and the same self-contained colours as the
+ * scene badge, for the same reason: it sits on an arbitrary photograph. */
+.stylebook-tile-adds {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(12, 12, 12, 0.72);
+    color: #f2f2f2;
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
 /* Marks an entry this release added. Same absolute-overlay reasoning as
  * the scene badge above, opposite corner so the two never collide, and a
  * colour of its own so it reads on any thumbnail. */

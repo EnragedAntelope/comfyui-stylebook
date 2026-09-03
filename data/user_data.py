@@ -201,7 +201,7 @@ def apply_user_styles(
             existing_labels=_existing_labels(styles, exclude_id=style_id),
             required_fields=("label", "category"),
             string_fields=("label", "tags", "prose", "negative", "preview",
-                           "scene"),
+                           "scene", "depicts"),
             list_fields=("aliases", "blocks"),
             axis_list_field="blocks",
             category_field="category",

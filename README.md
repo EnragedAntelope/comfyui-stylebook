@@ -1,6 +1,6 @@
 # Stylebook
 
-**600+ visual styles for ComfyUI, every one with a rendered preview you can
+**650+ visual styles for ComfyUI, every one with a rendered preview you can
 browse before you commit.**
 
 Stop guessing whether "wet plate collodion" or "risograph" will do what you
@@ -183,15 +183,24 @@ Searching `ink` turns up dozens of them.
 
 ![The artist picker](docs/images/artist-picker.png)
 
-**A few styles carry a `scene` badge.** Almost every style only changes how
-your subject is drawn. A handful also decide *where* it is, because that is
-what they are: Liminal Space is a transitional place emptied of people, and
-Vanitas is an arrangement of skull, candle and hourglass. Take the setting
-away and there is no style left. Those tiles are badged in the gallery and
-the tooltip spells it out — "Places your subject in a deserted transitional
-interior" — so you know before you render, rather than wondering why your
-portrait moved into a corridor. Everything unbadged leaves your subject
-where you put it.
+**A few styles carry a `scene` or an `adds` badge.** Almost every style only
+changes how your subject is drawn. A handful do more, because that is what
+they are, and the gallery says which before you spend a render.
+
+A **scene** badge means the style decides *where* your subject is: Liminal
+Space is a transitional place emptied of people, and the tooltip spells it
+out — "Places your subject in a deserted transitional interior" — so you
+know rather than wondering why your portrait moved into a corridor.
+
+An **adds** badge means the style brings a specific object into the frame
+whatever subject you give it: Fashion Photography is not relocating you, but
+it is definitely dressing you, and Magical Girl Transformation brings a
+costume to a picture of a mountain. The tooltip names it — "Adds an
+elaborate transformation costume to the frame".
+
+The two are independent, and a style can carry both: Vanitas declares an
+arranged tabletop still life *and* a skull, a guttering candle and an
+hourglass. Everything unbadged leaves your subject alone.
 
 **Random keeps its meaning across updates. Cycle does not, by design.**
 

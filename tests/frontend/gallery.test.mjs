@@ -350,12 +350,44 @@ const tileLabels = () =>
   Array.from(document.querySelectorAll(".stylebook-tile-label > span"))
     .map((el) => el.textContent);
 
-const clickTab = (overlay, name) => {
-  const tab = Array.from(overlay.querySelectorAll(".stylebook-tab"))
+const findTab = (overlay, name) =>
+  Array.from(overlay.querySelectorAll(".stylebook-tab"))
     .find((t) => t.textContent === name);
+
+const clickTab = (overlay, name) => {
+  const tab = findTab(overlay, name);
   assert.ok(tab, `no "${name}" tab`);
   tab.click();
 };
+
+/*
+ * What data/versions.py says this release added to the style gallery.
+ *
+ * The three New-tab tests below used to assert `newCount > 0`, which
+ * silently assumed every release ships at least one *style*. An
+ * artists-only release made all three go red while the product was
+ * behaving correctly -- both the picker and the public gallery already
+ * hide the tab when nothing is new. A test that fails on correct
+ * behaviour trains people to edit the test.
+ *
+ * So each test now branches on the data: with new styles, assert the tab
+ * holds exactly them; with none, assert the tab is absent. Both branches
+ * are real behaviour, and neither depends on what this release happened
+ * to contain.
+ */
+async function newStyleLabels() {
+  const { CURRENT_VERSION } = await import("../../js/stylebook_data.js");
+  const { STYLE_DATA_BY_CATEGORY } = JSON.parse(
+    readFileSync(new URL("../../js/stylebook_data.json", import.meta.url), "utf8")
+  );
+  const labels = new Set();
+  for (const data of Object.values(STYLE_DATA_BY_CATEGORY)) {
+    data.labels.forEach((label, i) => {
+      if (data.added[i] === CURRENT_VERSION) labels.add(label);
+    });
+  }
+  return { CURRENT_VERSION, labels };
+}
 
 test("the All tab lists every style alphabetically, not grouped by category", async () => {
   await openStyleGallery();
@@ -471,22 +503,18 @@ test("the artist reference gets no category chip -- its rows already carry a des
 
 // --- 15. what shipped in this release --------------------------------------
 
-test("the style gallery offers a New tab, and it holds only this release's styles", async () => {
+test("the New tab holds exactly this release's styles, or is absent when there are none", async () => {
   const overlay = await openStyleGallery();
-  const { CURRENT_VERSION } = await import("../../js/stylebook_data.js");
-  const { STYLE_DATA_BY_CATEGORY } = JSON.parse(
-    readFileSync(new URL("../../js/stylebook_data.json", import.meta.url), "utf8")
-  );
+  const { CURRENT_VERSION, labels: expected } = await newStyleLabels();
+  const name = "New in " + CURRENT_VERSION;
 
-  const expected = new Set();
-  for (const data of Object.values(STYLE_DATA_BY_CATEGORY)) {
-    data.labels.forEach((label, i) => {
-      if (data.added[i] === CURRENT_VERSION) expected.add(label);
-    });
+  if (expected.size === 0) {
+    assert.equal(findTab(overlay, name), undefined,
+      "a release that adds no styles must not offer an empty New tab");
+    return;
   }
-  assert.ok(expected.size > 0, "this release added no styles; retune the fixture");
 
-  clickTab(overlay, "New in " + CURRENT_VERSION);
+  clickTab(overlay, name);
   const shown = new Set(tileLabels());
   assert.deepEqual(
     Array.from(shown).sort(),
@@ -497,7 +525,15 @@ test("the style gallery offers a New tab, and it holds only this release's style
 
 test("every tile in the New tab carries the ribbon, and older tiles do not", async () => {
   const overlay = await openStyleGallery();
-  const { CURRENT_VERSION } = await import("../../js/stylebook_data.js");
+  const { CURRENT_VERSION, labels: expected } = await newStyleLabels();
+
+  if (expected.size === 0) {
+    assert.equal(findTab(overlay, "New in " + CURRENT_VERSION), undefined,
+      "no new styles, so no New tab and nothing to ribbon");
+    assert.equal(document.querySelectorAll(".stylebook-tile-new").length, 0,
+      "no tile may claim to be new when the release added no styles");
+    return;
+  }
 
   clickTab(overlay, "New in " + CURRENT_VERSION);
   const tiles = document.querySelectorAll(".stylebook-tile");
@@ -520,7 +556,7 @@ test("every tile in the New tab carries the ribbon, and older tiles do not", asy
 
 test("newest-first sorting puts this release at the top and stays alphabetical inside a release", async () => {
   const overlay = await openStyleGallery();
-  const { CURRENT_VERSION } = await import("../../js/stylebook_data.js");
+  const { labels: expected } = await newStyleLabels();
 
   const sort = overlay.querySelector(".stylebook-sort");
   assert.ok(sort, "no sort control");
@@ -529,7 +565,15 @@ test("newest-first sorting puts this release at the top and stays alphabetical i
 
   const tiles = Array.from(document.querySelectorAll(".stylebook-tile"));
   const newCount = document.querySelectorAll(".stylebook-tile-new").length;
-  assert.ok(newCount > 0);
+  assert.equal(newCount, expected.size,
+    "the ribbon count must match what data/versions.py says this release added");
+  if (newCount === 0) {
+    // Nothing to group at the top, and the sort must still not crash or
+    // reorder anything. Restore the module-level preference and stop.
+    sort.value = "az";
+    sort.dispatchEvent(new window.Event("change", { bubbles: true }));
+    return;
+  }
   // Every ribboned tile comes before every unribboned one.
   const firstOld = tiles.findIndex((t) => !t.querySelector(".stylebook-tile-new"));
   assert.equal(firstOld, newCount, "newest-first must group this release at the top");
