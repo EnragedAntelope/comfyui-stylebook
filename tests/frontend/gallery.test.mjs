@@ -432,6 +432,112 @@ test("the modifier reference stays in data order, so the era axis reads chronolo
   );
 });
 
+// --- 10b. the modifier picker's layout is per axis, not per picker --------
+
+/*
+ * Lighting, colour grade and finish ship rendered tiles; era, period dress
+ * and mood are described in words. One picker, two layouts, chosen by the
+ * active tab -- which is why the grid's class moved out of the constructor
+ * and into render().
+ */
+
+async function openModifierPicker() {
+  const node = makeNode("StylebookModifier");
+  await getExtension().nodeCreated(node);
+  widgetByName(node, "Open modifier reference").callback();
+  await settle();
+  return document.querySelector(".stylebook-overlay");
+}
+
+function tabNamed(overlay, name) {
+  return Array.from(overlay.querySelectorAll(".stylebook-tab"))
+    .find((t) => t.textContent === name);
+}
+
+test("a visual axis draws tiles and a described axis draws rows, in one picker", async () => {
+  const overlay = await openModifierPicker();
+  const grid = overlay.querySelector('[role="listbox"]');
+
+  // "All" spans every axis, so it keeps the picker's own list layout.
+  assert.ok(grid.classList.contains("stylebook-list"), "All should be a list");
+  assert.equal(overlay.querySelectorAll(".stylebook-tile").length, 0);
+
+  const lighting = tabNamed(overlay, "Lighting");
+  assert.ok(lighting, "the Lighting axis tab should exist");
+  lighting.click();
+  await settle();
+  assert.ok(grid.classList.contains("stylebook-grid"), "Lighting should be a grid");
+  assert.ok(!grid.classList.contains("stylebook-list"));
+  assert.ok(overlay.querySelectorAll(".stylebook-tile").length > 5,
+    "the lighting axis should render tiles");
+  assert.equal(overlay.querySelectorAll(".stylebook-row").length, 0);
+
+  const era = tabNamed(overlay, "Era");
+  assert.ok(era, "the Era axis tab should exist");
+  era.click();
+  await settle();
+  assert.ok(grid.classList.contains("stylebook-list"), "Era should stay a list");
+  assert.ok(overlay.querySelectorAll(".stylebook-row").length > 5,
+    "the era axis should keep its descriptor rows");
+  assert.equal(overlay.querySelectorAll(".stylebook-tile").length, 0);
+});
+
+test("a modifier tile keeps its descriptor in the tooltip, where a row shows it inline", async () => {
+  // buildTile dropped item.detail entirely. For a style that is fine --
+  // styles have none. For a modifier the descriptor IS the information.
+  const overlay = await openModifierPicker();
+  tabNamed(overlay, "Lighting").click();
+  await settle();
+  const tile = overlay.querySelector(".stylebook-tile");
+  const lines = tile.title.split("\n");
+  assert.ok(lines.length > 1, "a modifier tile's tooltip should carry its descriptor");
+  assert.ok(lines[1].length > 20, "the descriptor line should be the prose, not a label");
+});
+
+test("arrow keys move by one on a list axis and by a row on a tiled axis", async () => {
+  const overlay = await openModifierPicker();
+  const grid = overlay.querySelector('[role="listbox"]');
+
+  tabNamed(overlay, "Era").click();
+  await settle();
+  const rowFirst = grid.children[0];
+  overlay.dispatchEvent(new window.KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
+  assert.ok(!rowFirst.classList.contains("focused"),
+    "ArrowDown should have moved focus off the first row");
+  assert.ok(grid.children[1].classList.contains("focused"),
+    "on a list, ArrowDown moves by exactly one");
+
+  // On a tile grid the same key moves by a whole row, which is what
+  // columnCount() is for -- and it read this.config.layout before.
+  tabNamed(overlay, "Lighting").click();
+  await settle();
+  overlay.dispatchEvent(new window.KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+  assert.ok(grid.children[1].classList.contains("focused"),
+    "ArrowRight should step one tile");
+});
+
+test("the footer hint appears only on the tiled axes", async () => {
+  const overlay = await openModifierPicker();
+  const hint = () => overlay.querySelector(".stylebook-footer-hint");
+  assert.equal(hint(), null, "no hint on All");
+
+  tabNamed(overlay, "Finish").click();
+  await settle();
+  assert.ok(hint(), "the tiled axes explain what the tile is a deviation from");
+  assert.match(hint().textContent, /base render/);
+
+  tabNamed(overlay, "Mood").click();
+  await settle();
+  assert.equal(hint(), null, "no hint on a described axis");
+});
+
+test("the style gallery is unaffected: still one grid, still previews", async () => {
+  const overlay = await openStyleGallery();
+  const grid = overlay.querySelector('[role="listbox"]');
+  assert.ok(grid.classList.contains("stylebook-grid"));
+  assert.ok(overlay.querySelectorAll(".stylebook-tile").length > 100);
+});
+
 // --- 11. the category chip appears only where the tab strip does not -------
 
 test("the category chip shows in All, in search results, and not in a category tab", async () => {

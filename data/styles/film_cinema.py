@@ -675,6 +675,17 @@ _FILM_CINEMA_STYLE_DATA: dict[str, dict] = {
         "preview": "film_cinema#72",
         "blocks": [],
     },
+    "silhouette_cutout_animation": {
+        "id": "silhouette_cutout_animation",
+        "label": "Silhouette Cutout Animation",
+        "category": "film_cinema",
+        "aliases": ["shadow puppet animation", "cut paper silhouette film", "black paper animation"],
+        "tags": "jointed cut paper animation, every form scissored flat from black card with detail pierced through it as fine filigree, hinged at the joints so the pose reads in outline alone, laid on glass and lit from beneath so the ground glows in a smooth graded wash, amber and deep blue behind flat pure black",
+        "prose": "Animated as jointed cut paper: every form scissored flat from black card with its detail pierced through it as fine filigree, hinged at the joints so the pose reads in outline alone, laid on glass and lit from beneath so the ground behind glows in a smooth graded wash of amber and deep blue.",
+        "negative": "modelled shading, full colour figures, photographic depth, painted detail",
+        "preview": "film_cinema#73",
+        "blocks": [],
+    },
 }
 
 FILM_CINEMA_STYLES = _FILM_CINEMA_STYLE_DATA

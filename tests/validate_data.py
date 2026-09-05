@@ -250,6 +250,7 @@ def validate() -> list[str]:
     errors.extend(_check_entity_content(MODIFIERS))
     errors.extend(_check_entity_content(STYLES, "style"))
     errors.extend(_check_depicts_field(STYLES))
+    errors.extend(_check_modifier_alias_content(MODIFIERS))
 
     # --- a style named after somebody must be findable as an artist ---
     errors.extend(_check_person_styles(STYLES, ARTISTS))
@@ -414,6 +415,21 @@ _SCENE_NOUNS = (
     # flat tone" - which is correct rendering vocabulary. A gate that is
     # always right beats one a maintainer learns to skim past.
     "garden", "parlour", "parlor", "room",
+    # Water, added in 0.14.0. The modifier preview tiles were the first
+    # time anybody could see that "lit through water" on the *lighting*
+    # axis floods the room and shrinks the subject to a distant figure.
+    # A place-in-a-liquid is a place. Counted across the whole corpus
+    # before being added: every term here was clean except "underwater"
+    # (Underwater Photography, which now declares `scene`, and the
+    # caustics modifier, reworded in the same commit).
+    # NOT added, and each for a measured reason: "sky" (25 records, and
+    # "soft box sky" is ordinary lighting vocabulary), "window" (12, and
+    # `_PRIMITIVE_VOCAB` lists "window light" as a lighting primitive),
+    # "stage" (7, mostly "staged"), "river" (Hudson River School), and
+    # bare "pool" -- Stage Spotlight ships "hard pool of light".
+    "underwater", "under water", "submerged", "submersion", "immersed",
+    "swimming pool", "aquarium", "seabed", "ocean floor", "lagoon",
+    "through water",
 )
 
 #: Styles that name a term above for a reason unrelated to scene content.
@@ -607,6 +623,32 @@ def _check_depicts_field(coll: dict[str, dict]) -> list[str]:
     return errors
 
 
+def depicts_concentration(coll: dict[str, dict]) -> str:
+    """One informational line: which category holds most of the `depicts`
+    declarations, and what share of them.
+
+    Never an error. `depicts` is an escape from a rule that is *hot* on
+    styles, so the cheapest way to silence the rule is to declare the
+    field instead of fixing the record -- and a single category taking
+    most of the declarations is the shape a dumping ground takes long
+    before the overall share ceiling in test_scene.DepictsFieldTests is
+    anywhere near hit. Failing on it would block legitimate work
+    (`anime_manga` costume styles genuinely do add costume); printing it
+    keeps the signal visible without a memory hand-off.
+    """
+    declared = [rec.get("category", "?") for rec in coll.values()
+                if rec.get("depicts")]
+    if not declared:
+        return "  Styles declaring `depicts`: 0"
+    counts: dict[str, int] = {}
+    for category in declared:
+        counts[category] = counts.get(category, 0) + 1
+    top, count = max(sorted(counts.items()), key=lambda kv: kv[1])
+    share = round(100 * count / len(declared))
+    return (f"  Styles declaring `depicts`: {len(declared)} "
+            f"(top category {top}: {count}, {share}% of all declarations)")
+
+
 
 #: Style labels that share a word with an artist label without being named
 #: after that person, mapped to the reason. Same contract as
@@ -615,6 +657,8 @@ def _check_depicts_field(coll: dict[str, dict]) -> list[str]:
 _NAMESAKE_EXEMPT: dict[str, str] = {
     "cctv_still": "'still' is a frame grab, not the painter Clyfford Still",
     "still_life_drawing": "'still' as in still life, not Clyfford Still",
+    "model_kit_sprue": "'model' as in a scale model kit, not the "
+                       "photographer Lisette Model",
 }
 
 
@@ -779,6 +823,47 @@ def _check_scene_content(coll: dict[str, dict], kind: str = "style") -> list[str
     return errors
 
 
+def _check_modifier_alias_content(coll: dict[str, dict]) -> list[str]:
+    """A modifier's aliases must not advertise a place or an object.
+
+    Aliases never reach the encoder -- they are search terms -- so this is
+    not about what gets rendered. It is about what the record *is*. When
+    0.12.0 cut "rain-slick streets" out of Neon Noir's tags it left the
+    alias "neon street" behind, and when the same pass cleaned the era
+    records it left "submerged" and "pool light" on Underwater Caustics.
+    Both records went on quietly delivering the scene anyway, and the
+    surviving alias was the only visible evidence. Nobody looked, because
+    nothing checked.
+
+    So: an alias naming a scene or an entity means either the alias is
+    wrong or the record is. Both need a human. Hot on modifiers only --
+    a style may legitimately be named for a place, and declares `scene`.
+    """
+    errors: list[str] = []
+    for mid, rec in coll.items():
+        aliases = rec.get("aliases", []) or []
+        blob = " | ".join(str(a) for a in aliases).lower()
+        if not blob:
+            continue
+        for label, nouns in (("scene element", _SCENE_NOUNS),
+                             ("entity", _ENTITY_NOUNS)):
+            if rec.get("axis") in _ENTITY_EXEMPT_AXES and label == "entity":
+                continue
+            for noun in nouns:
+                if re.search(rf"\b{re.escape(noun)}s?\b", blob):
+                    errors.append(
+                        f"modifier '{mid}': the alias list names the "
+                        f"{label} '{noun}'. A modifier tilts one axis of "
+                        f"the rendering; an alias promising a place or an "
+                        f"object means either the alias is wrong or the "
+                        f"record is. Aliases are search terms and never "
+                        f"reach the prompt, so fixing the alias alone is "
+                        f"only half an answer -- read the prose too."
+                    )
+                    break
+    return errors
+
+
 def _check_scene_field(coll: dict[str, dict]) -> list[str]:
     """`scene` must be a short affirmative phrase when present."""
     errors: list[str] = []
@@ -872,8 +957,7 @@ def main() -> int:
     # declaration, because a number climbing towards the share ceiling in
     # test_scene.DepictsFieldTests means the field is becoming a dumping
     # ground and the badge is losing its meaning.
-    declared = [sid for sid, rec in STYLES.items() if rec.get("depicts")]
-    print(f"  Styles declaring `depicts`: {len(declared)}")
+    print(depicts_concentration(STYLES))
     return 0
 
 

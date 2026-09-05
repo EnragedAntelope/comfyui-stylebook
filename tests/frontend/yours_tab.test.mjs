@@ -149,3 +149,43 @@ test("a custom style is filed alphabetically among the built-ins, not appended a
   const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
   assert.deepEqual(labels, labels.slice().sort((a, b) => collator.compare(a, b) || (a < b ? -1 : a > b ? 1 : 0)));
 });
+
+test("a custom style declaring scene/depicts/aliases badges and searches like a built-in", async () => {
+  // These three fields validated and merged since 0.8.0/0.13.0, and the
+  // payload dropped all three -- so a custom style could declare `depicts`
+  // and never get the `adds` badge, and was unfindable by its own aliases.
+  stubFetch(jsonResponse({
+    styles: [{
+      id: "badged_custom",
+      label: "Badged Custom",
+      category: "photography",
+      detail: "a hand-written look.",
+      scene: "an empty swimming pool",
+      depicts: "a brass telescope",
+      aliases: ["zzzuniquealias"],
+    }],
+    artists: [],
+    modifiers: [],
+  }));
+  await app.__getExtension("stylebook.gallery").setup();
+
+  const overlay = await openStylePicker();
+  const tile = Array.from(overlay.querySelectorAll(".stylebook-tile"))
+    .find((t) => t.textContent.includes("Badged Custom"));
+  assert.ok(tile, "the custom style should be in the All tab");
+  assert.ok(tile.querySelector(".stylebook-tile-adds"), "depicts should render the adds badge");
+  assert.ok(tile.querySelector(".stylebook-tile-scene"), "scene should render the scene badge");
+  assert.match(tile.title, /Adds a brass telescope to the frame\./);
+  assert.match(tile.title, /also: zzzuniquealias/);
+  // namesake is deliberately never sent for a custom style: it promises a
+  // matching artist record that nothing can enforce for a user file.
+  assert.ok(!/Named for/.test(tile.title), "a custom style must not claim a namesake");
+
+  const search = overlay.querySelector(".stylebook-search");
+  search.value = "zzzuniquealias";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  await settle(150);
+  const results = Array.from(document.querySelectorAll(".stylebook-tile"));
+  assert.equal(results.length, 1, "an alias-only search should find the custom style");
+  assert.match(results[0].textContent, /Badged Custom/);
+});

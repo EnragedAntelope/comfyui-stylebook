@@ -1,5 +1,238 @@
 {
   "model": "Chroma\\Chroma1-HD.safetensors",
+  "modifier_tiles": {
+    "_baseline": {
+      "hash": "a9cb5fb0ec80d4fc"
+    },
+    "backlit_silhouette": {
+      "hash": "6adc375a342a717b"
+    },
+    "barrel_distortion": {
+      "hash": "244b2b33496f4329"
+    },
+    "bioluminescent": {
+      "hash": "1fee077c284fe295"
+    },
+    "black_and_white": {
+      "hash": "ea9ca2bae9f7c0eb"
+    },
+    "bleach_bypass": {
+      "hash": "5064a47931dcdb71"
+    },
+    "bloom_glow": {
+      "hash": "82835605250168f3"
+    },
+    "blown_highlights": {
+      "hash": "b43c415804a90979"
+    },
+    "blue_hour": {
+      "hash": "a628bf9f6c9ecb95"
+    },
+    "butterfly_lighting": {
+      "hash": "fbe17b0398a0ea2e"
+    },
+    "candlelight": {
+      "hash": "ef51caac532e4bef"
+    },
+    "chiaroscuro": {
+      "hash": "06c1868c9789de62"
+    },
+    "chromatic_aberration": {
+      "hash": "f731ea310b021223"
+    },
+    "cool_blue": {
+      "hash": "2eb095464ccbc121"
+    },
+    "cross_process_grade": {
+      "hash": "e5d351327af326a1"
+    },
+    "crt_phosphor": {
+      "hash": "1a6dfc4a70fcd835"
+    },
+    "crushed_blacks": {
+      "hash": "6b2ec1f8b80e668e"
+    },
+    "dappled_shade": {
+      "hash": "24d0ba2c8dc90fbb"
+    },
+    "direct_flash": {
+      "hash": "103a2218b262a2ce"
+    },
+    "distressed_damage": {
+      "hash": "33ea3801cee81b08"
+    },
+    "dithered": {
+      "hash": "36f5b2a1b4eb3015"
+    },
+    "duotone": {
+      "hash": "01a7c7bccf862a66"
+    },
+    "faded_film": {
+      "hash": "8779230aaa6432f7"
+    },
+    "film_grain": {
+      "hash": "c6d7ab8459b25b3d"
+    },
+    "firelight": {
+      "hash": "1c0a270f57f91985"
+    },
+    "fluorescent_overhead": {
+      "hash": "7ad6242eb738396d"
+    },
+    "glitch_artifact": {
+      "hash": "02df6a8b02cd9d4d"
+    },
+    "glossy_lacquer": {
+      "hash": "c71dd5a300093aee"
+    },
+    "gobo_projection": {
+      "hash": "4b1a69df84d3cd8a"
+    },
+    "god_rays": {
+      "hash": "2269b16e1dcc8ac2"
+    },
+    "golden_hour": {
+      "hash": "f1f4a5c9057388ca"
+    },
+    "halation": {
+      "hash": "36e1275f20464616"
+    },
+    "halftone_dots": {
+      "hash": "915fd0f1d387e146"
+    },
+    "hard_noon_sun": {
+      "hash": "cf5b55bfe24d5c4b"
+    },
+    "high_key": {
+      "hash": "4e6df742f15dc278"
+    },
+    "high_saturation": {
+      "hash": "911c2e2b1521afc1"
+    },
+    "inverted_negative": {
+      "hash": "66ee49548adf9f0b"
+    },
+    "jpeg_artifacts": {
+      "hash": "4c5b829841f1cc76"
+    },
+    "kodachrome": {
+      "hash": "c8e70b1adfa77135"
+    },
+    "lens_flare": {
+      "hash": "fed0edccc25f32bf"
+    },
+    "matte_flat": {
+      "hash": "053274f6e2df85b6"
+    },
+    "moire": {
+      "hash": "ed2b82a80d8c3218"
+    },
+    "monochrome_green": {
+      "hash": "97f3155ee8778c51"
+    },
+    "moonlight": {
+      "hash": "e5f41843392501ab"
+    },
+    "motion_blur": {
+      "hash": "027c2d688583d6b1"
+    },
+    "muted_earth": {
+      "hash": "84a07c284571b207"
+    },
+    "neon_noir": {
+      "hash": "eeb4c3c487646760"
+    },
+    "orthochromatic": {
+      "hash": "fce10e5bf5ad47d8"
+    },
+    "overcast_soft": {
+      "hash": "ee1e45d50143c099"
+    },
+    "oversharpened": {
+      "hash": "7b5e860cac4834e3"
+    },
+    "paper_texture": {
+      "hash": "518452ad09c8af79"
+    },
+    "pastel_wash": {
+      "hash": "42fb5e6b851b8128"
+    },
+    "portra_soft_negative": {
+      "hash": "8a1372f61879cb1e"
+    },
+    "posterized": {
+      "hash": "e55fd8637974ea92"
+    },
+    "practical_glow": {
+      "hash": "fe6d87d155e833fc"
+    },
+    "rembrandt_lighting": {
+      "hash": "5402e50efa5be5a8"
+    },
+    "rim_lighting": {
+      "hash": "47422965af6cefce"
+    },
+    "rolling_shutter_skew": {
+      "hash": "bc44da8db7f30096"
+    },
+    "scan_lines": {
+      "hash": "069b2d950cef9db1"
+    },
+    "selective_colour": {
+      "hash": "908fec9a3324990b"
+    },
+    "sensor_noise": {
+      "hash": "4ee888ec7340cc7f"
+    },
+    "sepia": {
+      "hash": "d3e43ef0af5ae1bd"
+    },
+    "shallow_depth_of_field": {
+      "hash": "531866564896b662"
+    },
+    "sodium_vapour": {
+      "hash": "4be92c69baaf7481"
+    },
+    "soft_diffusion": {
+      "hash": "8defd9d966c4b650"
+    },
+    "split_lighting": {
+      "hash": "3c52a62e3e4e8164"
+    },
+    "split_tone": {
+      "hash": "64c6a21e1d47b293"
+    },
+    "stage_spotlight": {
+      "hash": "65a931ce80e1a261"
+    },
+    "studio_softbox": {
+      "hash": "7849bdbf7e1934c9"
+    },
+    "swirl_bokeh": {
+      "hash": "bf5b10763fdeea0b"
+    },
+    "teal_orange": {
+      "hash": "4e41628240354bfd"
+    },
+    "underwater_caustics": {
+      "hash": "2ace84d0f40d2539"
+    },
+    "uv_fluorescence": {
+      "hash": "4ed9fe16ec16a6db"
+    },
+    "velvia": {
+      "hash": "369b814898ab53c4"
+    },
+    "vhs_artifacts": {
+      "hash": "a098823f38ebe9ca"
+    },
+    "vignette": {
+      "hash": "cb617b53553f435b"
+    },
+    "warm_amber": {
+      "hash": "b368c74e7147f09d"
+    }
+  },
   "tiles": {
     "16bit_pixel": {
       "hash": "3f82615ca5f55956"
@@ -214,6 +447,9 @@
     "broadside": {
       "hash": "947e89c4b0037047"
     },
+    "bronze_age_comics": {
+      "hash": "0874a550340b4cc2"
+    },
     "bullet_time": {
       "hash": "75e5df2f1f845a9d"
     },
@@ -225,6 +461,9 @@
     },
     "c_print": {
       "hash": "522ab03bdfc712e5"
+    },
+    "cabinet_card": {
+      "hash": "a792cbd739c93bc7"
     },
     "calligraphy_hand_lettering": {
       "hash": "a20812dcfafd8fe0"
@@ -249,6 +488,9 @@
     },
     "caricature": {
       "hash": "6286bcc608e57f23"
+    },
+    "carved_jade": {
+      "hash": "87ee1829e1309a34"
     },
     "casein_painting": {
       "hash": "63cc5ef150a19111"
@@ -294,6 +536,9 @@
     },
     "chromolithograph": {
       "hash": "5c8819fc24255639"
+    },
+    "cibachrome": {
+      "hash": "7fb41d96b462c60f"
     },
     "cigarette_card": {
       "hash": "0be2216c5fdec7c6"
@@ -361,6 +606,9 @@
     "cooking_manga": {
       "hash": "77d99c9d58168eef"
     },
+    "coquille_board": {
+      "hash": "2ae9a0fecf7d4b9c"
+    },
     "corporate_memphis": {
       "hash": "a82ad2321ca76380"
     },
@@ -402,6 +650,9 @@
     },
     "daguerreotype_case": {
       "hash": "475aec3ad34ca1fb"
+    },
+    "damascus_steel": {
+      "hash": "d89dbc75066124d7"
     },
     "dark_fantasy_manga": {
       "hash": "f5872943281135f3"
@@ -925,6 +1176,9 @@
     "line_art": {
       "hash": "890185a29eb10f3e"
     },
+    "linen_postcard": {
+      "hash": "e7416b7da94f7b54"
+    },
     "linocut": {
       "hash": "1cbbef374076ab58"
     },
@@ -1056,6 +1310,9 @@
     },
     "mixed_media_canvas": {
       "hash": "d637301bff1173fe"
+    },
+    "model_kit_sprue": {
+      "hash": "8a246067b3209c56"
     },
     "modern_digital_anime": {
       "hash": "389f607538ed3724"
@@ -1222,11 +1479,17 @@
     "particle_system_render": {
       "hash": "e756e642bac20356"
     },
+    "passport_stamp_page": {
+      "hash": "4bfc89d91a5aff2c"
+    },
     "pastel_drawing": {
       "hash": "dc2bc80af5ec57e4"
     },
     "patent_drawing": {
       "hash": "c8a4380c36f89532"
+    },
+    "patinated_bronze": {
+      "hash": "52fc511be05de5d9"
     },
     "pen_and_wash": {
       "hash": "4b28f1e9c2c34214"
@@ -1269,6 +1532,9 @@
     },
     "pichwai": {
       "hash": "04d24512f9e16c3d"
+    },
+    "pietra_dura": {
+      "hash": "7a4c8a4124223ae0"
     },
     "pinball_backglass": {
       "hash": "4510d1d753e3ad8b"
@@ -1462,6 +1728,9 @@
     "satoshi_kon": {
       "hash": "446449e1a5dac4d8"
     },
+    "scanning_electron_micrograph": {
+      "hash": "dd90d814bd369c9d"
+    },
     "scanography": {
       "hash": "fc6b664e3d645159"
     },
@@ -1513,6 +1782,9 @@
     "shin_hanga": {
       "hash": "c04ec944ca100043"
     },
+    "shou_sugi_ban": {
+      "hash": "32ec7280af1a8f7a"
+    },
     "shoujo_takeuchi": {
       "hash": "80da2db505272418"
     },
@@ -1527,6 +1799,9 @@
     },
     "silent_film": {
       "hash": "a9607d84b4903861"
+    },
+    "silhouette_cutout_animation": {
+      "hash": "cf5d5c0025ed270b"
     },
     "silk_painting": {
       "hash": "f7bdd58792e70562"
@@ -1714,6 +1989,9 @@
     "terrarium_miniature_garden": {
       "hash": "32a308df0294e9a1"
     },
+    "terrazzo": {
+      "hash": "490f1a31b0cea177"
+    },
     "terrence_malick": {
       "hash": "41f4427dee3ce5d2"
     },
@@ -1893,6 +2171,9 @@
     },
     "wildlife_photography": {
       "hash": "04a347bebfdaa2f5"
+    },
+    "wine_label": {
+      "hash": "032b0a8ebe58e96c"
     },
     "wire_sculpture": {
       "hash": "fa853333d3a91ba3"

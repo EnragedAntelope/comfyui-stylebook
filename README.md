@@ -90,7 +90,7 @@ an artist it does not have.
 |---|---|
 | **Style** | The medium. Pick from the gallery, draw a seeded Random from a filtered pool, or Cycle a whole category by index. Exclusive: a second Style node replaces the first. |
 | **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 900+ artists by name, movement, category, or by what their work actually looks like. |
-| **Modifier** | Tilts one axis: lighting, colour grade, era, period dress, finish or mood. 130+ modifiers, each with a description you can browse. One per axis. **Era** tilts how the image is rendered — palette, light, surface, finish — and puts nothing new in the frame, so it is safe on any subject; **Period Dress** is the axis that adds the period wardrobe. Pair them, or use Era alone. |
+| **Modifier** | Tilts one axis: lighting, colour grade, era, period dress, finish or mood. 130+ modifiers, each with a description you can browse, and the three purely visual axes — lighting, colour grade and finish — ship a rendered tile too, so you can see Bleach Bypass rather than read about it. One per axis. **Era** tilts how the image is rendered — palette, light, surface, finish — and puts nothing new in the frame, so it is safe on any subject; **Period Dress** is the axis that adds the period wardrobe. Pair them, or use Era alone. |
 | **Blend** | Mixes two styles at a ratio that genuinely shifts the balance, not just the endpoints. |
 | **Sheet** | One subject rendered across many styles as a batch. Choose them yourself from the gallery, or leave the list empty and let a seeded draw fill it. |
 
@@ -284,6 +284,17 @@ node and choose **Fix node (recreate)**.
 Each thumbnail is one model's reading of one style, on one subject, at one
 seed. Styles are written to be portable, but nothing reads identically
 everywhere. Treat the gallery as a guide, not a guarantee.
+
+Modifier tiles work the same way, with one difference worth knowing: every
+tile on an axis is the **same** base render with only the modifier changed,
+so the tiles are comparable with each other. The
+[modifier reference](https://enragedantelope.github.io/comfyui-stylebook/docs/reference/modifiers.html)
+shows that base render on its own at the head of each tiled axis, because a
+modifier tile means little without the thing it is a deviation from.
+
+Era, period dress and mood have no tiles on purpose. What they change is
+not reliably legible in a thumbnail, and their written descriptions carry
+more than a picture of them would.
 
 ## Bug reports and suggestions welcome
 

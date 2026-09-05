@@ -183,6 +183,12 @@ def generate() -> tuple[str, str]:
     modifier_records = [
         {
             "label": MODIFIERS[mid]["label"],
+            # The record id, carried alongside the label because a modifier
+            # is addressed by *label* everywhere in the pack -- so the
+            # picker item's id is the label, and the preview atlas (keyed by
+            # stable record id, like every other atlas) cannot be reached
+            # with it. Labels can be reworded; ids cannot.
+            "mid": mid,
             "axis": axis,
             "detail": MODIFIERS[mid].get("prose", ""),
             "aliases": list(MODIFIERS[mid].get("aliases", [])),

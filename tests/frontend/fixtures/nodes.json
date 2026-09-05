@@ -15,7 +15,7 @@
       "name": "style",
       "type": "combo",
       "value": "None",
-      "optionCount": 654
+      "optionCount": 670
     },
     {
       "name": "category",
@@ -299,10 +299,12 @@
         "JPEG Artifacts",
         "Lens Flare",
         "Matte Flat",
+        "Moire",
         "Motion Blur",
         "Oversharpened Halo",
         "Paper Texture",
         "Posterized",
+        "Rolling Shutter Skew",
         "Scan Lines",
         "Sensor Noise",
         "Shallow Depth of Field",
