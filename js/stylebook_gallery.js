@@ -7,6 +7,7 @@ import {
   BULK_DATA_FILE,
   CATEGORIES,
   CATEGORY_LABELS,
+  MODIFIER_AXIS_LABELS,
   CURRENT_VERSION,
   MODIFIER_AXES,
   MODIFIER_LABELS_BY_AXIS,
@@ -211,8 +212,10 @@ async function loadUserData() {
  * Human-facing name for a group key.
  *
  * Categories have real names in the data layer, because title-casing the
- * id produces "Three D Digital". Artist groups have no such table and
- * fall back to title-casing, which is fine for "fine-art".
+ * id produces "Three D Digital". Modifier axes have one for the same
+ * reason -- it produces "Color Grade" where the public page says
+ * "Colour Grade". Artist groups have no such table and fall back to
+ * title-casing, which is fine for "fine-art".
  */
 function groupName(key) {
   if (key === GROUP_ALL) return "All";
@@ -223,6 +226,9 @@ function groupName(key) {
   if (CATEGORY_LABELS && CATEGORY_LABELS[key]) return CATEGORY_LABELS[key];
   if (ARTIST_CATEGORY_LABELS && ARTIST_CATEGORY_LABELS[key]) {
     return ARTIST_CATEGORY_LABELS[key];
+  }
+  if (MODIFIER_AXIS_LABELS && MODIFIER_AXIS_LABELS[key]) {
+    return MODIFIER_AXIS_LABELS[key];
   }
   return String(key)
     .split(/[_-]/)
@@ -540,11 +546,6 @@ const artistItems = memoiseItems(function buildArtistItems() {
   return items.sort(byLabel);
 });
 
-// The modifier axes that ship rendered preview tiles. One rule in two
-// languages, like the ordering rule: this mirrors PREVIEW_AXES in
-// scripts/build_previews.py, and PreviewedAxesMirrorTests binds them.
-const PREVIEWED_AXES = ["lighting", "color_grade", "finish"];
-
 // Deliberately unsorted, unlike styles and artists. Modifiers are grouped
 // by axis and the `era` axis reads chronologically -- Ancient Classical,
 // Edwardian, 1920s, 1950s. Alphabetising would scatter the decades to the
@@ -613,11 +614,6 @@ class StylebookPicker {
    *   groups        array of group keys for the tab strip, or null for none
    *   showPreviews  slice thumbnails out of the preview atlases
    *   layout        "list" for rows, anything else for a tile grid
-   *   groupLayout   optional {group: "list"|"grid"} overriding `layout`
-   *                 per tab, for a picker whose groups are not all the
-   *                 same kind of thing
-   *   previewGroups optional array of group keys that have preview tiles,
-   *                 overriding `showPreviews` per tab
    *   onSelect      (item) => void
    *   currentValue  () => the value currently held by the node
    */
@@ -697,7 +693,7 @@ class StylebookPicker {
     // A placeholder is one centred message either way, but the grid has
     // to carry exactly one of the two layout classes or it inherits
     // whichever the last render left on it.
-    this.grid.classList.remove("with-category", "stylebook-list");
+    this.grid.classList.remove("with-category", "stylebook-list", "with-art");
     this.grid.classList.add("stylebook-grid");
     const box = document.createElement("div");
     box.className = "stylebook-empty";
@@ -928,26 +924,25 @@ class StylebookPicker {
   }
 
   /**
-   * The layout for the tab currently shown.
+   * The layout for this picker. One layout for every tab.
    *
-   * The modifier picker's six axes are not all the same kind of thing:
-   * lighting, colour grade and finish are purely visual and ship rendered
-   * tiles, while era, period dress and mood are described in words and a
-   * thumbnail of them would say nothing. So layout is per group rather
-   * than per picker. "All", "New", "Yours" and any search result span
-   * groups, and fall back to the picker's own `layout`.
+   * Until 0.15.0 this switched per group, because three of the modifier
+   * axes had rendered tiles and three did not. That was never a layout
+   * decision -- it was missing data wearing a layout's clothes, and it
+   * cost a `groupLayout` map, a `previewGroups` list and a JS/Python
+   * mirror of which axes were tiled. Every modifier has a tile now, so
+   * the rule is the one in ARCHITECTURE.md: an entry shows everything it
+   * carries, and the layout follows the record, never the tab.
    */
   activeLayout() {
-    const per = this.config.groupLayout;
-    const chosen = per && !this.query ? per[this.activeGroup] : null;
-    return chosen || this.config.layout || "grid";
+    return this.config.layout || "grid";
   }
 
-  /** Whether the tab currently shown has preview tiles to slice. */
+  /** Whether this picker has preview art to slice. */
   activePreviews() {
-    if (this.config.previewGroups) {
-      return !this.query && this.config.previewGroups.includes(this.activeGroup);
-    }
+    // Deliberately not gated on the query. The old per-tab version
+    // returned false whenever a search was running, so searching the
+    // modifier picker dropped the pictures off entries that had them.
     return Boolean(this.config.showPreviews);
   }
 
@@ -1035,15 +1030,15 @@ class StylebookPicker {
   }
 
   /**
-   * The footer says how to drive the dialog, plus a per-tab hint where one
-   * group needs explaining that the others do not. Rebuilt on every render
-   * because the active tab decides whether the hint applies.
+   * The footer says how to drive the dialog, plus the picker's hint where
+   * it has one. The hint used to be gated on `activePreviews()` back when
+   * only some tabs carried pictures; it applies to every tab now.
    */
   renderFooter() {
     if (!this.footer) return;
     const keys =
       "Arrow keys move, Enter selects, Escape closes. Type to search names and aliases.";
-    const hint = this.config.hint && this.activePreviews() ? this.config.hint : "";
+    const hint = this.config.hint || "";
     this.footer.replaceChildren();
     this.footer.appendChild(document.createTextNode(keys));
     if (hint) {
@@ -1101,6 +1096,9 @@ class StylebookPicker {
     this.grid.classList.toggle("stylebook-list", list);
     this.grid.classList.toggle("stylebook-grid", !list);
     this.grid.classList.toggle("with-category", this._showCategory);
+    // Gated on the class, not on `.stylebook-list` alone: the artist
+    // picker is also a list and its rows must keep their two columns.
+    this.grid.classList.toggle("with-art", list && this.activePreviews());
     this.renderFooter();
 
     if (this.count) {
@@ -1148,6 +1146,26 @@ class StylebookPicker {
     row.tabIndex = -1;
     if (position) row.classList.add("selected");
 
+    // A row carries art when the picker has any, on every tab and while
+    // searching. The fallback is buildTile's: a lettered glyph, so a
+    // custom modifier under "Yours" -- which no atlas can have a tile for
+    // -- degrades to the same placeholder rather than a broken box.
+    let art = null;
+    if (this.activePreviews()) {
+      art = document.createElement("div");
+      art.className = "stylebook-row-art";
+      const preview = previewFor(item.group, item.previewId || item.id);
+      if (preview && applySprite(art, preview)) {
+        art.setAttribute("aria-hidden", "true");
+      } else {
+        const glyph = document.createElement("div");
+        glyph.className = "stylebook-tile-initials";
+        glyph.textContent = initials(item.label);
+        art.appendChild(glyph);
+        art.setAttribute("aria-hidden", "true");
+      }
+    }
+
     const name = document.createElement("div");
     name.className = "stylebook-row-name";
     name.textContent = item.label;
@@ -1163,7 +1181,8 @@ class StylebookPicker {
     detail.className = "stylebook-row-detail";
     detail.textContent = item.detail || "";
 
-    row.append(name, detail);
+    if (art) row.append(art, name, detail);
+    else row.append(name, detail);
     row.addEventListener("click", () => this.select(item));
     row.addEventListener("mouseenter", () => {
       this.focusIndex = index;
@@ -1439,7 +1458,7 @@ function setupModifierNode(node) {
   if (!widgets.axis || !widgets.modifier) return false;
 
   attachPicker(node, "modifier", {
-    title: "Stylebook modifier reference",
+    title: "Stylebook modifier gallery",
     searchPlaceholder: "Search modifiers by name or by what they do",
     items: modifierItems,
     get groups() {
@@ -1447,20 +1466,14 @@ function setupModifierNode(node) {
         ? [GROUP_ALL].concat(MODIFIER_AXES, [GROUP_YOURS])
         : [GROUP_ALL].concat(MODIFIER_AXES);
     },
-    showPreviews: false,
+    // A modifier carries both a picture and a descriptor, so it gets a
+    // row with the thumbnail beside the words -- on every tab and in
+    // search. A tile grid would throw the descriptor away.
+    showPreviews: true,
     layout: "list",
-    // Lighting, colour grade and finish are purely visual: a sentence
-    // about Bleach Bypass tells you far less than the tile does. The other
-    // three axes keep their rows -- what they change is not reliably
-    // legible at 256px, and their descriptor text is the point.
-    groupLayout: PREVIEWED_AXES.reduce((out, axis) => {
-      out[axis] = "grid";
-      return out;
-    }, {}),
-    previewGroups: PREVIEWED_AXES,
-    hint: "Each tile is one fixed base render with only this modifier "
-      + "changed. The public modifier reference page shows that base "
-      + "render on its own, for comparison.",
+    hint: "Each thumbnail is one fixed base render with only this modifier "
+      + "changed. The public modifier gallery shows that base render on "
+      + "its own, for comparison.",
     // Picking a modifier implies its axis, and the dropdown has to be
     // narrowed to that axis before the value is written, or the write
     // lands outside the widget's own option list.
@@ -1471,7 +1484,7 @@ function setupModifierNode(node) {
       }
       narrowModifierOptions(target, widgetsByName(target));
     },
-  }, "Open modifier reference");
+  }, "Open modifier gallery");
 
   syncOnChange(node, ["axis", "mode"], (fresh) => {
     narrowModifierOptions(node, fresh);

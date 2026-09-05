@@ -4213,12 +4213,6 @@ ARTISTS: dict[str, dict] = {
         "aliases": ["Alexandra Exter", "Ekster", "ukrainian Cubo-Futurist"],
         "descriptor": "Ukrainian Cubo-Futurist painter of faceted geometric figures, vibrant colour planes, Constructivist stage designs and bold decorative costume illustrations",
     },
-    "beauford_delany": {
-        "label": "Beauford Delany",
-        "category": "fine-art",
-        "aliases": ["Delany", "harlem modernist", "mid-century portraitist"],
-        "descriptor": "American Harlem modernist painter of thick impasto portraits, vivid saturated colour, expressive psychological likeness and bold gestural brushwork capturing mid-century Black artistic life",
-    },
     "horace_pippin": {
         "label": "Horace Pippin",
         "category": "fine-art",
@@ -5621,7 +5615,15 @@ ARTISTS: dict[str, dict] = {
     "beauford_delaney": {
         "label": "Beauford Delaney",
         "category": "fine-art",
-        "aliases": ["Delaney", "abstract expressionist yellow"],
+        # "Beauford Delany" shipped as a second record until 0.15.0 - the
+        # same painter under a dropped "e", so Random could pick him twice
+        # and the reference page listed him twice. The duplicate-label
+        # check cannot see it: the two labels differ by one character.
+        # The misspelling stays as an alias so search still finds him.
+        "aliases": [
+            "Delaney", "Delany", "Beauford Delany",
+            "abstract expressionist yellow", "harlem modernist",
+        ],
         "descriptor": "radiant abstraction built from swirling impasto yellows and hot golds, thick circular strokes packed edge to edge, light treated as the whole subject",
     },
     "sidney_sime": {
@@ -5641,6 +5643,305 @@ ARTISTS: dict[str, dict] = {
         "category": "comics",
         "aliases": ["Steranko", "Nick Fury", "psychedelic comics"],
         "descriptor": "cinematic pop-surreal comics design with op-art pattern and hard graphic shadow, montage panels and bold zip-a-tone colour, dramatic photographic angles",
+    },
+
+    # --- 0.15.0 gap audit ---
+    # Names a museum, gallery or art-history textbook would recognise that
+    # the pack did not carry. Absence was checked with accent folding, so a
+    # differently-spelled record could not hide the hole.
+
+    # Fine art
+    "piero_della_francesca": {
+        "label": "Piero della Francesca",
+        "category": "fine-art",
+        "aliases": ["Piero", "early Renaissance geometry"],
+        "descriptor": "serene early Renaissance panels built on strict geometry, pale chalky fresco colour, volumes modelled in even diffuse daylight and motionless solemn poise",
+    },
+    "fra_angelico": {
+        "label": "Fra Angelico",
+        "category": "fine-art",
+        "aliases": ["Beato Angelico", "devotional fresco"],
+        "descriptor": "luminous devotional fresco in clear pinks, ultramarine and burnished gilding, slender serene poise and bright airy space",
+    },
+    "rogier_van_der_weyden": {
+        "label": "Rogier van der Weyden",
+        "category": "fine-art",
+        "aliases": ["van der Weyden", "Early Netherlandish"],
+        "descriptor": "Early Netherlandish oil of piercing emotional restraint, brittle angular drapery folds, jewel-clear colour and minutely observed sorrowful expression",
+    },
+    "tintoretto": {
+        "label": "Tintoretto",
+        "category": "fine-art",
+        "aliases": ["Jacopo Robusti", "Venetian mannerism"],
+        "descriptor": "turbulent Venetian mannerism in plunging diagonal composition, figures foreshortened through smoky darkness, slashing loaded brushwork and dramatic raking light",
+    },
+    "canaletto": {
+        "label": "Canaletto",
+        "category": "fine-art",
+        "aliases": ["Giovanni Antonio Canal", "veduta"],
+        "descriptor": "crisp topographical veduta in wide even perspective, pale limpid daylight across bright stone, precise architectural detail and tiny animated figures",
+    },
+    "giovanni_battista_piranesi": {
+        "label": "Giovanni Battista Piranesi",
+        "category": "fine-art",
+        "aliases": ["Piranesi", "Carceri", "vedute etchings"],
+        "descriptor": "vast imaginary architecture etched in dense black hatching, immense vaults and impossible masonry, dramatic scale dwarfing minute figures",
+    },
+    "william_hogarth": {
+        "label": "William Hogarth",
+        "category": "fine-art",
+        "aliases": ["Hogarth", "A Rakes Progress", "moral satire"],
+        "descriptor": "biting English satirical narrative painting crowded with incident, warm ruddy colour, caricatured expression and busy anecdotal detail packed corner to corner",
+    },
+    "fernand_leger": {
+        "label": "Fernand Leger",
+        "category": "fine-art",
+        "aliases": ["Fernand Léger", "Leger", "tubism"],
+        "descriptor": "machine-age forms reduced to polished tubes and cylinders, flat primary colour bounded by heavy black contour, bold mechanical rhythm",
+    },
+    "franz_marc": {
+        "label": "Franz Marc",
+        "category": "fine-art",
+        "aliases": ["Der Blaue Reiter", "blue horses"],
+        "descriptor": "Expressionist forms built from prismatic planes of pure blue, yellow and red, rhythmic curving contours and mystical saturated colour",
+    },
+    "oskar_kokoschka": {
+        "label": "Oskar Kokoschka",
+        "category": "fine-art",
+        "aliases": ["Kokoschka", "Viennese expressionism"],
+        "descriptor": "raw Viennese expressionist portraiture in nervous scratched brushwork, feverish clashing colour and psychologically exposed sitters",
+    },
+    "gustave_caillebotte": {
+        "label": "Gustave Caillebotte",
+        "category": "fine-art",
+        "aliases": ["Caillebotte", "Paris Street Rainy Day"],
+        "descriptor": "Impressionist realism in steep plunging perspective, cool grey urban light, smooth precise handling and boldly cropped modern viewpoints",
+    },
+    "anni_albers": {
+        "label": "Anni Albers",
+        "category": "fine-art",
+        "aliases": ["Bauhaus weaving", "textile abstraction"],
+        "descriptor": "Bauhaus woven abstraction in interlocking rectilinear bands, muted natural fibre colour, structure and thread visible as the whole design",
+    },
+    "isamu_noguchi": {
+        "label": "Isamu Noguchi",
+        "category": "fine-art",
+        "aliases": ["Noguchi", "biomorphic sculpture"],
+        "descriptor": "pared biomorphic sculpture in carved stone and folded paper, calm balanced voids, softly glowing surfaces and quiet organic geometry",
+    },
+    "mikhail_larionov": {
+        "label": "Mikhail Larionov",
+        "category": "fine-art",
+        "aliases": ["Larionov", "Rayonism", "Rayism"],
+        "descriptor": "Rayonist abstraction of crossing coloured light rays, splintered prismatic beams cutting across the picture, restless energetic diagonals",
+    },
+    "joaquin_torres_garcia": {
+        "label": "Joaquin Torres-Garcia",
+        "category": "fine-art",
+        "aliases": ["Joaquín Torres-García", "Constructive Universalism"],
+        "descriptor": "constructivist compartments in an ochre and slate palette, ruled irregular divisions and flattened schematic pictographic drawing",
+    },
+    "raja_ravi_varma": {
+        "label": "Raja Ravi Varma",
+        "category": "fine-art",
+        "aliases": ["Ravi Varma", "Indian academic oil"],
+        "descriptor": "Indian academic oil painting of mythological subjects, European modelling and soft theatrical lighting, richly ornamented figures and warm sentimental realism",
+    },
+    "jamini_roy": {
+        "label": "Jamini Roy",
+        "category": "fine-art",
+        "aliases": ["Bengal folk modernism", "Kalighat revival"],
+        "descriptor": "Bengali folk modernism in flat earth-pigment colour, bold sweeping black contour, almond-eyed frontal figures and calm decorative simplification",
+    },
+    "bada_shanren": {
+        "label": "Bada Shanren",
+        "category": "fine-art",
+        "aliases": ["Zhu Da", "Chinese ink eccentric"],
+        "descriptor": "sparse Chinese ink painting in a few loaded strokes across vast empty paper, wet blotted monochrome and an eccentric off-balance placement",
+    },
+    "kamal_ud_din_behzad": {
+        "label": "Kamal ud-Din Behzad",
+        "category": "fine-art",
+        "aliases": ["Behzad", "Herat school", "Persian miniature"],
+        "descriptor": "Persian miniature painting in jewel-bright flat colour, tilted planes lit evenly throughout, dense ornamental pattern and finely poised small figures",
+    },
+    "esther_mahlangu": {
+        "label": "Esther Mahlangu",
+        "category": "fine-art",
+        "aliases": ["Ndebele painting", "Mahlangu"],
+        "descriptor": "Ndebele mural geometry hand-painted in hard black outline, flat symmetrical blocks of vivid primary colour and bold chevrons",
+    },
+
+    # Photography
+    "eadweard_muybridge": {
+        "label": "Eadweard Muybridge",
+        "category": "photography",
+        "aliases": ["Muybridge", "motion studies", "Animal Locomotion"],
+        "descriptor": "clinical Victorian motion study in plain grey monochrome, even flat light against a calibrated measuring backdrop, movement frozen crisply at short exposure",
+    },
+    "nadar": {
+        "label": "Nadar",
+        "category": "photography",
+        "aliases": ["Gaspard-Felix Tournachon", "early portrait photography"],
+        "descriptor": "early studio portraiture in soft directional daylight against a plain neutral ground, calm dignified sitters and delicate silvery tonality",
+    },
+    "edward_curtis": {
+        "label": "Edward Curtis",
+        "category": "photography",
+        "aliases": ["Curtis", "The North American Indian"],
+        "descriptor": "warm sepia-toned photogravure portraiture, soft romantic haze and low directional light, solemn posed dignity and rich brown tonal depth",
+    },
+    "zanele_muholi": {
+        "label": "Zanele Muholi",
+        "category": "photography",
+        "aliases": ["Muholi", "Somnyama Ngonyama"],
+        "descriptor": "high-contrast black-and-white self-portraiture, skin rendered impossibly deep and luminous, a direct confrontational gaze and inventive improvised adornment",
+    },
+    "eikoh_hosoe": {
+        "label": "Eikoh Hosoe",
+        "category": "photography",
+        "aliases": ["Hosoe", "Kamaitachi", "Barakei"],
+        "descriptor": "grainy high-contrast Japanese monochrome, bodies abstracted into sculptural forms, dark surreal theatricality and blurred physical intensity",
+    },
+
+    # Film
+    "wim_wenders": {
+        "label": "Wim Wenders",
+        "category": "film",
+        "aliases": ["Wenders", "Paris Texas", "Wings of Desire"],
+        "descriptor": "wandering New German Cinema in wide static compositions, saturated neon and desert colour, patient melancholy and long unhurried takes",
+    },
+    "rainer_werner_fassbinder": {
+        "label": "Rainer Werner Fassbinder",
+        "category": "film",
+        "aliases": ["Fassbinder", "New German Cinema"],
+        "descriptor": "cold melodrama staged through doorways and reflections, lurid saturated colour, mannered blocking and claustrophobic emotional distance",
+    },
+    "krzysztof_kieslowski": {
+        "label": "Krzysztof Kieslowski",
+        "category": "film",
+        "aliases": ["Krzysztof Kieślowski", "Three Colours", "Dekalog"],
+        "descriptor": "morally intimate European cinema drenched in a single dominant colour, soft diffused light, close watchful framing and quiet coincidence",
+    },
+    "abbas_kiarostami": {
+        "label": "Abbas Kiarostami",
+        "category": "film",
+        "aliases": ["Kiarostami", "Iranian New Wave"],
+        "descriptor": "spare Iranian humanism in long static wide shots, dusty ochre landscape, natural light and unhurried contemplative distance",
+    },
+    "zhang_yimou": {
+        "label": "Zhang Yimou",
+        "category": "film",
+        "aliases": ["Yimou", "Chinese Fifth Generation", "Hero"],
+        "descriptor": "operatic Chinese colour cinema built on massed single-hue spectacle, symmetrical formal composition and lush saturated production design",
+    },
+    "hou_hsiao_hsien": {
+        "label": "Hou Hsiao-hsien",
+        "category": "film",
+        "aliases": ["Hou", "Taiwanese New Wave"],
+        "descriptor": "contemplative Taiwanese cinema in long fixed takes, soft available light, deep quiet interiors and figures observed from a respectful distance",
+    },
+    "sofia_coppola": {
+        "label": "Sofia Coppola",
+        "category": "film",
+        "aliases": ["Coppola", "Lost in Translation", "Marie Antoinette"],
+        "descriptor": "soft pastel-toned drift in hazy natural light, languid dreamy stillness, sumptuous texture and quietly isolated young subjects",
+    },
+    "mario_bava": {
+        "label": "Mario Bava",
+        "category": "film",
+        "aliases": ["Bava", "Italian gothic horror"],
+        "descriptor": "Italian gothic horror lit in unmotivated saturated gels, deep magenta and green shadow, fog-filled darkness and lush baroque menace",
+    },
+
+    # Comics
+    "alex_toth": {
+        "label": "Alex Toth",
+        "category": "comics",
+        "aliases": ["Toth", "design economy"],
+        "descriptor": "ruthlessly economical comics drawing, shapes reduced to essential black masses, confident spotted blacks and effortless staging clarity",
+    },
+    "carl_barks": {
+        "label": "Carl Barks",
+        "category": "comics",
+        "aliases": ["Barks", "the Duck Man"],
+        "descriptor": "classic adventure cartooning in a clean rounded confident line, warm flat colour and lively expressive staging",
+    },
+    "jaime_hernandez": {
+        "label": "Jaime Hernandez",
+        "category": "comics",
+        "aliases": ["Los Bros Hernandez", "Love and Rockets"],
+        "descriptor": "elegant alternative-comics brushwork in bold clean contour and lush spotted blacks, naturalistic figures and calm graphic clarity",
+    },
+    "shigeru_mizuki": {
+        "label": "Shigeru Mizuki",
+        "category": "comics",
+        "aliases": ["Mizuki", "GeGeGe no Kitaro", "yokai"],
+        "descriptor": "simple cartoon figures set against obsessively detailed stippled surroundings, dense hatched texture and eerie folkloric grotesquerie",
+    },
+    "yoshiharu_tsuge": {
+        "label": "Yoshiharu Tsuge",
+        "category": "comics",
+        "aliases": ["Tsuge", "Nejishiki", "gekiga"],
+        "descriptor": "melancholic gekiga in plain unadorned line and flat grey tone, dreamlike everyday scenes and quiet unsettling stillness",
+    },
+    "jacques_tardi": {
+        "label": "Jacques Tardi",
+        "category": "comics",
+        "aliases": ["Tardi", "Adele Blanc-Sec"],
+        "descriptor": "French album cartooning in thick even contour and muted period colour, grimy historical detail and dour deadpan atmosphere",
+    },
+    "brian_bolland": {
+        "label": "Brian Bolland",
+        "category": "comics",
+        "aliases": ["Bolland", "The Killing Joke"],
+        "descriptor": "immaculate precision inking with flawless even line weight, glassy polished surfaces and coolly rendered controlled detail",
+    },
+    "riyoko_ikeda": {
+        "label": "Riyoko Ikeda",
+        "category": "comics",
+        "aliases": ["Ikeda", "The Rose of Versailles", "classic shoujo"],
+        "descriptor": "classic shoujo romance drawing in extravagant flowing hair, enormous starry eyes, decorative floral flourishes and high theatrical emotion",
+    },
+
+    # Illustration
+    "eyvind_earle": {
+        "label": "Eyvind Earle",
+        "category": "illustration",
+        "aliases": ["Earle", "Sleeping Beauty backgrounds"],
+        "descriptor": "stylised decorative landscape painting in tall spiky silhouettes, jewel-toned flat colour laid in layers and crisp graphic depth",
+    },
+    "drew_struzan": {
+        "label": "Drew Struzan",
+        "category": "illustration",
+        "aliases": ["Struzan", "movie poster illustration"],
+        "descriptor": "airbrush worked over coloured pencil, warm glowing light and a soft graphite-edged line, richly modelled skin tones and polished cinematic idealisation",
+    },
+    "otto_neurath": {
+        "label": "Otto Neurath",
+        "category": "illustration",
+        "aliases": ["Isotype", "Vienna Method", "pictorial statistics"],
+        "descriptor": "pictorial statistics in repeated flat silhouette symbols, a restricted primary palette and rigorously plain diagrammatic layout",
+    },
+
+    # Digital and concept
+    "hajime_sorayama": {
+        "label": "Hajime Sorayama",
+        "category": "digital",
+        "aliases": ["Sorayama", "Sexy Robot", "chrome airbrush"],
+        "descriptor": "hyper-real airbrushed chrome, high-polished metal reflecting hot studio highlights, sleek biomechanical curves and flawless gradients",
+    },
+    "chris_foss": {
+        "label": "Chris Foss",
+        "category": "digital",
+        "aliases": ["Foss", "seventies science fiction paperback art"],
+        "descriptor": "seventies airbrush in hot enamel colour and bold striped markings, immense implied scale and luminous graded atmosphere",
+    },
+    "harold_cohen": {
+        "label": "Harold Cohen",
+        "category": "digital",
+        "aliases": ["AARON", "algorithmic painting"],
+        "descriptor": "algorithmic drawing in wandering closed contours filled with flat unmodulated colour, plant-like forms and deliberate machine-made irregularity",
     },
 }
 

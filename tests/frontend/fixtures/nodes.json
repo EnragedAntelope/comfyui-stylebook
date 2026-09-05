@@ -112,7 +112,7 @@
       "name": "artist",
       "type": "combo",
       "value": "None",
-      "optionCount": 917
+      "optionCount": 963
     },
     {
       "name": "category",
@@ -221,6 +221,7 @@
         "Split Lighting",
         "Stage Spotlight",
         "Studio Softbox",
+        "Underlighting",
         "Underwater Caustics",
         "UV Fluorescence",
         "Black & White",
@@ -298,9 +299,11 @@
         "Halftone Dots",
         "JPEG Artifacts",
         "Lens Flare",
+        "Light Leak",
         "Matte Flat",
         "Moire",
         "Motion Blur",
+        "Over-Denoised",
         "Oversharpened Halo",
         "Paper Texture",
         "Posterized",

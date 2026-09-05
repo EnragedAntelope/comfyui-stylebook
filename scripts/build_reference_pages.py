@@ -8,10 +8,14 @@ visible without installing anything.
 
 Same architecture as ``build_gallery_page.py`` on purpose: one static page
 per subject, data embedded as a JSON script tag, no dependencies. The
-artist page is sprite-free -- a descriptor has nothing to show. The
-modifier page carries tiles for the three purely visual axes (lighting,
-colour grade, finish), each preceded once by the baseline render they are
-all a deviation from; era, period dress and mood stay text-only.
+artist page is sprite-free -- a descriptor has nothing to show. Every
+modifier carries a tile since 0.15.0, and each axis opens with the one
+baseline render they are all a deviation from, so the page scrolls in a
+single rhythm rather than alternating pictures and walls of text.
+
+``NAV_PAGES`` below is the three-page nav shared with
+``build_gallery_page.py``, which imports it: the style gallery used to
+link to neither reference page while both linked back to it.
 
 GitHub Pages serves the **repo root**, not docs/, so an asset path here is
 relative to docs/reference/ and has to climb two levels to reach the
@@ -49,6 +53,54 @@ TARGETS = {
 #: docs/reference/. See the module docstring: Pages serves the repo root.
 ASSET_PREFIX = "../../js/previews/"
 
+#: The three public pages, in the order they appear in every page's nav.
+#: Named here rather than written out per page because until 0.15.0 the
+#: style gallery had no nav at all: both reference pages linked to it and
+#: it linked to neither, so the pages people actually land on were a dead
+#: end. One list, one order, three pages.
+#:
+#: "Gallery" means the entry carries a picture and "reference" means it
+#: does not -- styles and modifiers have tiles, artist descriptors do not.
+NAV_PAGES: tuple[tuple[str, str], ...] = (
+    ("gallery", "Style gallery"),
+    ("artists", "Artist reference"),
+    ("modifiers", "Modifier gallery"),
+)
+
+#: Hrefs per *source* page. Relative, and different for a page in
+#: docs/gallery/ than for one in docs/reference/ -- GitHub Pages serves
+#: the repo root here, so a path that works under a local server started
+#: in docs/ is wrong live. Serve the repo's parent to check.
+_NAV_HREFS: dict[str, dict[str, str]] = {
+    "gallery": {
+        "gallery": "./",
+        "artists": "../reference/artists.html",
+        "modifiers": "../reference/modifiers.html",
+    },
+    "artists": {
+        "gallery": "../gallery/",
+        "artists": "artists.html",
+        "modifiers": "modifiers.html",
+    },
+}
+# Both reference pages sit in the same directory, so they share hrefs.
+_NAV_HREFS["modifiers"] = _NAV_HREFS["artists"]
+
+
+def _nav(current: str) -> str:
+    """The three-page nav, with the current page as plain text.
+
+    A link to the page you are already on is noise, and on a nav this
+    short it is also the only cue telling you where you are.
+    """
+    parts = []
+    for key, label in NAV_PAGES:
+        if key == current:
+            parts.append(f'<span class="here">{label}</span>')
+        else:
+            parts.append(f'<a href="{_NAV_HREFS[current][key]}">{label}</a>')
+    return " · ".join(parts)
+
 #: Shared visual language with docs/gallery/index.html. Kept as a literal
 #: rather than imported from that script: the two templates evolve at
 #: different rates and a shared CSS module would couple their releases.
@@ -74,6 +126,7 @@ header { padding: 28px 20px 12px; max-width: 980px; margin: 0 auto; }
 h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -0.01em; }
 .lede { margin: 0 0 4px; color: var(--muted); max-width: 62ch; }
 nav { margin-top: 10px; font-size: 14px; }
+nav .here { color: var(--muted); font-weight: 600; }
 .controls {
   position: sticky; top: 0; z-index: 5; background: var(--bg);
   border-bottom: 1px solid var(--line); padding: 12px 20px;
@@ -119,8 +172,9 @@ main { max-width: 980px; margin: 0 auto; padding: 18px 20px 60px; }
   display: flex; gap: 14px; align-items: flex-start;
   /* The 120px guess above is for a text-only entry; a tiled one is taller,
      and an under-guess makes the scrollbar jump as content-visibility
-     measures each entry for real. */
-  contain-intrinsic-size: auto 170px;
+     measures each entry for real. Measured in a browser at 194px, which
+     is where the 0.14.0 guess of 170px was found short. */
+  contain-intrinsic-size: auto 194px;
 }
 .entry.has-art .body { flex: 1 1 auto; min-width: 0; }
 .art {
@@ -186,6 +240,9 @@ function baselineEl(group) {
   const art = document.createElement("div");
   art.className = "art";
   if (!applySprite(art, group, DATA.baselineId)) return null;
+  /* Decorative for the same reason as an entry's art: the card's own
+     sentence beside it says what this picture is. */
+  art.setAttribute("aria-hidden", "true");
   const p = document.createElement("p");
   const strong = document.createElement("strong");
   strong.textContent = "No modifier. ";
@@ -202,10 +259,19 @@ function entryEl(e) {
   /* Art first, then a text column, so the DOM order matches the reading
      order rather than relying on the flex direction to fix it. */
   let body = div;
-  if (e.mid && DATA.previewAxes && DATA.previewAxes.includes(e.group)) {
+  /* Every entry attempts a sprite; there is no list of which groups have
+     one. A group with no atlas simply fails applySprite and falls back to
+     a text-only entry, which is also what the artist page does. */
+  if (e.mid) {
     const art = document.createElement("div");
     art.className = "art";
     if (applySprite(art, e.group, e.mid)) {
+      /* Decorative, not informative: the entry's heading and prose sit
+         right beside it and say everything the tile shows. Marked hidden
+         rather than given role="img" plus a label -- the two together
+         contradict each other, since aria-hidden removes the node from
+         the accessibility tree and the role then describes nothing. */
+      art.setAttribute("aria-hidden", "true");
       div.classList.add("has-art");
       div.append(art);
       body = document.createElement("div");
@@ -267,10 +333,10 @@ function render() {
       h.textContent = e.groupLabel;
       frag.append(h);
       lastGroup = e.group;
-      if (DATA.previewAxes && DATA.previewAxes.includes(e.group)) {
-        const base = baselineEl(e.group);
-        if (base) frag.append(base);
-      }
+      /* Attempted for every axis. baselineEl returns null when the axis
+         has no atlas, so the heading is simply not followed by a card. */
+      const base = baselineEl(e.group);
+      if (base) frag.append(base);
     }
     frag.append(entryEl(e));
   }
@@ -371,16 +437,12 @@ def _artists_payload() -> dict:
 
 
 def _modifiers_payload() -> dict:
-    from build_previews import BASELINE_ID, PREVIEW_AXES  # noqa: E402
+    from build_previews import BASELINE_ID  # noqa: E402
     from generate_js_data import _preview_sprites  # noqa: E402
 
-    from data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS
+    from data.modifiers import AXES, AXIS_LABELS, MODIFIERS, MODIFIERS_BY_AXIS
 
-    axis_labels = {
-        "lighting": "Lighting", "color_grade": "Colour Grade",
-        "era": "Era", "period_dress": "Period Dress",
-        "finish": "Finish", "mood": "Mood",
-    }
+    axis_labels = AXIS_LABELS
     entries = []
     for axis in AXES:
         for mid in MODIFIERS_BY_AXIS.get(axis, []):
@@ -422,7 +484,9 @@ def _modifiers_payload() -> dict:
         # in which case every applySprite() call returns false and the page
         # renders as it did before tiles existed.
         "sprites": _preview_sprites(),
-        "previewAxes": list(PREVIEW_AXES),
+        # No previewAxes list: every axis has tiles since 0.15.0, and an
+        # entry whose sprite is missing degrades to text on its own. A
+        # list here would be a second place to update when an axis lands.
         "baselineId": BASELINE_ID,
     }
 
@@ -436,23 +500,22 @@ def generate_all() -> dict[str, str]:
                  "ComfyUI, each with the written descriptor the node emits "
                  "so the look lands even when the model does not know the "
                  "name.",
-            nav='<a href="../gallery/">Style gallery</a> · '
-                '<a href="modifiers.html">Modifier reference</a>',
+            nav=_nav("artists"),
             placeholder="Search artists by name, movement, or what their "
                         "work looks like",
             payload=_artists_payload(),
         ),
         "modifiers": _page(
             heading="Stylebook modifiers",
-            title="Stylebook — every modifier, verbatim",
+            title="Stylebook — every modifier, with its tile and its text",
             lede="Every lighting, colour-grade, era, period-dress, "
                  "finish and mood "
                  "modifier in the Stylebook node pack for ComfyUI, shown "
                  "as the exact prose, keyword and negative text the node "
-                 "emits. The three purely visual axes also carry a "
-                 "rendered tile, against one fixed base render.",
-            nav='<a href="../gallery/">Style gallery</a> · '
-                '<a href="artists.html">Artist reference</a>',
+                 "emits. Every one carries a rendered tile too, each axis "
+                 "opening with the one fixed base render they all deviate "
+                 "from.",
+            nav=_nav("modifiers"),
             placeholder="Search modifiers by name, alias or effect",
             payload=_modifiers_payload(),
         ),
