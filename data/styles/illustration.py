@@ -477,6 +477,17 @@ ILLUSTRATION_STYLES: dict[str, dict] = {
         "preview": "illustration#43",
         "blocks": [],
     },
+    "coquille_board": {
+        "id": "coquille_board",
+        "label": "Coquille Board",
+        "category": "illustration",
+        "aliases": ["duo-shade board", "craftint board", "stipple board drawing"],
+        "tags": "drawing on coquille board, crayon and litho pencil dragged over a pebbled surface so every tone breaks into a mechanical scatter of dots, grain coarsening as the pressure lightens and closing to solid black under heavy pressure, pure line and dot doing all the shading, clean white paper between the marks",
+        "prose": "Drawn on coquille board: crayon and litho pencil dragged across a pebbled surface so every tone breaks into a mechanical scatter of dots, the grain coarsening as the pressure lightens and closing to solid black where it presses hard, line and dot doing all the shading with clean white paper left between.",
+        "negative": "smooth continuous tone, wash shading, digital gradient, coloured ink",
+        "preview": "illustration#44",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = ILLUSTRATION_STYLES

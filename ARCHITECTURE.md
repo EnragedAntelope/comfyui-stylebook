@@ -240,6 +240,141 @@ defined by not having. Word those overrides affirmatively for the same
 reason the data validator forbids negation in a positive prompt: "no
 people" is the most reliable way to get people.
 
+## Modifier preview tiles
+
+Three of the six modifier axes are *purely visual*: `lighting`,
+`color_grade` and `finish`. A sentence about Bleach Bypass tells you far
+less than the picture does, and choosing between Rembrandt and Split
+lighting from prose is guesswork. Since 0.14.0 those three ship rendered
+tiles, built by the same pipeline as the style tiles.
+
+### Why it needed almost no new code
+
+`js/previews/index.json` keys its `categories` map by **the picker's group
+key**, and every consumer looks that key up directly:
+`previewFor(item.group, id)` in the gallery, `applySprite(group, id)` on
+both public pages, and a plain iteration in
+`generate_js_data._preview_sprites`. A modifier's group *is* its axis. So
+adding `lighting`, `color_grade` and `finish` to that same map — none of
+which collides with the twelve style categories — made sprite lookup work
+everywhere with no new lookup code at all. The index `version` went 2 → 3;
+it is additive, and a consumer reading it finds three extra keys it never
+asks for.
+
+The renderer needed no second path either. `render_one`, `build_workflow`
+and `render_with_retry` take a style-shaped dict and never ask what kind
+of thing it is, so `modifier_record()` hands them a synthetic one. Two
+things keep the namespaces apart, because `chiaroscuro` is both a style id
+and a lighting modifier id: source renders go to `previews/src/mod/`, and
+the manifest section is `modifier_tiles`, not `tiles`.
+
+`MANIFEST_VERSION` was deliberately **not** bumped for that new section.
+`load_manifest()` discards a manifest whose version it does not recognise,
+so bumping it would have thrown away every style tile hash and silently
+queued a full re-render of the pack.
+
+### What a tile shows, and the baseline
+
+One fixed base render, varied only by the modifier: `MODIFIER_SUBJECT` (a
+clothed person with head and shoulders in frame, a flat surface beside
+them and a wall falling off behind, so direction, grade and finish all
+have something to read on) and `MODIFIER_BASE_STYLE`. Both feed the tile
+hash, so changing either re-renders exactly the affected tiles.
+
+**The base style has to anchor the scene without asserting a rendering,
+and that line was found by measurement rather than argument.** The first
+version was one sentence — "A plain photographic rendering." — and it was
+too thin: the modifier clause became almost the whole prompt, so the model
+rendered the modifier *as the subject*. Colour grades flooded the frame
+and lost the figure; Glossy Lacquer replaced the person with a black
+lacquered mannequin head.
+
+A second draft added photographic anchoring and also asserted "the person
+sharp", "plain even exposure" and "natural perspective". That fixed the
+grades and **suppressed** the finishes: Glossy Lacquer came back as an
+ordinary untreated photograph, because the base was now contradicting the
+axis it existed to display.
+
+The wording that ships anchors only the scene and the framing and says
+nothing about how the image is rendered, because that is precisely what
+the modifier is for.
+
+Three failure modes show up only in a rendered tile, and all three are
+invisible when reading the record. A modifier must name the light or
+finish's **behaviour**:
+
+- Naming its **shape** makes an object. "a hard boundary where the falloff
+  meets the black" drew a black rectangle over the face; "a bright edge"
+  drew a glowing rectangle around the figure; "a bright halo" drew a neon
+  ring around the head.
+- Naming a **medium or a place** makes a scene. "lit through water"
+  flooded the room; "wet reflective surfaces" built a rain-slick street.
+- **Over-protecting the subject suppresses the axis.** Rim lighting
+  under-exposes the front by definition, so a record insisting the face
+  stays visible loses to it and the modifier disappears.
+
+`rim_lighting` sits between the first and third of those and no wording
+found so far satisfies both; it keeps its original text deliberately, and
+its tile is known to be imperfect. Across a 16-render A/B/C it scored best of the three
+on both edge energy and tonal spread, and it is the reason the colour
+grade tiles show a face at all. If you change it, re-run that comparison
+rather than reasoning about it — the sibling study in 0.12.0 nearly saw
+twenty records rewritten when the harness was the thing at fault.
+
+There is one extra render, `_baseline`: the same subject and base style
+with **no** modifier at all, packed into each of the three axis atlases.
+A modifier tile is close to meaningless without the thing it deviates
+from — "warmer than what?" is a fair question — so the public modifier
+reference page shows it once at the head of each tiled axis, and the
+picker's footer hint points at it.
+
+### The picker's layout is per group, not per picker
+
+`layout` and `showPreviews` used to be whole-picker config, read at four
+points. They are now read through `activeLayout()` and `activePreviews()`,
+which consult the config's optional `groupLayout` and `previewGroups`
+maps against the tab currently shown; the grid's className moved out of
+the constructor and into `renderGrid()` because it now changes when the
+tab does. Result: Lighting, Colour Grade and Finish draw a tile grid,
+while Era, Period Dress and Mood keep their rows and their descriptor
+text. "All", "New", "Yours" and any search result span groups and fall
+back to the picker's own `layout`.
+
+`buildTile` also puts `item.detail` in the tooltip now. A style has no
+`detail`; for a modifier the descriptor **is** the information, and a tile
+has less room for text than a row.
+
+One trap worth knowing: **a modifier is addressed by label everywhere in
+this pack**, so the picker item's `id` is its label. The atlas is keyed by
+record id, as every atlas is, because a label can be reworded and an id
+cannot — hence `previewId` on the item and `mid` in `MODIFIER_RECORDS`.
+
+`PREVIEW_AXES` in `scripts/build_previews.py` and `PREVIEWED_AXES` in
+`js/stylebook_gallery.js` are one rule in two languages, bound by
+`tests/test_previews.PreviewedAxesMirrorTests` — the same arrangement as
+the ordering rule and its `Intl.Collator` mirror.
+
+### `era` and `mood` are closed axes
+
+The other three axes did not merely go un-tiled; two of them are closed to
+new records, and this is written down so it is not re-proposed.
+
+**`era` will not grow.** Since 0.12.0 an era modifier must describe light
+*behaviour*, never a fixture or a garment (see below). Every candidate
+worth having — Ancient Egyptian, Edo, Bronze Age, Belle Époque — reduces
+under that constraint to light behaviour indistinguishable from
+`Ancient Classical` or from an existing decade, and each one also costs a
+paired `period_dress` record. The axis is complete, not neglected.
+
+**`mood` will not grow either.** Twenty-one records already cover the
+space, and every candidate generated against them (Wistful, Triumphant,
+Anxious, Bittersweet, Austere) collapses into two existing moods. This is
+the Ring Light argument from 0.13.0 applied before spending a render
+rather than after: if stripping the one distinguishing word leaves
+something already shipped, the record was never distinct.
+
+`lighting`, `color_grade`, `finish` and `period_dress` stay open.
+
 ## The public gallery page
 
 `scripts/build_gallery_page.py` renders every style to a single static
@@ -916,8 +1051,8 @@ and "Victorian Dress" side by side on one axis would hand Randomize a coin
 flip and reproduce the original complaint exactly.
 
 Adding the axis broke nothing, and each path was checked rather than
-assumed: no preview tile is affected (`build_previews.tile_hash` covers
-styles only, and modifiers have no tiles); the `axis` widget is a combo
+assumed: no preview tile was affected at the time (`period_dress`
+is not one of the three axes that gained tiles in 0.14.0); the `axis` widget is a combo
 built from `axis_options()`, so a new option is additive and a saved
 `"era"` still resolves; no widget is added, removed or reordered, so no
 saved `widgets_values` moves; `stable_choice` hashes per candidate, so no

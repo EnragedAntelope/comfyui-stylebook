@@ -47,6 +47,9 @@ if str(ROOT) not in sys.path:
 os.environ.setdefault("STYLEBOOK_IGNORE_USER_STYLES", "1")
 
 SRC_DIR = ROOT / "previews" / "src"
+#: Modifier source renders live in their own subdirectory, so a modifier
+#: id can never collide with a style id anywhere in the pipeline.
+MOD_SRC_DIR = SRC_DIR / "mod"
 OUT_DIR = ROOT / "js" / "previews"
 MANIFEST = ROOT / "previews" / "manifest.json"
 
@@ -95,6 +98,61 @@ CATEGORY_SUBJECT = {
 
 FALLBACK_SUBJECT = "a mountain and a flying bird, centred composition"
 
+# --- modifier tiles -------------------------------------------------------
+# Modifiers on the three purely visual axes get tiles of their own. One
+# fixed base render, varied only by the modifier, so a tile shows the
+# modifier rather than a style fighting it.
+
+#: The axes that get preview tiles. `era`, `period_dress` and `mood` do
+#: not: their pickers keep rows and descriptor text, because what those
+#: axes change is not reliably legible in a 256px thumbnail.
+PREVIEW_AXES = ("lighting", "color_grade", "finish")
+
+#: One subject legible under every one of those three axes: skin, cloth,
+#: a flat surface to catch a grade, and a receding wall for falloff.
+#: Head and shoulders are named explicitly -- a subject ending "waist-up"
+#: produced headless figures often enough to have been measured (0.12.0
+#: A/B study), and a lighting tile with no face on it shows nothing.
+MODIFIER_SUBJECT = (
+    "a fully clothed person standing indoors, head and shoulders fully in "
+    "frame, looking straight at the camera, a plain table beside them and "
+    "a bare wall receding behind"
+)
+
+#: The base every modifier tile is a deviation from.
+#:
+#: Measured, not guessed (0.14.0, 12 + 4 renders at the tile settings; the
+#: 0.12.0 A/B study is the precedent and the warning -- twenty records were
+#: nearly rewritten there when the harness was at fault).
+#:
+#: The first version was one sentence, "A plain photographic rendering.",
+#: and it was too thin: the modifier clause became almost the whole prompt,
+#: so the model rendered the modifier AS the subject. Colour grades flooded
+#: the frame and lost the figure; Glossy Lacquer replaced the person with a
+#: black lacquered mannequin head.
+#:
+#: Adding photographic anchoring fixed that, but a second draft that also
+#: asserted "the person sharp", "plain even exposure" and "natural
+#: perspective" over-corrected and **suppressed** the modifier -- Glossy
+#: Lacquer came back as an ordinary untreated photograph, because the base
+#: was now contradicting the axis.
+#:
+#: So: anchor the *scene and the framing*, and assert nothing about the
+#: rendering itself. That is the axis's job. teal_orange scored best of the
+#: three on both edge energy and tonal spread with this wording, and
+#: glossy_lacquer regained its sheen without losing the person.
+MODIFIER_BASE_STYLE = (
+    "A straightforward photograph in an ordinary interior, the person "
+    "filling the frame from the waist up."
+)
+
+#: The tile that says what all the others are a deviation from. Rendered
+#: with the subject and base style and no modifier at all, shown at the
+#: top of each axis section on the public reference page. Underscore
+#: prefix so it can never collide with a modifier id.
+BASELINE_ID = "_baseline"
+
+
 # A handful of styles are about a technique or a design discipline rather
 # than a look, and the category subject cannot show them. A concept-car
 # render needs a car; an ambient occlusion pass needs geometry with
@@ -110,6 +168,18 @@ STYLE_SUBJECT = {
     "jewelry_design_board": "a pendant necklace and two rings",
     "sneaker_trainer_design": "a running shoe, three-quarter view",
     "watch_horology_face": "a wristwatch face seen straight on",
+    # A magnification a person cannot be shown at. The category subject
+    # put a torso in jeans on the tile, in high-contrast black and white.
+    # The first override (pollen and fibres) was a technically perfect SEM
+    # and a useless tile: an abstract texture field with no subject in it,
+    # so there was nothing to compare against the other photography tiles.
+    # A fly's head is the most recognisable SEM image there is.
+    "scanning_electron_micrograph": "the head and compound eye of a housefly, "
+                                    "seen at extreme magnification",
+    # The stipple read correctly but the head was cropped away. Naming head
+    # and shoulders explicitly is the fix the 0.12.0 A/B study measured.
+    "coquille_board": "the head and shoulders of a fully clothed person, "
+                      "looking straight at the camera",
     # Techniques that need geometry, motion or material to be visible.
     "ambient_occlusion_pass": "a cluster of stacked blocks and columns",
     "zbrush_sculpt_render": "a detailed creature bust on a turntable",
@@ -303,13 +373,21 @@ STYLE_SUBJECT = {
 # rendered as their own opposite.
 BASE_NEGATIVE = "nsfw, nude, text, watermark, signature, deformed, blurry"
 
+# Deliberately NOT bumped when the modifier_tiles section was added:
+# load_manifest() discards a manifest whose version it does not recognise,
+# so a bump here would throw away every style tile hash and re-render the
+# whole pack. The new section is additive and read with setdefault().
 MANIFEST_VERSION = 2
 
 #: Schema version of js/previews/index.json. 2 added a per-category "rev",
 #: the content hash of that category's atlas, so the gallery can cache-bust
 #: a stable filename. Every consumer treats a missing "rev" as "no suffix",
-#: so an index written at version 1 still works.
-INDEX_VERSION = 2
+#: so an index written at version 1 still works. 3 added the three modifier
+#: axes to the same `categories` map -- the map is keyed by the *picker
+#: group*, and a modifier's group is its axis, so an axis atlas needs no
+#: new lookup anywhere. Additive: a consumer reading version 3 finds three
+#: extra keys it never asks for.
+INDEX_VERSION = 3
 
 
 # ---------------------------------------------------------------------------
@@ -327,6 +405,52 @@ def subject_for(category: str, style_id: str = "") -> str:
     return CATEGORY_SUBJECT.get(category, FALLBACK_SUBJECT)
 
 
+def _subject_for(style: dict) -> str:
+    """The subject for a record, honouring a record-level override.
+
+    Only the synthetic records built by ``modifier_record`` carry one; a
+    real style record has no ``subject`` key and resolves exactly as it
+    always has.
+    """
+    return style.get("subject", "") or subject_for(
+        style.get("category", ""), style.get("id", "")
+    )
+
+
+def modifier_record(mid: str, rec: dict) -> dict:
+    """A style-shaped record for one modifier, for the render pipeline.
+
+    ``render_one``/``build_workflow``/``render_with_retry`` all take a
+    style dict and never ask what kind of thing it is, so a modifier tile
+    needs no second renderer -- only a record shaped like the thing those
+    functions already accept. The id is namespaced with ``mod/`` so the
+    source render lands in ``previews/src/mod/`` and cannot collide with a
+    style id, and the prose is the neutral base style with the modifier's
+    own clause after it, which is the order the node composes them in.
+    """
+    prose = (MODIFIER_BASE_STYLE + " " + rec.get("prose", "")).strip()
+    return {
+        "id": "mod/" + mid,
+        "category": "",
+        "subject": MODIFIER_SUBJECT,
+        "prose": prose,
+        "tags": rec.get("tags", ""),
+        "negative": rec.get("negative", ""),
+    }
+
+
+def baseline_record() -> dict:
+    """The no-modifier tile: same subject, same base style, nothing else."""
+    return {
+        "id": "mod/" + BASELINE_ID,
+        "category": "",
+        "subject": MODIFIER_SUBJECT,
+        "prose": MODIFIER_BASE_STYLE,
+        "tags": "",
+        "negative": "",
+    }
+
+
 def tile_hash(style: dict, model: str) -> str:
     """Hash every input that affects how this tile looks."""
     payload = json.dumps(
@@ -334,7 +458,7 @@ def tile_hash(style: dict, model: str) -> str:
             "prose": style.get("prose", ""),
             "tags": style.get("tags", ""),
             "negative": style.get("negative", ""),
-            "subject": subject_for(style.get("category", ""), style.get("id", "")),
+            "subject": _subject_for(style),
             "model": model,
             "render": RENDER,
             "tile": TILE_SIZE,
@@ -524,6 +648,49 @@ class ComfyClient:
             return None
 
 
+def modifier_targets() -> list[tuple[str, dict]]:
+    """Every modifier that gets a tile, plus the baseline, in axis order.
+
+    Only the three purely visual axes. Era, period dress and mood keep
+    their descriptor rows -- see ARCHITECTURE.md for why those two axes
+    are closed rather than merely un-tiled.
+    """
+    from data.modifiers import MODIFIERS, MODIFIERS_BY_AXIS
+
+    out: list[tuple[str, dict]] = [(BASELINE_ID, baseline_record())]
+    for axis in PREVIEW_AXES:
+        for mid in MODIFIERS_BY_AXIS.get(axis, []):
+            if mid in MODIFIERS:
+                out.append((mid, modifier_record(mid, MODIFIERS[mid])))
+    return out
+
+
+def survey_modifiers(model: str) -> tuple[list[str], list[str], list[str]]:
+    """(missing, stale, orphan) modifier tile ids against the manifest.
+
+    Same two questions, and the same fresh-checkout caveat, as survey():
+    the manifest is tracked and previews/src is not, so the source render
+    is only asked about on a machine that has rendered before.
+    """
+    manifest = load_manifest()
+    recorded = manifest.get("modifier_tiles", {})
+    effective_model = model or manifest.get("model", "")
+    have_sources = MOD_SRC_DIR.is_dir()
+
+    missing, stale = [], []
+    wanted = dict(modifier_targets())
+    for mid, record in wanted.items():
+        entry = recorded.get(mid)
+        if entry is None:
+            missing.append(mid)
+        elif have_sources and not (MOD_SRC_DIR / f"{mid}.png").is_file():
+            missing.append(mid)
+        elif entry.get("hash") != tile_hash(record, effective_model):
+            stale.append(mid)
+    orphan = sorted(set(recorded) - set(wanted))
+    return sorted(missing), sorted(stale), orphan
+
+
 def build_workflow(positive: str, negative: str, model: str,
                    style_id: str = "preview") -> dict:
     """A Chroma text-to-image graph, matching the node's own prose output."""
@@ -573,7 +740,7 @@ def build_workflow(positive: str, negative: str, model: str,
 
 def render_one(client: ComfyClient, style: dict, model: str) -> bool:
     """Render one style's preview into previews/src. Returns success."""
-    subject = subject_for(style.get("category", ""), style.get("id", ""))
+    subject = _subject_for(style)
     # Match the node's own prose output: subject first, style as a
     # trailing rendering clause. A tile that does not represent what the
     # node emits is worse than no tile.
@@ -596,8 +763,11 @@ def render_one(client: ComfyClient, style: dict, model: str) -> bool:
         for image in output.get("images", []):
             data = client.image(image.get("filename", ""), image.get("subfolder", ""))
             if data:
-                SRC_DIR.mkdir(parents=True, exist_ok=True)
-                (SRC_DIR / f"{style['id']}.png").write_bytes(data)
+                # parents=True matters: a modifier's id is "mod/<id>", so
+                # the destination is one directory deeper than a style's.
+                target = SRC_DIR / f"{style['id']}.png"
+                target.parent.mkdir(parents=True, exist_ok=True)
+                (target).write_bytes(data)
                 return True
     print("    render produced no image")
     return False
@@ -683,10 +853,29 @@ def pack_atlases() -> int:
         "categories": {},
     }
 
-    for category in CATEGORIES:
-        ids = sorted(sid for sid, rec in STYLES.items()
-                     if rec.get("category") == category)
-        present = [sid for sid in ids if (SRC_DIR / f"{sid}.png").is_file()]
+    from data.modifiers import MODIFIERS_BY_AXIS
+
+    # (group key, ordered ids, source directory). The index is keyed by
+    # the *picker group*, and a modifier's group is its axis, so the three
+    # axis atlases drop into the same map the 12 style categories use and
+    # every consumer -- gallery, public pages, generate_js_data -- reads
+    # them with the code it already has. The baseline is packed into each
+    # axis atlas because it is what every tile on that axis is a deviation
+    # from, and it costs one 256px cell.
+    groups: list[tuple[str, list[str], Path]] = [
+        (category,
+         sorted(sid for sid, rec in STYLES.items()
+                if rec.get("category") == category),
+         SRC_DIR)
+        for category in CATEGORIES
+    ]
+    groups.extend(
+        (axis, [BASELINE_ID] + list(MODIFIERS_BY_AXIS.get(axis, [])), MOD_SRC_DIR)
+        for axis in PREVIEW_AXES
+    )
+
+    for category, ids, src_dir in groups:
+        present = [sid for sid in ids if (src_dir / f"{sid}.png").is_file()]
         if not present:
             print(f"  {category}: no source renders, skipped")
             continue
@@ -700,7 +889,7 @@ def pack_atlases() -> int:
         tiles = {}
         for position, sid in enumerate(present):
             column, row = position % columns, position // columns
-            with Image.open(SRC_DIR / f"{sid}.png") as source:
+            with Image.open(src_dir / f"{sid}.png") as source:
                 thumb = source.convert("RGB").resize(
                     (TILE_SIZE, TILE_SIZE), Image.LANCZOS
                 )
@@ -754,17 +943,34 @@ def build_contact_sheets(only: str | None = None) -> int:
 
     from data.styles import CATEGORIES, STYLES
 
+    from data.modifiers import MODIFIERS_BY_AXIS
+
     review_dir = ROOT / "previews" / "review"
     review_dir.mkdir(parents=True, exist_ok=True)
 
     cell, label_h, pad = 220, 26, 6
-    categories = [only] if only else list(CATEGORIES)
+    # Same (group, ids, source dir) shape as pack_atlases, and for the same
+    # reason: a modifier tile that misrepresents what the node emits is
+    # exactly as bad as a style tile that does, so it gets reviewed the
+    # same way. The baseline leads each axis sheet, because "is this tile
+    # wrong" is unanswerable without the thing it deviates from.
+    sheets: list[tuple[str, list[str], Path]] = [
+        (category,
+         sorted(sid for sid, rec in STYLES.items()
+                if rec.get("category") == category),
+         SRC_DIR)
+        for category in CATEGORIES
+    ]
+    sheets.extend(
+        (axis, [BASELINE_ID] + list(MODIFIERS_BY_AXIS.get(axis, [])), MOD_SRC_DIR)
+        for axis in PREVIEW_AXES
+    )
+    if only:
+        sheets = [g for g in sheets if g[0] == only]
     written = 0
 
-    for category in categories:
-        ids = sorted(sid for sid, rec in STYLES.items()
-                     if rec.get("category") == category)
-        present = [sid for sid in ids if (SRC_DIR / f"{sid}.png").is_file()]
+    for category, ids, src_dir in sheets:
+        present = [sid for sid in ids if (src_dir / f"{sid}.png").is_file()]
         if not present:
             print(f"  {category}: no renders yet, skipped")
             continue
@@ -782,7 +988,7 @@ def build_contact_sheets(only: str | None = None) -> int:
             column, row = position % columns, position // columns
             x = pad + column * (cell + pad)
             y = pad + row * (cell + label_h + pad)
-            with Image.open(SRC_DIR / f"{sid}.png") as source:
+            with Image.open(src_dir / f"{sid}.png") as source:
                 sheet.paste(source.convert("RGB").resize((cell, cell),
                                                          Image.LANCZOS), (x, y))
             # The id, not the label: it is what --style takes.
@@ -835,7 +1041,102 @@ def resolve_model(client: ComfyClient, requested: str) -> str | None:
     return None
 
 
+def render_modifier_targets(client: "ComfyClient", model: str,
+                            scope: list[str]) -> int:
+    """Render the stale/missing modifier tiles. Returns the failure count.
+
+    The manifest section is separate from the styles' (``modifier_tiles``
+    rather than ``tiles``) so a modifier id can never shadow a style id,
+    and it is saved after every render for the same reason the style loop
+    does it: a multi-hour unattended run must survive being stopped.
+    """
+    targets = dict(modifier_targets())
+    if scope:
+        unknown = [m for m in scope if m not in targets]
+        if unknown:
+            print(f"Unknown modifier id(s): {unknown}")
+            return len(unknown)
+        wanted = sorted(scope)
+    else:
+        missing, stale, _ = survey_modifiers(model)
+        wanted = sorted(set(missing) | set(stale))
+
+    if not wanted:
+        print("Nothing to render; every modifier tile is current.")
+        return 0
+
+    manifest = load_manifest()
+    manifest["model"] = model
+    tiles = manifest.setdefault("modifier_tiles", {})
+    done = failed = 0
+    for position, mid in enumerate(wanted, 1):
+        record = targets[mid]
+        print(f"[{position}/{len(wanted)}] modifier {mid}")
+        if render_with_retry(client, record, model):
+            tiles[mid] = {"hash": tile_hash(record, model)}
+            done += 1
+        else:
+            failed += 1
+        save_manifest(manifest)
+    print(f"\nRendered {done} modifier tiles, failed {failed}.")
+    return failed
+
+
+def verify_after_build(model: str, scope: list[str] | None,
+                       only: str | None,
+                       check_modifiers: bool = False,
+                       modifier_scope: list[str] | None = None) -> int:
+    """Re-survey after packing, and fail loudly if anything is still stale.
+
+    A build run that exits 0 must *mean* "every artefact this run was
+    responsible for is current", not "the code ran to the end". One full
+    run rendered 29 tiles, exited 0, and still needed a manual ``--pack``;
+    the cause was never established, so the claim is made self-verifying
+    instead of chased. ``scope`` narrows the check to the ids the run was
+    asked to render (``--style``); ``only`` narrows it to one category.
+    """
+    from data.styles import STYLES
+
+    missing, stale, _ = survey(model)
+    if scope:
+        wanted = set(scope)
+        missing = [s for s in missing if s in wanted]
+        stale = [s for s in stale if s in wanted]
+    elif only:
+        missing = [s for s in missing
+                   if STYLES.get(s, {}).get("category") == only]
+        stale = [s for s in stale
+                 if STYLES.get(s, {}).get("category") == only]
+    mod_missing, mod_stale = [], []
+    if check_modifiers:
+        mod_missing, mod_stale, _ = survey_modifiers(model)
+        if modifier_scope:
+            wanted = set(modifier_scope)
+            mod_missing = [m for m in mod_missing if m in wanted]
+            mod_stale = [m for m in mod_stale if m in wanted]
+    bad_revs = stale_atlas_revs()
+    if not (missing or stale or mod_missing or mod_stale or bad_revs):
+        print("Verified: every artefact this run was responsible for is current.")
+        return 0
+    print("\nBuild finished but its artefacts are NOT current:")
+    for label, ids in (("missing tile", missing), ("stale tile", stale),
+                       ("missing modifier tile", mod_missing),
+                       ("stale modifier tile", mod_stale),
+                       ("stale atlas rev", bad_revs)):
+        for item in ids:
+            print(f"    {label}: {item}")
+    print("\nRe-run the build, or python scripts/build_previews.py --pack")
+    return 1
+
+
 def main() -> int:
+    # A multi-hour unattended run writes into a pipe, where the default
+    # block buffering hides all of its progress until it exits -- which is
+    # how one run produced completely empty captured stdout.
+    try:
+        sys.stdout.reconfigure(line_buffering=True)
+    except (AttributeError, ValueError):  # pragma: no cover - odd stdout
+        pass
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true",
                         help="Report stale/missing tiles and exit non-zero.")
@@ -850,6 +1151,14 @@ def main() -> int:
     parser.add_argument("--style", metavar="ID", action="append", default=[],
                         help="Render just this style id. Repeatable. "
                              "Use when one tile came out wrong.")
+    parser.add_argument("--modifiers", action="store_true",
+                        help="With --build, render the modifier tiles "
+                             "(lighting, colour grade, finish) as well as "
+                             "the styles.")
+    parser.add_argument("--modifier", metavar="ID", action="append", default=[],
+                        help="Render just this modifier id. Repeatable. "
+                             "Mirrors --style; use when one tile came out "
+                             "wrong. '_baseline' is the no-modifier tile.")
     parser.add_argument("--prune", action="store_true",
                         help="Delete source renders for styles the pack no "
                              "longer ships. previews/src is gitignored, so "
@@ -872,9 +1181,11 @@ def main() -> int:
     if not (args.check or args.build or args.pack or args.contact_sheet
             or args.prune):
         args.check = True
-    if args.style:
+    if args.style or args.modifier:
         args.build = True
         args.check = False
+    if args.modifier:
+        args.modifiers = True
 
     from data.styles import STYLES
 
@@ -897,8 +1208,28 @@ def main() -> int:
                 print(f"    {label}: {sid}")
             if len(ids) > 15:
                 print(f"    ... and {len(ids) - 15} more {label}")
+        # Modifier tiles are checked unconditionally, exactly like style
+        # tiles: CI has to catch "edited a modifier and did not re-render"
+        # the same way it catches it for a style. --only names a style
+        # category, so it silences this section rather than filtering it.
+        mod_missing, mod_stale, mod_orphan = ([], [], [])
+        if not args.only:
+            mod_missing, mod_stale, mod_orphan = survey_modifiers(args.model)
+            print(f"Modifier tiles ({', '.join(PREVIEW_AXES)}, plus baseline):")
+            print(f"  missing tiles: {len(mod_missing)}")
+            print(f"  stale tiles:   {len(mod_stale)}")
+            print(f"  orphan tiles:  {len(mod_orphan)}")
+            for label, ids in (("missing", mod_missing), ("stale", mod_stale)):
+                for mid in ids[:15]:
+                    print(f"    {label}: {mid}")
+                if len(ids) > 15:
+                    print(f"    ... and {len(ids) - 15} more {label}")
         if missing or stale:
             print("\nRun: python scripts/build_previews.py --build")
+            return 1
+        if mod_missing or mod_stale:
+            print("\nRun: python scripts/build_previews.py "
+                  "--build --modifiers")
             return 1
         bad_revs = stale_atlas_revs()
         if bad_revs:
@@ -931,6 +1262,11 @@ def main() -> int:
                 print(f"Unknown style id(s): {unknown}")
                 return 1
             targets = sorted(args.style)
+        elif args.modifier:
+            # --modifier <id> means "redo this one bad tile", mirroring
+            # --style <id>. Without this it would also sweep up every
+            # stale style tile, which is emphatically not what was asked.
+            targets = []
         elif args.all:
             targets = sorted(STYLES)
         else:
@@ -941,7 +1277,8 @@ def main() -> int:
                        if STYLES.get(s, {}).get("category") == args.only]
 
         if not targets:
-            print("Nothing to render; every tile is current.")
+            if not args.modifier:
+                print("Nothing to render; every style tile is current.")
         else:
             manifest = load_manifest()
             manifest["model"] = model
@@ -960,10 +1297,19 @@ def main() -> int:
             print(f"\nRendered {done}, failed {failed}.")
             if failed:
                 return 1
+        if args.modifiers:
+            failed = render_modifier_targets(client, model, args.modifier)
+            if failed:
+                return 1
+
         result = pack_atlases()
         if args.contact_sheet:
             build_contact_sheets(args.only)
-        return result
+        if result:
+            return result
+        return verify_after_build(model, args.style, args.only,
+                                  check_modifiers=args.modifiers,
+                                  modifier_scope=args.modifier)
 
     return pack_atlases()
 

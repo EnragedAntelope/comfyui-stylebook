@@ -260,6 +260,17 @@ COMICS_STYLES: dict[str, dict] = {
         "preview": "comics#23",
         "blocks": [],
     },
+    "bronze_age_comics": {
+        "id": "bronze_age_comics",
+        "label": "Bronze Age Comics",
+        "category": "comics",
+        "aliases": ["1970s comic", "bronze age comic book", "post-code comics"],
+        "tags": "bronze age comic book art, feathered brush and pen rendering laid over flat colour so forms carry real modelling, muted earthy palette against the primaries of the decade before, finer better-registered ben-day dots on off-white pulp stock, heavy black spotting anchoring the darkest passages",
+        "prose": "Printed as bronze age comic book art: feathered brush and pen rendering laid over the flat colour so the forms carry real modelling, the palette gone muted and earthy beside the hard primaries of the decade before, ben-day dots finer and better registered on off-white pulp stock, heavy black spotting anchoring the page.",
+        "negative": "digital colour gradients, glossy paper, clean vector line, saturated primaries",
+        "preview": "comics#24",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = COMICS_STYLES

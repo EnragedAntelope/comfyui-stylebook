@@ -8,12 +8,12 @@
 
 ## Current state
 
-_Last verified: 2026-09-03_
+_Last verified: 2026-09-04_
 
-- **Status:** in active development, `pyproject.toml` at v0.13.0 (unreleased; 0.12.0 is the last release on `main`). Work in progress on the `revision-0.13.0` branch. Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships needs no bump. `.comfyignore` says what the registry package leaves out; its patterns are gitignore-style, so root-only ones carry a leading slash.
+- **Status:** in active development, `pyproject.toml` at v0.14.0 (unreleased; **0.13.0 is the last release on `main`**, merged 2026-09-03, CI and the registry publish both green). Work in progress on the `revision-0.14.0` branch. Published to ComfyUI Manager but unadvertised. `.github/workflows/publish_action.yml` fires on a `pyproject.toml` version change on `main` — a commit touching nothing the registry ships needs no bump. `.comfyignore` says what the registry package leaves out; its patterns are gitignore-style, so root-only ones carry a leading slash.
 - **Works:** all five nodes (Style, Artist, Modifier, Blend, Sheet) over the `STYLEBOOK_CHAIN` protocol; every style ships a rendered preview tile packed into WebP sprite atlases; the two-line node-face readout plus Copy-resolved-prompt (with success/failure feedback) and Pin-this-pick context items; a right-click Auto-advance cycle toggle on Style/Artist/Modifier (on by default for Cycle mode) that steps `cycle_index` by one each run, wrapping at the pool size the backend reports (a node property, so old graphs load unchanged, and it can be turned off to hold a fixed index); a "New in x.y.z" tab, a new ribbon and an A-Z/Newest sort in every picker, driven by `data/versions.py`; optional `user_styles.json` validated and merged at load; a public browsable gallery plus public artist and modifier reference pages served by GitHub Pages from the repo root; the full CI gate including a jsdom frontend suite and a no-GPU preview `--check`.
-- **In progress:** style and artist curation is the steady-state work rather than a milestone — each release adds entries and re-renders the affected tiles. 0.8.0 made the "describe the rendering, not the subject" rule enforceable via the optional `scene` field; 0.9.0 extended that check to modifiers (which get no `scene` escape) and rejected negated clauses in artist descriptors; 0.10.0 moved the person-named-style map out of the tests into the data as the optional `namesake` field, added a detector for the *missing* half of that promise, and moved the 300 KB corpus out of ComfyUI's `**/*.js` extension glob into a lazily fetched `js/stylebook_data.json`. 0.12.0 closes the companion hole the `scene` rule could not see: `_ENTITY_NOUNS` in `tests/validate_data.py` rejects garments, furniture and light fixtures in a modifier's positive text, all twenty `era` records were rewritten to describe light *behaviour* rather than fixtures, and the wardrobe text moved onto a new `period_dress` axis so nothing was lost. 0.13.0 makes that entity rule hot on **styles** too: the escape is the optional `depicts` field — a declaration on the record, badged in both galleries, rather than an exemption map nothing can keep honest — with `object_artifact` and `craft_material` exempt by category. It also cache-busts the sprite atlases with a content-hashed `?v=` (their filenames are stable, so a repack that changed a category's grid drew visibly *wrong* tiles for a returning visitor, not missing ones).
-- **Known gaps / next steps:** rendering new preview tiles needs a running ComfyUI and a Chroma checkpoint, and a full run takes hours — `build_previews.py` refuses to render without an explicit `--model`, because substring model resolution once silently grabbed a Turbo merge and produced plausible-but-wrong tiles; ComfyUI caches the Python data layer at startup, so a newly added style or artist is rejected by node validation until it is restarted; the namesake detector cannot see an adjectival label ("Sirkian Melodrama" shares no word with "Douglas Sirk"), so those still need declaring by hand; there is no CONDITIONING-output node and that is a settled decision, not a gap (see `ARCHITECTURE.md`).
+- **In progress:** style and artist curation is the steady-state work rather than a milestone — each release adds entries and re-renders the affected tiles. 0.8.0 made the "describe the rendering, not the subject" rule enforceable via the optional `scene` field; 0.9.0 extended that check to modifiers (which get no `scene` escape) and rejected negated clauses in artist descriptors; 0.10.0 moved the person-named-style map out of the tests into the data as the optional `namesake` field, added a detector for the *missing* half of that promise, and moved the 300 KB corpus out of ComfyUI's `**/*.js` extension glob into a lazily fetched `js/stylebook_data.json`. 0.12.0 closes the companion hole the `scene` rule could not see: `_ENTITY_NOUNS` in `tests/validate_data.py` rejects garments, furniture and light fixtures in a modifier's positive text, all twenty `era` records were rewritten to describe light *behaviour* rather than fixtures, and the wardrobe text moved onto a new `period_dress` axis so nothing was lost. 0.13.0 makes that entity rule hot on **styles** too: the escape is the optional `depicts` field — a declaration on the record, badged in both galleries, rather than an exemption map nothing can keep honest — with `object_artifact` and `craft_material` exempt by category. It also cache-busts the sprite atlases with a content-hashed `?v=` (their filenames are stable, so a repack that changed a category's grid drew visibly *wrong* tiles for a returning visitor, not missing ones). 0.14.0 closes the largest remaining UX gap: the three purely visual modifier axes (`lighting`, `color_grade`, `finish`) now ship rendered preview tiles, plus one `_baseline` tile per axis showing the base render they all deviate from. It also gives a custom style payload parity with a built-in (`scene`, `depicts` and `aliases` now reach the browser; `namesake` deliberately does not), makes `build_previews.py --build` re-verify its own artefacts before exiting 0, and prints a `depicts` concentration line from the validator.
+- **Known gaps / next steps:** the `era` and `mood` modifier axes are **closed** — every remaining candidate collapses into an existing record under the 0.12.0 light-behaviour rule, and `ARCHITECTURE.md` records why, so this is a settled non-gap rather than a hole; rendering new preview tiles needs a running ComfyUI and a Chroma checkpoint, and a full run takes hours — `build_previews.py` refuses to render without an explicit `--model`, because substring model resolution once silently grabbed a Turbo merge and produced plausible-but-wrong tiles; ComfyUI caches the Python data layer at startup, so a newly added style or artist is rejected by node validation until it is restarted; the namesake detector cannot see an adjectival label ("Sirkian Melodrama" shares no word with "Douglas Sirk"), so those still need declaring by hand; there is no CONDITIONING-output node and that is a settled decision, not a gap (see `ARCHITECTURE.md`).
 
 ## Architecture in 60 seconds
 
@@ -107,7 +107,42 @@ and a Chroma checkpoint named explicitly via `--model`; `--check` needs neither.
   by category — both already mean "the subject is rendered *as* the thing".
   The rule is hot on modifiers with no escape at all. Rationale, and why a
   declared field beat an exemption map, in `ARCHITECTURE.md`.
+- **A modifier's aliases are checked, and a modifier tile is measured, not
+  argued about.** `_check_modifier_alias_content` rejects a scene or entity noun
+  in a modifier's alias list: aliases never reach the encoder, but "submerged"
+  and "neon street" were the only surviving evidence that two records still
+  delivered a whole scene after their prose had been cleaned. And
+  `MODIFIER_BASE_STYLE` in `scripts/build_previews.py` must anchor the scene and
+  framing while asserting nothing about the rendering — too thin and the modifier
+  renders *as the subject*, too assertive and it suppresses the axis. Both limits
+  were found by A/B render, and `ARCHITECTURE.md` says to re-run that comparison
+  rather than reason about it. A modifier names the light or finish's *behaviour*:
+  naming its **shape** (edge, boundary, void, halo) renders an object, naming a
+  **medium or place** renders a scene, and over-protecting the subject suppresses
+  the axis. All three are invisible in text review and obvious in a tile.
+- **A picker's layout is per group, not per picker.** `activeLayout()` and
+  `activePreviews()` in `js/stylebook_gallery.js` consult the optional
+  `groupLayout` / `previewGroups` config against the active tab, so the
+  modifier picker draws tiles for `lighting`/`color_grade`/`finish` and rows
+  for `era`/`period_dress`/`mood`. The grid's className therefore belongs in
+  `renderGrid()`, never the constructor. `PREVIEW_AXES` in
+  `scripts/build_previews.py` and `PREVIEWED_AXES` in the gallery are one rule
+  in two languages, bound by `tests/test_previews.py`.
+- **The preview atlas index is keyed by picker *group*.** A modifier's group is
+  its axis, which is why axis atlases needed no new lookup code anywhere. A
+  modifier is addressed by *label* everywhere else in the pack, so the picker
+  item carries `previewId` (the record id) for the atlas — ids are stable,
+  labels get reworded. Modifier tiles live in `previews/src/mod/` and the
+  manifest's `modifier_tiles` section because `chiaroscuro` is both a style id
+  and a modifier id.
 - `user_styles.json` is optional — `data/user_data.py` validates and merges it.
+  A custom style's `scene`, `depicts` and `aliases` reach the gallery like a
+  built-in's; `namesake` deliberately does not, because it promises a matching
+  artist record that nothing can enforce for a user file.
+- **A build step that produces artefacts re-verifies them before exiting 0.**
+  `build_previews.py --build` re-runs `survey()` and `stale_atlas_revs()` after
+  packing and fails with a named list, so "it exited 0" means "the artefacts are
+  current" rather than "the code ran".
 - Tests run without ComfyUI installed (comfy_stub provides a stand-in `comfy_api.latest.io`).
 
 ## Security

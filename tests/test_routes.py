@@ -28,6 +28,7 @@ import importlib
 import json
 import os
 import sys
+import tempfile
 import types
 import unittest
 from contextlib import contextmanager
@@ -153,6 +154,38 @@ class UserDataRouteTests(unittest.TestCase):
                                                  "modifiers"})
                 json.dumps(response.body)  # must stay JSON-serialisable
                 self.assertIsNotNone(routes_module)
+
+    def test_a_custom_style_reaches_the_browser_with_scene_depicts_aliases(self):
+        """End-to-end over the real route: what a user file declares is what
+        the gallery receives. These three fields validated and merged long
+        before the payload carried them, so a custom style could never show
+        the badges a built-in shows."""
+        record = {
+            "label": "Route Test Style",
+            "category": "photography",
+            "prose": "a plain hand-written look.",
+            "scene": "an empty swimming pool",
+            "depicts": "a brass telescope",
+            "aliases": ["route test alias"],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "user_styles.json"
+            path.write_text(json.dumps({"styles": {"route_test_style": record}}),
+                            encoding="utf-8")
+            env = {k: v for k, v in os.environ.items()
+                   if k != "STYLEBOOK_IGNORE_USER_STYLES"}
+            env["STYLEBOOK_USER_STYLES"] = str(path)
+            with mock.patch.dict(os.environ, env, clear=True):
+                with _stubbed_aiohttp() as (route_table, _):
+                    handler = next(h for m, p_, h in route_table.routes
+                                   if p_ == "/stylebook/user_data")
+                    body = asyncio.run(handler(mock.Mock())).body
+            entry = next(e for e in body["styles"]
+                         if e["id"] == "route_test_style")
+        self.assertEqual(entry["scene"], "an empty swimming pool")
+        self.assertEqual(entry["depicts"], "a brass telescope")
+        self.assertEqual(entry["aliases"], ["route test alias"])
+        self.assertNotIn("namesake", entry)
 
 
 if __name__ == "__main__":

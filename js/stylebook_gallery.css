@@ -468,6 +468,14 @@
     text-align: center;
 }
 
+/* The per-tab hint, on its own line under the key help. The footer is
+   flex: 0 0 auto and sized by its contents, so a second line grows it
+   rather than clipping -- unlike a tile, whose height is fixed by
+   grid-auto-rows. */
+.stylebook-footer-hint {
+    margin-top: 3px;
+}
+
 /* ---- narrow viewports ---- */
 
 @media (max-width: 720px) {

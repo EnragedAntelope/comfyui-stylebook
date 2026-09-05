@@ -401,7 +401,58 @@ class BuildUserDataPayloadTests(unittest.TestCase):
         self.assertEqual(payload["styles"], [{
             "id": "my_style", "label": "My Style", "category": "photography",
             "detail": "a hand-written look.",
+            "scene": "", "depicts": "", "aliases": [],
         }])
+
+    def test_a_custom_style_passes_scene_depicts_and_aliases_to_the_gallery(self):
+        styles = dict(BUILTIN_STYLES)
+        styles["my_style"] = {
+            "label": "My Style", "category": "photography", "prose": "a look.",
+            "scene": "an empty corridor", "depicts": "a brass telescope",
+            "aliases": ["my alias", "another"],
+        }
+        payload = build_user_data_payload(
+            styles=styles, artists=BUILTIN_ARTISTS, modifiers=BUILTIN_MODIFIERS,
+            added_styles={"my_style"}, added_artists=set(), added_modifiers=set(),
+        )
+        entry = payload["styles"][0]
+        self.assertEqual(entry["scene"], "an empty corridor")
+        self.assertEqual(entry["depicts"], "a brass telescope")
+        self.assertEqual(entry["aliases"], ["my alias", "another"])
+
+    def test_namesake_is_deliberately_not_passed_through(self):
+        # It promises a matching artist record exists, which the validator
+        # enforces for built-ins and cannot for a user file.
+        styles = dict(BUILTIN_STYLES)
+        styles["my_style"] = {
+            "label": "My Style", "category": "photography", "namesake": "Nobody At All",
+        }
+        payload = build_user_data_payload(
+            styles=styles, artists=BUILTIN_ARTISTS, modifiers=BUILTIN_MODIFIERS,
+            added_styles={"my_style"}, added_artists=set(), added_modifiers=set(),
+        )
+        self.assertNotIn("namesake", payload["styles"][0])
+
+    def test_aliases_default_to_an_empty_list_when_absent(self):
+        styles = dict(BUILTIN_STYLES)
+        styles["my_style"] = {"label": "My Style", "category": "photography"}
+        payload = build_user_data_payload(
+            styles=styles, artists=BUILTIN_ARTISTS, modifiers=BUILTIN_MODIFIERS,
+            added_styles={"my_style"}, added_artists=set(), added_modifiers=set(),
+        )
+        self.assertEqual(payload["styles"][0]["aliases"], [])
+
+    def test_artist_and_modifier_entries_keep_the_four_field_shape(self):
+        artists = dict(BUILTIN_ARTISTS)
+        artists["mine"] = {"label": "Mine", "category": "photography", "descriptor": "d"}
+        modifiers = dict(BUILTIN_MODIFIERS)
+        modifiers["my_mod"] = {"label": "My Mod", "axis": "lighting", "prose": "p"}
+        payload = build_user_data_payload(
+            styles=BUILTIN_STYLES, artists=artists, modifiers=modifiers,
+            added_styles=set(), added_artists={"mine"}, added_modifiers={"my_mod"},
+        )
+        for entry in payload["artists"] + payload["modifiers"]:
+            self.assertEqual(sorted(entry), ["category", "detail", "id", "label"])
 
     def test_detail_falls_back_to_tags_when_prose_is_absent(self):
         styles = dict(BUILTIN_STYLES)

@@ -7,9 +7,17 @@ every modifier's exact emitted text, searchable, so gaps in coverage are
 visible without installing anything.
 
 Same architecture as ``build_gallery_page.py`` on purpose: one static page
-per subject, data embedded as a JSON script tag, sprite-free (artists and
-modifiers have no preview tiles), no dependencies. GitHub Pages serves the
-repo root, so nothing here can reference assets outside docs/reference/.
+per subject, data embedded as a JSON script tag, no dependencies. The
+artist page is sprite-free -- a descriptor has nothing to show. The
+modifier page carries tiles for the three purely visual axes (lighting,
+colour grade, finish), each preceded once by the baseline render they are
+all a deviation from; era, period dress and mood stay text-only.
+
+GitHub Pages serves the **repo root**, not docs/, so an asset path here is
+relative to docs/reference/ and has to climb two levels to reach the
+committed atlases: ``../../js/previews/``. A plain ``python -m http.server``
+from the repo root is the one arrangement in which a wrong prefix still
+works, so it cannot verify this -- check the live URL.
 
 Usage:
     python scripts/build_reference_pages.py            # write both
@@ -36,6 +44,10 @@ TARGETS = {
     "artists": ROOT / "docs" / "reference" / "artists.html",
     "modifiers": ROOT / "docs" / "reference" / "modifiers.html",
 }
+
+#: Where the committed sprite atlases sit relative to a page in
+#: docs/reference/. See the module docstring: Pages serves the repo root.
+ASSET_PREFIX = "../../js/previews/"
 
 #: Shared visual language with docs/gallery/index.html. Kept as a literal
 #: rather than imported from that script: the two templates evolve at
@@ -100,6 +112,28 @@ main { max-width: 980px; margin: 0 auto; padding: 18px 20px 60px; }
   margin: 26px 0 10px; font-size: 13px; letter-spacing: .06em;
   text-transform: uppercase; color: var(--muted);
 }
+/* Preview thumbnail on an entry, and the baseline card that opens a
+   tiled axis. The entry is a flex row once it has art, so the text
+   column keeps its own min-width: 0 and can still wrap. */
+.entry.has-art {
+  display: flex; gap: 14px; align-items: flex-start;
+  /* The 120px guess above is for a text-only entry; a tiled one is taller,
+     and an under-guess makes the scrollbar jump as content-visibility
+     measures each entry for real. */
+  contain-intrinsic-size: auto 170px;
+}
+.entry.has-art .body { flex: 1 1 auto; min-width: 0; }
+.art {
+  flex: 0 0 auto; width: 128px; height: 128px; border-radius: 7px;
+  background: var(--bg) no-repeat center / cover; border: 1px solid var(--line);
+}
+.baseline {
+  display: flex; gap: 14px; align-items: center;
+  background: var(--card); border: 1px dashed var(--line);
+  border-radius: 9px; padding: 12px 16px; margin-bottom: 10px;
+}
+.baseline p { margin: 0; color: var(--muted); max-width: 62ch; }
+.baseline strong { color: var(--fg); }
 .empty { padding: 60px 0; text-align: center; color: var(--muted); }
 footer { max-width: 980px; margin: 0 auto; padding: 0 20px 40px;
          color: var(--muted); font-size: 13px; }
@@ -107,6 +141,7 @@ footer { max-width: 980px; margin: 0 auto; padding: 0 20px 40px;
 
 _JS = """
 const DATA = JSON.parse(document.getElementById("data").textContent);
+const ASSETS = "__ASSET_PREFIX__";
 const q = document.getElementById("q");
 const groupSel = document.getElementById("group");
 const countEl = document.getElementById("count");
@@ -121,32 +156,86 @@ function matches(e, needle) {
   return e.search.toLowerCase().includes(needle);
 }
 
+/* Same sprite arithmetic as js/stylebook_gallery.js and the gallery page.
+   The sprite index is keyed by *picker group*, and a modifier's group is
+   its axis, so an axis atlas is reached with exactly the code a category
+   atlas is. `rev` is the atlas content hash: the filename is stable, so
+   without it a repack that changes a grid composites new offsets over a
+   browser's cached old sheet and draws visibly wrong tiles. */
+function applySprite(el, group, id) {
+  const entry = DATA.sprites && DATA.sprites.categories
+    && DATA.sprites.categories[group];
+  const cell = entry && entry.tiles && entry.tiles[id];
+  if (!cell || !entry.cols || !entry.rows) return false;
+  const x = entry.cols > 1 ? (cell[0] / (entry.cols - 1)) * 100 : 0;
+  const y = entry.rows > 1 ? (cell[1] / (entry.rows - 1)) * 100 : 0;
+  const src = ASSETS + entry.atlas + (entry.rev ? "?v=" + entry.rev : "");
+  el.style.backgroundImage = "url('" + src + "')";
+  el.style.backgroundSize = entry.cols * 100 + "% " + entry.rows * 100 + "%";
+  el.style.backgroundPosition = x + "% " + y + "%";
+  return true;
+}
+
+/* The tile that says what all the others on this axis are a deviation
+   from. A modifier tile is close to meaningless without it: "warmer than
+   what?" is a fair question. Shown once per tiled axis, never filtered
+   away, because it is not an entry. */
+function baselineEl(group) {
+  const box = document.createElement("div");
+  box.className = "baseline";
+  const art = document.createElement("div");
+  art.className = "art";
+  if (!applySprite(art, group, DATA.baselineId)) return null;
+  const p = document.createElement("p");
+  const strong = document.createElement("strong");
+  strong.textContent = "No modifier. ";
+  p.append(strong, document.createTextNode(
+    "Every tile on this axis is this same render with only the modifier "
+    + "changed."));
+  box.append(art, p);
+  return box;
+}
+
 function entryEl(e) {
   const div = document.createElement("article");
   div.className = "entry";
+  /* Art first, then a text column, so the DOM order matches the reading
+     order rather than relying on the flex direction to fix it. */
+  let body = div;
+  if (e.mid && DATA.previewAxes && DATA.previewAxes.includes(e.group)) {
+    const art = document.createElement("div");
+    art.className = "art";
+    if (applySprite(art, e.group, e.mid)) {
+      div.classList.add("has-art");
+      div.append(art);
+      body = document.createElement("div");
+      body.className = "body";
+      div.append(body);
+    }
+  }
   const h = document.createElement("h2");
   h.textContent = e.label;
   const tag = document.createElement("span");
   tag.className = "tag";
   tag.textContent = e.groupLabel;
   h.append(tag);
-  div.append(h);
+  body.append(h);
   if (e.also) {
     const also = document.createElement("div");
     also.className = "also";
     also.textContent = "also: " + e.also;
-    div.append(also);
+    body.append(also);
   }
   if (e.detail) {
     const p = document.createElement("p");
     p.textContent = e.detail;
-    div.append(p);
+    body.append(p);
   }
   for (const block of e.blocks || []) {
     const code = document.createElement("code");
     code.textContent = block.text;
     code.title = block.title;
-    div.append(code);
+    body.append(code);
   }
   return div;
 }
@@ -178,6 +267,10 @@ function render() {
       h.textContent = e.groupLabel;
       frag.append(h);
       lastGroup = e.group;
+      if (DATA.previewAxes && DATA.previewAxes.includes(e.group)) {
+        const base = baselineEl(e.group);
+        if (base) frag.append(base);
+      }
     }
     frag.append(entryEl(e));
   }
@@ -238,7 +331,7 @@ node pack for ComfyUI. See also the
 <a href="../gallery/">style gallery</a>.</footer>
 
 <script id="data" type="application/json">{_embed(payload)}</script>
-<script>{_JS}</script>
+<script>{_JS.replace("__ASSET_PREFIX__", ASSET_PREFIX)}</script>
 </body>
 </html>
 """
@@ -278,6 +371,9 @@ def _artists_payload() -> dict:
 
 
 def _modifiers_payload() -> dict:
+    from build_previews import BASELINE_ID, PREVIEW_AXES  # noqa: E402
+    from generate_js_data import _preview_sprites  # noqa: E402
+
     from data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS
 
     axis_labels = {
@@ -301,6 +397,10 @@ def _modifiers_payload() -> dict:
                                "text": rec["negative"]})
             entries.append({
                 "label": rec["label"],
+                # The record id, which is what the atlas is keyed by. The
+                # rest of the pack addresses a modifier by label, and a
+                # label can be reworded.
+                "mid": mid,
                 "group": axis,
                 "groupLabel": axis_labels.get(axis, axis),
                 "also": ", ".join(rec.get("aliases", [])),
@@ -317,6 +417,13 @@ def _modifiers_payload() -> dict:
         # Data order within each axis is meaningful (era reads
         # chronologically), so headings carry real information here.
         "groupHeadings": True,
+        # Reshaped atlas coordinates, exactly as the gallery and the public
+        # style gallery consume them. Empty until the tiles are rendered,
+        # in which case every applySprite() call returns false and the page
+        # renders as it did before tiles existed.
+        "sprites": _preview_sprites(),
+        "previewAxes": list(PREVIEW_AXES),
+        "baselineId": BASELINE_ID,
     }
 
 
@@ -342,7 +449,8 @@ def generate_all() -> dict[str, str]:
                  "finish and mood "
                  "modifier in the Stylebook node pack for ComfyUI, shown "
                  "as the exact prose, keyword and negative text the node "
-                 "emits.",
+                 "emits. The three purely visual axes also carry a "
+                 "rendered tile, against one fixed base render.",
             nav='<a href="../gallery/">Style gallery</a> · '
                 '<a href="artists.html">Artist reference</a>',
             placeholder="Search modifiers by name, alias or effect",

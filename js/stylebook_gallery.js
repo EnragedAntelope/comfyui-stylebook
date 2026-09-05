@@ -490,7 +490,9 @@ const styleItems = memoiseItems(function buildStyleItems() {
       id: entry.id,
       label: entry.label,
       group: entry.category,
-      aliases: [],
+      // A custom style's aliases reach the search haystack like a built-in's;
+      // they were validated and then dropped before the payload carried them.
+      aliases: entry.aliases || [],
       scene: entry.scene || "",
       depicts: entry.depicts || "",
       // A custom style has no release: it shipped with whoever wrote it.
@@ -538,6 +540,11 @@ const artistItems = memoiseItems(function buildArtistItems() {
   return items.sort(byLabel);
 });
 
+// The modifier axes that ship rendered preview tiles. One rule in two
+// languages, like the ordering rule: this mirrors PREVIEW_AXES in
+// scripts/build_previews.py, and PreviewedAxesMirrorTests binds them.
+const PREVIEWED_AXES = ["lighting", "color_grade", "finish"];
+
 // Deliberately unsorted, unlike styles and artists. Modifiers are grouped
 // by axis and the `era` axis reads chronologically -- Ancient Classical,
 // Edwardian, 1920s, 1950s. Alphabetising would scatter the decades to the
@@ -545,7 +552,13 @@ const artistItems = memoiseItems(function buildArtistItems() {
 // on the backend, and the two have to agree.
 const modifierItems = memoiseItems(function buildModifierItems() {
   const items = ((bulk && bulk.MODIFIER_RECORDS) || []).map((rec) => withHaystack({
+    // A modifier is addressed by label everywhere in the pack -- the
+    // widget stores a label, and beforeSelect writes one -- so `id` is the
+    // label here, as it always has been. `previewId` is the record id,
+    // which is what the atlas is keyed by, because a label can be reworded
+    // and an id cannot.
     id: rec.label,
+    previewId: rec.mid || "",
     label: rec.label,
     group: rec.axis,
     aliases: rec.aliases || [],
@@ -599,6 +612,12 @@ class StylebookPicker {
    *   items         () => array of {id,label,group,aliases}
    *   groups        array of group keys for the tab strip, or null for none
    *   showPreviews  slice thumbnails out of the preview atlases
+   *   layout        "list" for rows, anything else for a tile grid
+   *   groupLayout   optional {group: "list"|"grid"} overriding `layout`
+   *                 per tab, for a picker whose groups are not all the
+   *                 same kind of thing
+   *   previewGroups optional array of group keys that have preview tiles,
+   *                 overriding `showPreviews` per tab
    *   onSelect      (item) => void
    *   currentValue  () => the value currently held by the node
    */
@@ -675,7 +694,11 @@ class StylebookPicker {
     if (!this.grid) return;
     this.grid.replaceChildren();
     this._focused = null;
-    this.grid.classList.remove("with-category");
+    // A placeholder is one centred message either way, but the grid has
+    // to carry exactly one of the two layout classes or it inherits
+    // whichever the last render left on it.
+    this.grid.classList.remove("with-category", "stylebook-list");
+    this.grid.classList.add("stylebook-grid");
     const box = document.createElement("div");
     box.className = "stylebook-empty";
     box.textContent = message;
@@ -806,17 +829,16 @@ class StylebookPicker {
     }
 
     const grid = document.createElement("div");
-    grid.className = this.config.layout === "list"
-      ? "stylebook-list"
-      : "stylebook-grid";
+    // The class is set in renderGrid(), not here: with a per-group layout
+    // it changes when the tab does, and this runs once at construction.
     grid.setAttribute("role", "listbox");
     grid.tabIndex = 0;
     this.grid = grid;
 
     const footer = document.createElement("div");
     footer.className = "stylebook-footer";
-    footer.textContent =
-      "Arrow keys move, Enter selects, Escape closes. Type to search names and aliases.";
+    this.footer = footer;
+    this.renderFooter();
 
     dialog.append(grid, footer);
     overlay.appendChild(dialog);
@@ -905,9 +927,33 @@ class StylebookPicker {
     this.highlight();
   }
 
+  /**
+   * The layout for the tab currently shown.
+   *
+   * The modifier picker's six axes are not all the same kind of thing:
+   * lighting, colour grade and finish are purely visual and ship rendered
+   * tiles, while era, period dress and mood are described in words and a
+   * thumbnail of them would say nothing. So layout is per group rather
+   * than per picker. "All", "New", "Yours" and any search result span
+   * groups, and fall back to the picker's own `layout`.
+   */
+  activeLayout() {
+    const per = this.config.groupLayout;
+    const chosen = per && !this.query ? per[this.activeGroup] : null;
+    return chosen || this.config.layout || "grid";
+  }
+
+  /** Whether the tab currently shown has preview tiles to slice. */
+  activePreviews() {
+    if (this.config.previewGroups) {
+      return !this.query && this.config.previewGroups.includes(this.activeGroup);
+    }
+    return Boolean(this.config.showPreviews);
+  }
+
   columnCount() {
     // A list is one item per row, so up and down move by one.
-    if (this.config.layout === "list") return 1;
+    if (this.activeLayout() === "list") return 1;
     if (!this.grid) return 1;
     const width = this.grid.clientWidth || TILE_DISPLAY_PX;
     return Math.max(1, Math.floor(width / (TILE_DISPLAY_PX + 14)));
@@ -988,6 +1034,26 @@ class StylebookPicker {
     return out;
   }
 
+  /**
+   * The footer says how to drive the dialog, plus a per-tab hint where one
+   * group needs explaining that the others do not. Rebuilt on every render
+   * because the active tab decides whether the hint applies.
+   */
+  renderFooter() {
+    if (!this.footer) return;
+    const keys =
+      "Arrow keys move, Enter selects, Escape closes. Type to search names and aliases.";
+    const hint = this.config.hint && this.activePreviews() ? this.config.hint : "";
+    this.footer.replaceChildren();
+    this.footer.appendChild(document.createTextNode(keys));
+    if (hint) {
+      const line = document.createElement("div");
+      line.className = "stylebook-footer-hint";
+      line.textContent = hint;
+      this.footer.appendChild(line);
+    }
+  }
+
   renderGrid() {
     if (!this.grid) return;
     if (!bulk) return;  // ensureData() is showing the placeholder
@@ -1031,7 +1097,11 @@ class StylebookPicker {
     );
     // The row height is fixed in CSS and cannot grow from its contents,
     // so the chip's line box has to be added to it deliberately.
+    const list = this.activeLayout() === "list";
+    this.grid.classList.toggle("stylebook-list", list);
+    this.grid.classList.toggle("stylebook-grid", !list);
     this.grid.classList.toggle("with-category", this._showCategory);
+    this.renderFooter();
 
     if (this.count) {
       this.count.textContent =
@@ -1060,7 +1130,7 @@ class StylebookPicker {
       return current && current === label ? 1 : 0;
     };
     const fragment = document.createDocumentFragment();
-    const build = this.config.layout === "list"
+    const build = this.activeLayout() === "list"
       ? this.buildRow.bind(this)
       : this.buildTile.bind(this);
     this.visible.forEach((item, index) => {
@@ -1113,6 +1183,9 @@ class StylebookPicker {
     tile.tabIndex = -1;
     tile.setAttribute("data-group", item.group || "");
     const titleLines = [item.label];
+    // A style has no `detail`; a modifier's descriptor IS the information,
+    // and a tile shows less text than a row does, so it belongs here.
+    if (item.detail) titleLines.push(item.detail);
     if (item.aliases.length) titleLines.push("also: " + item.aliases.join(", "));
     // Said in full in the tooltip, because the badge itself only has room
     // for one word and "scene" alone does not explain what will happen.
@@ -1131,8 +1204,8 @@ class StylebookPicker {
 
     const art = document.createElement("div");
     art.className = "stylebook-tile-art";
-    const preview = this.config.showPreviews
-      ? previewFor(item.group, item.id)
+    const preview = this.activePreviews()
+      ? previewFor(item.group, item.previewId || item.id)
       : null;
     if (preview && applySprite(art, preview)) {
       art.setAttribute("aria-hidden", "true");
@@ -1376,6 +1449,18 @@ function setupModifierNode(node) {
     },
     showPreviews: false,
     layout: "list",
+    // Lighting, colour grade and finish are purely visual: a sentence
+    // about Bleach Bypass tells you far less than the tile does. The other
+    // three axes keep their rows -- what they change is not reliably
+    // legible at 256px, and their descriptor text is the point.
+    groupLayout: PREVIEWED_AXES.reduce((out, axis) => {
+      out[axis] = "grid";
+      return out;
+    }, {}),
+    previewGroups: PREVIEWED_AXES,
+    hint: "Each tile is one fixed base render with only this modifier "
+      + "changed. The public modifier reference page shows that base "
+      + "render on its own, for comparison.",
     // Picking a modifier implies its axis, and the dropdown has to be
     // narrowed to that axis before the value is written, or the write
     // lands outside the widget's own option list.
