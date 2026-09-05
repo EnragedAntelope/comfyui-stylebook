@@ -57,7 +57,7 @@ function isVisible(widget) {
 const BUTTON_LABEL = {
   StylebookStyle: "Open style gallery",
   StylebookArtist: "Open artist reference",
-  StylebookModifier: "Open modifier reference",
+  StylebookModifier: "Open modifier gallery",
   StylebookSheet: "Choose styles",
 };
 
@@ -421,7 +421,7 @@ test("the artist reference is alphabetical too", async () => {
 test("the modifier reference stays in data order, so the era axis reads chronologically", async () => {
   const node = makeNode("StylebookModifier");
   await getExtension().nodeCreated(node);
-  widgetByName(node, "Open modifier reference").callback();
+  widgetByName(node, "Open modifier gallery").callback();
   await settle();
   const names = Array.from(document.querySelectorAll(".stylebook-row-name"))
     .map((el) => el.textContent);
@@ -432,19 +432,19 @@ test("the modifier reference stays in data order, so the era axis reads chronolo
   );
 });
 
-// --- 10b. the modifier picker's layout is per axis, not per picker --------
+// --- 10b. the modifier picker is one layout on every tab -----------------
 
 /*
- * Lighting, colour grade and finish ship rendered tiles; era, period dress
- * and mood are described in words. One picker, two layouts, chosen by the
- * active tab -- which is why the grid's class moved out of the constructor
- * and into render().
+ * Every modifier has a rendered tile since 0.15.0, so the picker is rows
+ * with a thumbnail everywhere -- on each axis tab, on All and Yours, and
+ * in search results. These tests assert the opposite of what they did in
+ * 0.14.0, when three axes were tiles and three were text.
  */
 
 async function openModifierPicker() {
   const node = makeNode("StylebookModifier");
   await getExtension().nodeCreated(node);
-  widgetByName(node, "Open modifier reference").callback();
+  widgetByName(node, "Open modifier gallery").callback();
   await settle();
   return document.querySelector(".stylebook-overlay");
 }
@@ -454,81 +454,131 @@ function tabNamed(overlay, name) {
     .find((t) => t.textContent === name);
 }
 
-test("a visual axis draws tiles and a described axis draws rows, in one picker", async () => {
+test("every tab of the modifier picker draws rows and never a tile", async () => {
   const overlay = await openModifierPicker();
   const grid = overlay.querySelector('[role="listbox"]');
 
-  // "All" spans every axis, so it keeps the picker's own list layout.
-  assert.ok(grid.classList.contains("stylebook-list"), "All should be a list");
-  assert.equal(overlay.querySelectorAll(".stylebook-tile").length, 0);
-
-  const lighting = tabNamed(overlay, "Lighting");
-  assert.ok(lighting, "the Lighting axis tab should exist");
-  lighting.click();
-  await settle();
-  assert.ok(grid.classList.contains("stylebook-grid"), "Lighting should be a grid");
-  assert.ok(!grid.classList.contains("stylebook-list"));
-  assert.ok(overlay.querySelectorAll(".stylebook-tile").length > 5,
-    "the lighting axis should render tiles");
-  assert.equal(overlay.querySelectorAll(".stylebook-row").length, 0);
-
-  const era = tabNamed(overlay, "Era");
-  assert.ok(era, "the Era axis tab should exist");
-  era.click();
-  await settle();
-  assert.ok(grid.classList.contains("stylebook-list"), "Era should stay a list");
-  assert.ok(overlay.querySelectorAll(".stylebook-row").length > 5,
-    "the era axis should keep its descriptor rows");
-  assert.equal(overlay.querySelectorAll(".stylebook-tile").length, 0);
+  // All, one formerly-tiled axis, and one formerly-text axis. Before
+  // 0.15.0 the middle one was the odd tab out.
+  // "Colour Grade" on both surfaces: the picker used to title-case the
+  // axis key into "Color Grade" while the public page carried a
+  // spelled-out map. Both now read data.modifiers.AXIS_LABELS.
+  for (const tab of [null, "Lighting", "Era", "Mood", "Colour Grade"]) {
+    if (tab) {
+      const el = tabNamed(overlay, tab);
+      assert.ok(el, `the ${tab} tab should exist`);
+      el.click();
+      await settle();
+    }
+    const where = tab || "All";
+    assert.ok(grid.classList.contains("stylebook-list"), `${where} should be a list`);
+    assert.ok(!grid.classList.contains("stylebook-grid"), `${where} should not be a grid`);
+    assert.equal(overlay.querySelectorAll(".stylebook-tile").length, 0,
+      `${where} should draw no tiles`);
+    assert.ok(overlay.querySelectorAll(".stylebook-row").length > 5,
+      `${where} should draw rows`);
+  }
 });
 
-test("a modifier tile keeps its descriptor in the tooltip, where a row shows it inline", async () => {
-  // buildTile dropped item.detail entirely. For a style that is fine --
-  // styles have none. For a modifier the descriptor IS the information.
+test("a modifier row carries art on every axis, including one that had none", async () => {
+  const overlay = await openModifierPicker();
+  const grid = overlay.querySelector('[role="listbox"]');
+  assert.ok(grid.classList.contains("with-art"),
+    "the grid needs .with-art or the CSS opens no column for the thumbnail");
+
+  // Era had no tile at all in 0.14.0. The art element must be built for
+  // it regardless of whether jsdom can resolve the atlas image.
+  for (const tab of ["Lighting", "Era", "Period Dress"]) {
+    const el = tabNamed(overlay, tab);
+    if (!el) continue;
+    el.click();
+    await settle();
+    const row = overlay.querySelector(".stylebook-row");
+    assert.ok(row.querySelector(".stylebook-row-art"),
+      `a ${tab} row should carry a .stylebook-row-art`);
+  }
+});
+
+test("a modifier row shows its descriptor inline, not only in a tooltip", async () => {
+  // The tile grid could only put the descriptor in `title`. A row shows
+  // it, which is the reason rows won over tiles for this picker.
   const overlay = await openModifierPicker();
   tabNamed(overlay, "Lighting").click();
   await settle();
-  const tile = overlay.querySelector(".stylebook-tile");
-  const lines = tile.title.split("\n");
-  assert.ok(lines.length > 1, "a modifier tile's tooltip should carry its descriptor");
-  assert.ok(lines[1].length > 20, "the descriptor line should be the prose, not a label");
+  const detail = overlay.querySelector(".stylebook-row .stylebook-row-detail");
+  assert.ok(detail, "a modifier row should have a detail cell");
+  assert.ok(detail.textContent.length > 20,
+    "the detail cell should hold the prose, not a label");
 });
 
-test("arrow keys move by one on a list axis and by a row on a tiled axis", async () => {
+test("a search result still carries its thumbnail", async () => {
+  // The regression this revision exists to fix: activePreviews() returned
+  // false whenever a query was present, so searching dropped the pictures
+  // off every modifier that had one.
+  const overlay = await openModifierPicker();
+  const search = overlay.querySelector(".stylebook-search");
+  assert.ok(search, "the picker should have a search box");
+  search.value = "grain";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  // Debounced, like the style gallery's search test above.
+  await settle(150);
+  const grid = overlay.querySelector('[role="listbox"]');
+  assert.ok(grid.classList.contains("with-art"),
+    "a search result must keep the thumbnail column");
+  const row = overlay.querySelector(".stylebook-row");
+  assert.ok(row, "the search should have matched something");
+  assert.ok(row.querySelector(".stylebook-row-art"),
+    "a searched row must still carry its art");
+});
+
+test("the artist picker's rows are untouched: no art column", async () => {
+  // The artist corpus has descriptors and no pictures, so its rows must
+  // not gain an empty 128px column from the modifier picker's CSS.
+  const node = makeNode("StylebookArtist");
+  await getExtension().nodeCreated(node);
+  widgetByName(node, "Open artist reference").callback();
+  await settle();
+  const overlay = document.querySelector(".stylebook-overlay");
+  const grid = overlay.querySelector('[role="listbox"]');
+  assert.ok(grid.classList.contains("stylebook-list"), "the artist picker is a list");
+  assert.ok(!grid.classList.contains("with-art"),
+    "the artist picker must not claim an art column");
+  assert.equal(overlay.querySelectorAll(".stylebook-row-art").length, 0);
+});
+
+test("arrow keys move by exactly one on every modifier axis", async () => {
+  // columnCount() returns 1 for a list. Now that no axis is a tile grid,
+  // ArrowDown steps one row on the axis that used to be a grid too.
   const overlay = await openModifierPicker();
   const grid = overlay.querySelector('[role="listbox"]');
 
-  tabNamed(overlay, "Era").click();
-  await settle();
-  const rowFirst = grid.children[0];
-  overlay.dispatchEvent(new window.KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
-  assert.ok(!rowFirst.classList.contains("focused"),
-    "ArrowDown should have moved focus off the first row");
-  assert.ok(grid.children[1].classList.contains("focused"),
-    "on a list, ArrowDown moves by exactly one");
-
-  // On a tile grid the same key moves by a whole row, which is what
-  // columnCount() is for -- and it read this.config.layout before.
-  tabNamed(overlay, "Lighting").click();
-  await settle();
-  overlay.dispatchEvent(new window.KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
-  assert.ok(grid.children[1].classList.contains("focused"),
-    "ArrowRight should step one tile");
+  for (const tab of ["Era", "Lighting"]) {
+    tabNamed(overlay, tab).click();
+    await settle();
+    const first = grid.children[0];
+    overlay.dispatchEvent(
+      new window.KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true })
+    );
+    assert.ok(!first.classList.contains("focused"),
+      `ArrowDown should have moved focus off the first row on ${tab}`);
+    assert.ok(grid.children[1].classList.contains("focused"),
+      `on ${tab}, ArrowDown moves by exactly one`);
+  }
 });
 
-test("the footer hint appears only on the tiled axes", async () => {
+test("the footer hint appears on every modifier tab", async () => {
+  // It explains the fixed base render every thumbnail deviates from,
+  // which is now true of every tab rather than three of them.
   const overlay = await openModifierPicker();
   const hint = () => overlay.querySelector(".stylebook-footer-hint");
-  assert.equal(hint(), null, "no hint on All");
-
-  tabNamed(overlay, "Finish").click();
-  await settle();
-  assert.ok(hint(), "the tiled axes explain what the tile is a deviation from");
+  assert.ok(hint(), "the hint should show on All");
   assert.match(hint().textContent, /base render/);
 
-  tabNamed(overlay, "Mood").click();
-  await settle();
-  assert.equal(hint(), null, "no hint on a described axis");
+  for (const tab of ["Finish", "Mood"]) {
+    tabNamed(overlay, tab).click();
+    await settle();
+    assert.ok(hint(), `the hint should show on ${tab}`);
+  }
 });
 
 test("the style gallery is unaffected: still one grid, still previews", async () => {

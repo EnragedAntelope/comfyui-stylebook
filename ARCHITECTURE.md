@@ -242,11 +242,38 @@ people" is the most reliable way to get people.
 
 ## Modifier preview tiles
 
-Three of the six modifier axes are *purely visual*: `lighting`,
-`color_grade` and `finish`. A sentence about Bleach Bypass tells you far
-less than the picture does, and choosing between Rembrandt and Split
-lighting from prose is guesswork. Since 0.14.0 those three ship rendered
-tiles, built by the same pipeline as the style tiles.
+A sentence about Bleach Bypass tells you far less than the picture does,
+and choosing between Rembrandt and Split lighting from prose is guesswork.
+0.14.0 gave rendered tiles to the three *purely visual* axes — `lighting`,
+`color_grade` and `finish` — and left `era`, `period_dress` and `mood` as
+text. **Since 0.15.0 every modifier has a tile**, built by the same
+pipeline as the style tiles.
+
+### The presentation rule
+
+> **Every entry shows everything it has.** A style has a picture and no
+> descriptor → tile grid. An artist has a descriptor and no picture →
+> plain rows. A modifier has both → rows with a thumbnail. The layout is
+> a property of *what the record carries*, never of which tab is open.
+
+That rule is the reason the 0.14.0 layout machinery is gone rather than
+extended. Three tiled axes and three text axes forced a `groupLayout` map,
+a `previewGroups` list, a `PREVIEWED_AXES` constant in the frontend
+mirroring `PREVIEW_AXES` in the build script, and per-axis branching in
+the page builder — roughly forty lines whose only job was to describe
+which half of the data had pictures. None of it was a layout decision;
+it was missing data wearing a layout's clothes. The tell was that
+`activePreviews()` returned false whenever a search query was present, so
+searching the picker dropped the pictures off entries that *had* them —
+a bug nobody would write on purpose, and one that fell out of the
+special-casing for free.
+
+`PREVIEW_AXES` is now `tuple(AXES)`, imported at module scope in
+`scripts/build_previews.py` so the two cannot drift, and the frontend
+declares no axis list at all. `tests/test_previews.py` asserts both the
+equality and the *absence* of a revived `PREVIEWED_AXES`, so adding a
+seventh axis fails loudly instead of silently shipping a picture-less tab
+and a fresh reason to branch on it.
 
 ### Why it needed almost no new code
 
@@ -258,8 +285,9 @@ both public pages, and a plain iteration in
 adding `lighting`, `color_grade` and `finish` to that same map — none of
 which collides with the twelve style categories — made sprite lookup work
 everywhere with no new lookup code at all. The index `version` went 2 → 3;
-it is additive, and a consumer reading it finds three extra keys it never
-asks for.
+it is additive, and a consumer reading it finds extra keys it never asks
+for. 0.15.0 added `era`, `period_dress` and `mood` to the same map on the
+same terms, and `INDEX_VERSION` stayed at 3 for the same reason.
 
 The renderer needed no second path either. `render_one`, `build_workflow`
 and `render_with_retry` take a style-shaped dict and never ask what kind
@@ -328,17 +356,24 @@ from — "warmer than what?" is a fair question — so the public modifier
 reference page shows it once at the head of each tiled axis, and the
 picker's footer hint points at it.
 
-### The picker's layout is per group, not per picker
+### The picker's layout is per picker, not per group
 
-`layout` and `showPreviews` used to be whole-picker config, read at four
-points. They are now read through `activeLayout()` and `activePreviews()`,
-which consult the config's optional `groupLayout` and `previewGroups`
-maps against the tab currently shown; the grid's className moved out of
-the constructor and into `renderGrid()` because it now changes when the
-tab does. Result: Lighting, Colour Grade and Finish draw a tile grid,
-while Era, Period Dress and Mood keep their rows and their descriptor
-text. "All", "New", "Yours" and any search result span groups and fall
-back to the picker's own `layout`.
+0.14.0 read `layout` and `showPreviews` through `activeLayout()` and
+`activePreviews()`, which consulted the config's optional `groupLayout`
+and `previewGroups` maps against the tab currently shown — so Lighting,
+Colour Grade and Finish drew a tile grid while Era, Period Dress and Mood
+kept text rows. Both maps are **gone** as of 0.15.0 along with the
+per-tab branching: `activeLayout()` returns `config.layout`, and
+`activePreviews()` collapses to `Boolean(config.showPreviews)`.
+
+The modifier picker is now `layout: "list"` with `showPreviews: true`, so
+it draws thumbnail rows on every tab and in search. `renderGrid()` still
+owns the grid's className — it toggles `with-art` beside `with-category` —
+but that className no longer changes when the tab does. And
+`activePreviews()` is deliberately **not** gated on the query: the old
+per-tab version returned false whenever a search was running, which
+dropped the pictures off entries that had them. That regression is the
+one this collapse was worth doing for.
 
 `buildTile` also puts `item.detail` in the tooltip now. A style has no
 `detail`; for a modifier the descriptor **is** the information, and a tile
@@ -349,15 +384,18 @@ this pack**, so the picker item's `id` is its label. The atlas is keyed by
 record id, as every atlas is, because a label can be reworded and an id
 cannot — hence `previewId` on the item and `mid` in `MODIFIER_RECORDS`.
 
-`PREVIEW_AXES` in `scripts/build_previews.py` and `PREVIEWED_AXES` in
-`js/stylebook_gallery.js` are one rule in two languages, bound by
-`tests/test_previews.PreviewedAxesMirrorTests` — the same arrangement as
-the ordering rule and its `Intl.Collator` mirror.
+That mirror between `PREVIEW_AXES` and a `PREVIEWED_AXES` in the frontend
+is **gone** as of 0.15.0. It was the ordering rule's arrangement — one
+rule in two languages — but unlike the ordering rule it existed only
+because half the axes had no pictures. With every axis tiled, the
+frontend has nothing to know, and `tests/test_previews.PreviewedAxesTests`
+holds the stronger `PREVIEW_AXES == tuple(AXES)` instead. See "The
+presentation rule" above.
 
 ### `era` and `mood` are closed axes
 
-The other three axes did not merely go un-tiled; two of them are closed to
-new records, and this is written down so it is not re-proposed.
+Closed to new *records*, not to pictures — every axis has tiles since
+0.15.0. This is written down so it is not re-proposed.
 
 **`era` will not grow.** Since 0.12.0 an era modifier must describe light
 *behaviour*, never a fixture or a garment (see below). Every candidate
@@ -374,6 +412,12 @@ rather than after: if stripping the one distinguishing word leaves
 something already shipped, the record was never distinct.
 
 `lighting`, `color_grade`, `finish` and `period_dress` stay open.
+`color_grade` was audited in 0.15.0 and produced nothing: every candidate
+either reduced to a shipped grade (`duotone`, `split_tone`, `teal_orange`,
+`monochrome_green`, `high_saturation`) or duplicated a *style* that
+already ships — `infrared`, `day_for_night`, `autochrome`, `technicolor`,
+`cyanotype`, `hand_tinted_trick_film`. An empty audit is a result; record
+it so the next session does not spend the same hour.
 
 ## The public gallery page
 
@@ -392,6 +436,29 @@ One deliberate difference from the in-app gallery: this page shows each
 style's prose, keywords and negative. Shipping the whole prose corpus to
 ComfyUI would roughly double what every user downloads, but on a page
 somebody chose to open it is the most useful thing on it.
+
+### The three pages link to each other
+
+`NAV_PAGES` in `scripts/build_reference_pages.py` is the single list, and
+`build_gallery_page.py` imports `_nav` from it. Until 0.15.0 both
+reference pages linked back to the gallery and the gallery linked to
+neither, so the page people actually land on was a dead end and the two
+reference pages were effectively undiscoverable.
+
+The current page renders as plain text rather than a link to itself: on a
+nav this short, that is also the only cue saying where you are.
+
+The labels encode the presentation rule — **"gallery" means the entries
+carry pictures, "reference" means they do not**. Styles and modifiers are
+galleries; the artist page is a reference, and stays one for as long as
+artist tiles are declined. The node buttons match: "Open style gallery",
+"Open modifier gallery", "Open artist reference".
+
+Hrefs are per *source* page, because a page in `docs/gallery/` and one in
+`docs/reference/` need different prefixes. Pages serves the repo root, so
+a local `python -m http.server` started inside `docs/` will happily serve
+a prefix that 404s live — serve the repo's **parent** to check, which is
+also what the QA harness needs.
 
 ## Frontend
 
@@ -953,6 +1020,48 @@ matcher as the scene rule. It is **hot on modifiers** and exempts only the
 Over **styles** it is hot too, since 0.13.0. The escape is the declared
 `depicts` field, described below — not an exemption map.
 
+### The body rule: what a preview tile cannot tell you (0.15.0)
+
+`_check_body_content` sits beside the entity rule and enforces a narrower
+claim: **a modifier's rendered fields must not assert that a body is in
+the frame.** It exists because this is the one defect class the preview
+pipeline is structurally blind to.
+
+`build_previews.MODIFIER_SUBJECT` is always a person. So a colour grade
+that says "skin tones held warm" produces a *better looking tile* — the
+body noun anchors the render toward the only subject the harness ever
+shows it. Apply that same grade to a landscape or a still life and it
+injects a body. The tile improving is the symptom, not the proof, and no
+amount of contact-sheet review can surface it. A validator can.
+
+The noun list is deliberately four words — `skin`, `flesh`, `complexion`,
+`facial`. `face`, `hair`, `eye` and `hand` are **excluded**, and a test
+pins the exclusion so a later session cannot widen the list without
+reading the corpus first: the pack ships "cat-eye highlight shapes", a
+"hard shoulder" into the blacks, "head-switching noise" and "hand-worked"
+surfaces, none of which put a body in frame. A rule that fires on those
+earns an exemption entry per record until it means nothing — the failure
+mode the `_SCENE_EXEMPT` written-reason contract exists to prevent.
+
+It reads `tags` and `prose` only, exactly like the entity rule. A body
+noun in `negative` *suppresses* a body rather than adding one, so it is
+outside the rule's scope: `inverted_negative` legitimately negates
+"correct skin tone". `period_dress` is exempt for the same reason it is
+exempt from the entity rule — a garment implies a wearer. `_BODY_EXEMPT`
+is empty, and should stay that way: the 0.15.0 audit reworded all twelve
+hits rather than exempting any.
+
+**What the audit learned.** The anchoring a body noun provides is usually
+replaceable by the bare word *subject*, which is subject-agnostic by
+construction. `teal_orange` renders better than its shipped tile now that
+"skin tones held warm orange" reads "the subject held warm orange", and
+`portra_soft_negative` — the record whose skin anchor the `pastel_wash`
+investigation had concluded was load-bearing — survived the swap to
+"midtones" with its tile intact. That falsifies the strong reading of
+that lesson. The weaker reading still holds, and `fluorescent_overhead`
+is its evidence: two body-free rewrites both rendered worse, so it was
+reverted to shipped text rather than kept for the principle's sake.
+
 ### Why a declared field beat an exemption map
 
 0.12.0 ran this rule over styles in report mode only, printing a count and
@@ -1059,13 +1168,22 @@ saved `widgets_values` moves; `stable_choice` hashes per candidate, so no
 existing seed moves; and only `color_grade` is ever named in a style's
 `blocks`, so no style needed a `blocks` change.
 
-Four places had to learn the new axis and none of them is the gallery,
-which reads `MODIFIER_AXES` out of generated data and title-cases the id:
+Four places had to learn the new axis:
 `data/modifiers.AXES`, `tests/validate_data._EXPECTED_AXES`,
 `data/user_data._AXES` (a deliberate mirror, kept honest by
-`tests/test_user_data.BlocksAxisTests`), and the `axis_labels` map in
-`scripts/build_reference_pages.py`, which indexes rather than `.get()`s
-and so raises rather than quietly omitting.
+`tests/test_user_data.BlocksAxisTests`), and `data/modifiers.AXIS_LABELS`.
+
+**`AXIS_LABELS` is the one display-name table**, mirroring
+`styles.CATEGORY_LABELS`. Until 0.15.0 there was no such table: the
+picker title-cased the id, which renders `color_grade` as "Color Grade",
+while `scripts/build_reference_pages.py` carried its own hardcoded map
+saying "Colour Grade" — so the in-node picker and the public page
+disagreed on the spelling of an axis. Both now read the data layer, the
+page builder by importing it and the frontend through
+`MODIFIER_AXIS_LABELS` in generated data, consulted by `groupName()`
+alongside `CATEGORY_LABELS`. `tests/test_engine` asserts the table's keys
+are exactly `AXES`, so a seventh axis cannot ship label-less and quietly
+fall back to title-casing.
 
 ## Styles named after a person
 

@@ -23,41 +23,45 @@ for path in (str(ROOT), str(ROOT / "scripts")):
 import build_previews  # noqa: E402
 
 
-class PreviewedAxesMirrorTests(unittest.TestCase):
-    """One rule in two languages, bound by a test -- the same shape as the
-    ordering rule, which is mirrored in `Intl.Collator` and pinned by a
-    frontend test for exactly this reason.
+class PreviewedAxesTests(unittest.TestCase):
+    """Every axis gets tiles, and that is now an equality rather than a
+    mirror.
 
-    The picker has to know which axes draw as a tile grid; the build script
-    has to know which axes to render. Nothing imports across the boundary,
-    so the only thing keeping them equal is this.
+    Until 0.15.0 this class bound a *list* in ``build_previews`` to a
+    matching list in ``js/stylebook_gallery.js``, because three axes had
+    tiles and three did not. Both lists are gone: the frontend no longer
+    needs to know which axes have pictures, since all of them do. What is
+    left is the stronger statement -- adding a seventh axis without
+    rendering it fails here, instead of silently shipping a picture-less
+    tab and the per-axis layout switch that used to paper over one.
     """
 
-    def test_the_frontend_lists_the_same_previewed_axes(self):
+    def test_every_axis_gets_preview_tiles(self):
+        from data.modifiers import AXES
+
+        self.assertEqual(build_previews.PREVIEW_AXES, tuple(AXES))
+
+    def test_the_frontend_no_longer_declares_its_own_axis_list(self):
+        # A leftover PREVIEWED_AXES would be a second source of truth that
+        # nothing keeps current -- worse than the mirror it replaced.
         source = (ROOT / "js" / "stylebook_gallery.js").read_text(
             encoding="utf-8"
         )
-        match = re.search(
-            r"const PREVIEWED_AXES = \[([^\]]*)\];", source
+        self.assertIsNone(
+            re.search(r"const PREVIEWED_AXES\b", source),
+            "js/stylebook_gallery.js still declares PREVIEWED_AXES; every "
+            "axis has tiles, so the frontend must not branch on the axis",
         )
-        self.assertIsNotNone(
-            match, "js/stylebook_gallery.js no longer declares PREVIEWED_AXES"
-        )
-        listed = tuple(re.findall(r'"([^"]+)"', match.group(1)))
-        self.assertEqual(listed, build_previews.PREVIEW_AXES)
 
-    def test_every_previewed_axis_is_a_real_axis(self):
-        from data.modifiers import AXES
-
-        for axis in build_previews.PREVIEW_AXES:
-            self.assertIn(axis, AXES)
-
-    def test_the_reference_page_uses_the_same_list(self):
+    def test_the_reference_page_needs_no_axis_list_either(self):
         import build_reference_pages
 
         payload = build_reference_pages._modifiers_payload()
-        self.assertEqual(
-            tuple(payload["previewAxes"]), build_previews.PREVIEW_AXES
+        self.assertNotIn(
+            "previewAxes",
+            payload,
+            "the modifier page must not carry a previewAxes list: every "
+            "entry attempts a sprite and degrades to text if it has none",
         )
         self.assertEqual(payload["baselineId"], build_previews.BASELINE_ID)
 

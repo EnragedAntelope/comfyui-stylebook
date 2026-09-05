@@ -249,6 +249,12 @@ def validate() -> list[str]:
     # field, which 0.12.0 lacked and which is why it could only report.
     errors.extend(_check_entity_content(MODIFIERS))
     errors.extend(_check_entity_content(STYLES, "style"))
+
+    # --- body content ---
+    # Narrower than the entity rule and modifiers-only: a body noun in a
+    # subject-agnostic record injects a body, and the preview harness's
+    # fixed person subject means no tile can ever reveal it.
+    errors.extend(_check_body_content(MODIFIERS))
     errors.extend(_check_depicts_field(STYLES))
     errors.extend(_check_modifier_alias_content(MODIFIERS))
 
@@ -512,6 +518,76 @@ _ENTITY_EXEMPT_CATEGORIES = frozenset({"object_artifact", "craft_material"})
 #: that reason. Same contract as ``_SCENE_EXEMPT``: an exemption without a
 #: written reason is how a check quietly stops meaning anything.
 _ENTITY_EXEMPT: dict[str, str] = {}
+
+#: Body nouns a modifier must not write into its rendered fields.
+#:
+#: Deliberately narrow. "face", "hair", "eye" and "hand" are *not* here
+#: and must not be added without reading the corpus first: they carry too
+#: much innocent vocabulary for a word-boundary matcher to separate --
+#: "cat-eye highlight", "the eye settling", "head-switching noise", a
+#: "hard shoulder" into the blacks, "hand-worked" surfaces. A check that
+#: cries wolf on those gets an exemption entry per record until it means
+#: nothing, which is the failure mode ``_SCENE_EXEMPT``'s written-reason
+#: contract exists to prevent.
+#:
+#: These four have no such second reading. Each one asserts a *body* is in
+#: the frame, and a modifier is applied to subjects its author never
+#: pictured.
+_BODY_NOUNS = ("skin", "flesh", "complexion", "facial")
+
+#: Modifiers that name a body noun for an unrelated reason, mapped to that
+#: reason. Same contract as ``_ENTITY_EXEMPT``. Empty on purpose: the
+#: 0.15.0 audit reworded every hit rather than exempting it, and a record
+#: that seems to need an entry here should be reread first -- in every
+#: case the audit examined, behaviour language said the same thing.
+_BODY_EXEMPT: dict[str, str] = {}
+
+
+def _check_body_content(coll: dict[str, dict]) -> list[str]:
+    """Reject body nouns in a modifier's rendered fields.
+
+    A preview tile cannot catch this class of defect, which is why it
+    needs a validator. ``build_previews.MODIFIER_SUBJECT`` is always a
+    person, so a colour grade that says "skin tones held warm" renders a
+    *better looking tile* -- the body noun anchors the render toward the
+    one subject the harness ever shows it. Apply that same grade to a
+    landscape or a still life and it injects a body. The tile improving
+    is the symptom, not the proof.
+
+    Hot on modifiers only. A style may legitimately be about rendering
+    skin -- a portrait-painting technique, a figure-drawing medium -- and
+    a style's escape is the declared ``depicts`` field. A modifier tilts
+    one axis and has no such escape, by the same argument
+    ``_check_entity_content`` makes at length.
+
+    Reads ``tags`` and ``prose`` only, exactly like the entity check. A
+    body noun in ``negative`` *suppresses* a body rather than adding one,
+    so it is not this rule's business: ``inverted_negative`` legitimately
+    negates "correct skin tone".
+    """
+    errors: list[str] = []
+    for mid, rec in coll.items():
+        if mid in _BODY_EXEMPT:
+            continue
+        if rec.get("axis") in _ENTITY_EXEMPT_AXES:
+            # `period_dress` puts wardrobe in the frame by definition, and
+            # a garment implies whoever wears it. Same exemption, same
+            # reason as the entity rule.
+            continue
+        blob = f"{rec.get('tags', '')} {rec.get('prose', '')}".lower()
+        for noun in _BODY_NOUNS:
+            if re.search(rf"\b{re.escape(noun)}s?\b", blob):
+                errors.append(
+                    f"modifier '{mid}': names the body noun '{noun}'. A "
+                    f"modifier is applied to landscapes and still lifes "
+                    f"too, so this injects a body into frames that should "
+                    f"not have one - and the preview tile cannot show you, "
+                    f"because its subject is always a person. Say what the "
+                    f"modifier does to the midtones, the warm tones or the "
+                    f"nearest surfaces instead."
+                )
+                break
+    return errors
 
 
 def _check_entity_content(

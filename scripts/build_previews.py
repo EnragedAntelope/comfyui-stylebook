@@ -46,6 +46,10 @@ if str(ROOT) not in sys.path:
 # import below, since data/user_data.py reads this once at merge time.
 os.environ.setdefault("STYLEBOOK_IGNORE_USER_STYLES", "1")
 
+# Imported at module scope, not inside a function: PREVIEW_AXES below is
+# derived from it, so the two can never drift apart.
+from data.modifiers import AXES  # noqa: E402
+
 SRC_DIR = ROOT / "previews" / "src"
 #: Modifier source renders live in their own subdirectory, so a modifier
 #: id can never collide with a style id anywhere in the pipeline.
@@ -99,14 +103,17 @@ CATEGORY_SUBJECT = {
 FALLBACK_SUBJECT = "a mountain and a flying bird, centred composition"
 
 # --- modifier tiles -------------------------------------------------------
-# Modifiers on the three purely visual axes get tiles of their own. One
-# fixed base render, varied only by the modifier, so a tile shows the
-# modifier rather than a style fighting it.
+# Every modifier gets a tile of its own. One fixed base render, varied
+# only by the modifier, so a tile shows the modifier rather than a style
+# fighting it.
 
-#: The axes that get preview tiles. `era`, `period_dress` and `mood` do
-#: not: their pickers keep rows and descriptor text, because what those
-#: axes change is not reliably legible in a 256px thumbnail.
-PREVIEW_AXES = ("lighting", "color_grade", "finish")
+#: The axes that get preview tiles: all of them, since 0.15.0. Derived
+#: from ``AXES`` rather than listed, so a seventh axis cannot be added
+#: without tiles -- which is how ``era``, ``period_dress`` and ``mood``
+#: spent 0.14.0 as the picture-less tabs that forced a per-axis layout
+#: switch through the JS, the page builder and the picker.
+#: ``tests/test_previews.py`` asserts this equality.
+PREVIEW_AXES = tuple(AXES)
 
 #: One subject legible under every one of those three axes: skin, cloth,
 #: a flat surface to catch a grade, and a receding wall for falloff.
@@ -649,11 +656,12 @@ class ComfyClient:
 
 
 def modifier_targets() -> list[tuple[str, dict]]:
-    """Every modifier that gets a tile, plus the baseline, in axis order.
+    """Every modifier, plus the baseline, in axis order.
 
-    Only the three purely visual axes. Era, period dress and mood keep
-    their descriptor rows -- see ARCHITECTURE.md for why those two axes
-    are closed rather than merely un-tiled.
+    All six axes since 0.15.0. The baseline is what every tile on an axis
+    is a deviation from, so it is packed into each axis atlas -- see
+    ARCHITECTURE.md for why ``era`` and ``mood`` are closed to new
+    records even though they are no longer closed to pictures.
     """
     from data.modifiers import MODIFIERS, MODIFIERS_BY_AXIS
 

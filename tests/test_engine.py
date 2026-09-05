@@ -42,10 +42,12 @@ from stylebook_nodes.stylebook_sheet import (  # noqa: E402
 )
 from stylebook_nodes.stylebook_style import build_style_chain  # noqa: E402
 from tests.validate_data import (  # noqa: E402
+    _BODY_EXEMPT, _BODY_NOUNS,
     _ENTITY_EXEMPT, _ENTITY_EXEMPT_CATEGORIES, _ENTITY_NOUNS,
     _NAMESAKE_EXEMPT, _SCENE_EXEMPT,
-    _check_encoding, _check_entity_content, _check_negation,
-    _check_person_styles, _check_undeclared_namesakes, validate,
+    _check_body_content, _check_encoding, _check_entity_content,
+    _check_negation, _check_person_styles, _check_undeclared_namesakes,
+    validate,
 )
 
 TAG_META = {"format": "tags", "placement": "prepend", "strength": "normal",
@@ -256,6 +258,54 @@ class EntityContentTests(unittest.TestCase):
 
     def test_every_entity_exemption_carries_a_written_reason(self):
         for mid, reason in _ENTITY_EXEMPT.items():
+            with self.subTest(mid):
+                self.assertIn(mid, MODIFIERS)
+                self.assertTrue(reason.strip())
+
+    def test_a_body_noun_in_a_modifier_is_rejected(self):
+        """The 0.15.0 catch. A colour grade that anchors on skin renders a
+        *better* preview tile, because the harness subject is always a
+        person - and injects a body into every landscape it is applied
+        to. No tile can show this, so the validator has to."""
+        bad = {"probe": {"label": "P", "axis": "color_grade",
+                         "tags": "skin tones held warm and accurate",
+                         "prose": "P."}}
+        errors = _check_body_content(bad)
+        self.assertTrue(any("skin" in e for e in errors), errors)
+
+    def test_tonal_language_is_not_a_body_noun(self):
+        """The mechanism-preserving reword the audit used everywhere:
+        the same grade said as midtones passes."""
+        ok = {"probe": {"label": "P", "axis": "color_grade",
+                        "tags": "midtones held warm and accurate, "
+                                "secondaries desaturating gently around them",
+                        "prose": "P."}}
+        self.assertEqual(_check_body_content(ok), [])
+
+    def test_body_nouns_exclude_the_ambiguous_words(self):
+        """"face"/"hair"/"eye"/"hand" are deliberately absent: the corpus
+        ships "cat-eye highlight", "hard shoulder into the blacks" and
+        "hand-worked surfaces", none of which put a body in frame. Pinning
+        the exclusion stops a later session widening the list without
+        reading the corpus."""
+        for word in ("face", "hair", "eye", "hand", "head", "shoulder"):
+            with self.subTest(word):
+                self.assertNotIn(word, _BODY_NOUNS)
+
+    def test_period_dress_is_exempt_from_the_body_rule(self):
+        """A garment implies a wearer, so the axis whose job is wardrobe
+        cannot be held to a no-body rule. Same exemption, same reason as
+        the entity check."""
+        bad = {"probe": {"label": "P", "axis": "period_dress",
+                         "tags": "bare shoulders and exposed skin",
+                         "prose": "P."}}
+        self.assertEqual(_check_body_content(bad), [])
+
+    def test_the_shipped_modifiers_name_no_body(self):
+        self.assertEqual(_check_body_content(MODIFIERS), [])
+
+    def test_every_body_exemption_carries_a_written_reason(self):
+        for mid, reason in _BODY_EXEMPT.items():
             with self.subTest(mid):
                 self.assertIn(mid, MODIFIERS)
                 self.assertTrue(reason.strip())
@@ -1586,6 +1636,20 @@ class SchemaOptionTests(unittest.TestCase):
             with self.subTest(era):
                 stem = era.split(" (")[0]
                 self.assertIn(stem, dress)
+
+    def test_every_axis_has_a_display_label(self):
+        """One label table, read by the picker and the public page.
+
+        Both surfaces used to spell ``color_grade`` themselves - the JS
+        title-cased the id to "Color Grade" while the page builder held a
+        hardcoded "Colour Grade". An axis with no entry here falls back to
+        title-casing in the picker and reintroduces exactly that drift.
+        """
+        from data.modifiers import AXES, AXIS_LABELS
+        self.assertEqual(tuple(AXIS_LABELS), AXES)
+        for axis, label in AXIS_LABELS.items():
+            with self.subTest(axis):
+                self.assertTrue(label.strip(), f"{axis} has a blank label")
 
     def test_non_chronological_modifiers_are_alphabetical(self):
         for axis in opt.axis_options():

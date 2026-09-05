@@ -13,8 +13,9 @@ emits. No install needed.
 Two companion references, same deal: the
 **[artist reference](https://enragedantelope.github.io/comfyui-stylebook/docs/reference/artists.html)**
 lists every name with its written descriptor, and the
-**[modifier reference](https://enragedantelope.github.io/comfyui-stylebook/docs/reference/modifiers.html)**
-shows every lighting, colour, era, finish and mood tilt verbatim.
+**[modifier gallery](https://enragedantelope.github.io/comfyui-stylebook/docs/reference/modifiers.html)**
+shows every lighting, colour, era, finish and mood tilt with its rendered
+tile and its verbatim text. All three pages link to each other.
 
 ![Style, Artist and Modifier chained together](docs/images/chain.png)
 
@@ -28,7 +29,7 @@ process because the subject leads the prompt and the style trails it.
 <br clear="right">
 
 Every style ships four things: a written description, a keyword list, a
-matching negative prompt, and a preview image. 900+ artists ship a written
+matching negative prompt, and a preview image. 950+ artists ship a written
 descriptor each, so the look still lands when the name means nothing to
 your model. No dependencies, no downloads, no network calls, no API keys.
 
@@ -89,8 +90,8 @@ an artist it does not have.
 | Node | What it does |
 |---|---|
 | **Style** | The medium. Pick from the gallery, draw a seeded Random from a filtered pool, or Cycle a whole category by index. Exclusive: a second Style node replaces the first. |
-| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 900+ artists by name, movement, category, or by what their work actually looks like. |
-| **Modifier** | Tilts one axis: lighting, colour grade, era, period dress, finish or mood. 130+ modifiers, each with a description you can browse, and the three purely visual axes — lighting, colour grade and finish — ship a rendered tile too, so you can see Bleach Bypass rather than read about it. One per axis. **Era** tilts how the image is rendered — palette, light, surface, finish — and puts nothing new in the frame, so it is safe on any subject; **Period Dress** is the axis that adds the period wardrobe. Pair them, or use Era alone. |
+| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 950+ artists by name, movement, category, or by what their work actually looks like. |
+| **Modifier** | Tilts one axis: lighting, colour grade, era, period dress, finish or mood. 130+ modifiers, every one with a description you can browse *and* a rendered thumbnail beside it, so you can see Bleach Bypass rather than read about it. One per axis. **Era** tilts how the image is rendered — palette, light, surface, finish — and puts nothing new in the frame, so it is safe on any subject; **Period Dress** is the axis that adds the period wardrobe. Pair them, or use Era alone. |
 | **Blend** | Mixes two styles at a ratio that genuinely shifts the balance, not just the endpoints. |
 | **Sheet** | One subject rendered across many styles as a batch. Choose them yourself from the gallery, or leave the list empty and let a seeded draw fill it. |
 
@@ -285,16 +286,17 @@ Each thumbnail is one model's reading of one style, on one subject, at one
 seed. Styles are written to be portable, but nothing reads identically
 everywhere. Treat the gallery as a guide, not a guarantee.
 
-Modifier tiles work the same way, with one difference worth knowing: every
-tile on an axis is the **same** base render with only the modifier changed,
-so the tiles are comparable with each other. The
-[modifier reference](https://enragedantelope.github.io/comfyui-stylebook/docs/reference/modifiers.html)
-shows that base render on its own at the head of each tiled axis, because a
-modifier tile means little without the thing it is a deviation from.
+Modifier thumbnails work the same way, with one difference worth knowing:
+every one on an axis is the **same** base render with only the modifier
+changed, so they are comparable with each other. The
+[modifier gallery](https://enragedantelope.github.io/comfyui-stylebook/docs/reference/modifiers.html)
+shows that base render on its own at the head of every axis, because a
+modifier thumbnail means little without the thing it is a deviation from.
 
-Era, period dress and mood have no tiles on purpose. What they change is
-not reliably legible in a thumbnail, and their written descriptions carry
-more than a picture of them would.
+Since 0.15.0 **every** modifier has one, on all six axes. The picker shows
+them as rows — thumbnail, name, description — on every tab and in search
+results. If you used the 0.14.0 grid of lighting tiles, the picture is now
+128px rather than 168px, and it has the description beside it.
 
 ## Bug reports and suggestions welcome
 

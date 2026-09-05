@@ -128,7 +128,8 @@ def generate() -> tuple[str, str]:
     from data.artists import (
         ARTIST_CATEGORIES, ARTIST_CATEGORY_LABELS, ARTISTS,
     )
-    from data.modifiers import AXES, MODIFIERS, MODIFIERS_BY_AXIS
+    from data.modifiers import (AXES, AXIS_LABELS, MODIFIERS,
+                                MODIFIERS_BY_AXIS)
     from data.ordering import label_sort_key
     from data.styles import CATEGORIES, CATEGORY_LABELS, STYLES
     from data.versions import ADDED_IN, RELEASES
@@ -227,6 +228,10 @@ def generate() -> tuple[str, str]:
         "// soon as the node exists, before any dialog is opened, so unlike",
         "// the corpus it genuinely has to be here.",
         f"export const MODIFIER_AXES = {_js(list(AXES))};",
+        "// Display names, same reason as CATEGORY_LABELS: title-casing",
+        "// \"color_grade\" gives \"Color Grade\" and this pack spells it",
+        "// \"Colour Grade\" on every surface a person reads.",
+        f"export const MODIFIER_AXIS_LABELS = {_js(AXIS_LABELS)};",
         f"export const MODIFIER_LABELS_BY_AXIS = {_js(modifiers_by_axis)};",
         "",
         "// The category tabs for the artist picker, in offer order, plus",

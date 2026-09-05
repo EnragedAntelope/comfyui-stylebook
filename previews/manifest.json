@@ -1,14 +1,56 @@
 {
   "model": "Chroma\\Chroma1-HD.safetensors",
   "modifier_tiles": {
+    "_1910s": {
+      "hash": "453be717452fa5cd"
+    },
+    "_1920s": {
+      "hash": "19e3d51653960681"
+    },
+    "_1930s_40s": {
+      "hash": "554e4a66ef672555"
+    },
+    "_1950s": {
+      "hash": "f9467f36a434342d"
+    },
+    "_1960s": {
+      "hash": "74d5833242907571"
+    },
+    "_1970s": {
+      "hash": "61135f5bc7ec770d"
+    },
+    "_1980s": {
+      "hash": "231d0811d0da16a0"
+    },
+    "_1990s": {
+      "hash": "6e11368e375d37bd"
+    },
+    "_2000s": {
+      "hash": "66d510065305acf5"
+    },
+    "_2010s": {
+      "hash": "4a10991edd31a38e"
+    },
+    "_2020s": {
+      "hash": "9bd8cbf3cb073025"
+    },
     "_baseline": {
       "hash": "a9cb5fb0ec80d4fc"
+    },
+    "ancient_classical": {
+      "hash": "51975955b65a8b5b"
+    },
+    "awe": {
+      "hash": "61954d18cd040ee8"
     },
     "backlit_silhouette": {
       "hash": "6adc375a342a717b"
     },
+    "baroque_17c": {
+      "hash": "810402adc6b429ee"
+    },
     "barrel_distortion": {
-      "hash": "244b2b33496f4329"
+      "hash": "779f5d7e89028633"
     },
     "bioluminescent": {
       "hash": "1fee077c284fe295"
@@ -32,7 +74,10 @@
       "hash": "fbe17b0398a0ea2e"
     },
     "candlelight": {
-      "hash": "ef51caac532e4bef"
+      "hash": "c5d44847ed0f66e8"
+    },
+    "chaotic": {
+      "hash": "15c378c28602c522"
     },
     "chiaroscuro": {
       "hash": "06c1868c9789de62"
@@ -43,6 +88,9 @@
     "cool_blue": {
       "hash": "2eb095464ccbc121"
     },
+    "cozy": {
+      "hash": "face70c237b25c27"
+    },
     "cross_process_grade": {
       "hash": "e5d351327af326a1"
     },
@@ -50,10 +98,13 @@
       "hash": "1a6dfc4a70fcd835"
     },
     "crushed_blacks": {
-      "hash": "6b2ec1f8b80e668e"
+      "hash": "0a7256aff3aa5797"
     },
     "dappled_shade": {
       "hash": "24d0ba2c8dc90fbb"
+    },
+    "deadpan": {
+      "hash": "c92ebf228a165d18"
     },
     "direct_flash": {
       "hash": "103a2218b262a2ce"
@@ -64,11 +115,80 @@
     "dithered": {
       "hash": "36f5b2a1b4eb3015"
     },
+    "dreamlike": {
+      "hash": "8cadabfe02e94315"
+    },
+    "dress_1910s": {
+      "hash": "101d269a4e64358e"
+    },
+    "dress_1920s": {
+      "hash": "88af386e1b1d6c22"
+    },
+    "dress_1930s_40s": {
+      "hash": "9ad29e4e5e2141ab"
+    },
+    "dress_1950s": {
+      "hash": "5fe4569cfe0ace3f"
+    },
+    "dress_1960s": {
+      "hash": "a839ede9a69381ee"
+    },
+    "dress_1970s": {
+      "hash": "bfa351b5b245763a"
+    },
+    "dress_1980s": {
+      "hash": "ec8677593666aca2"
+    },
+    "dress_1990s": {
+      "hash": "6bcb8b202e4c41fd"
+    },
+    "dress_2000s": {
+      "hash": "686a0f3675873b30"
+    },
+    "dress_2010s": {
+      "hash": "e6752e289ca6d382"
+    },
+    "dress_2020s": {
+      "hash": "616cd704ee0a9ab1"
+    },
+    "dress_ancient_classical": {
+      "hash": "a485d33e7ce99888"
+    },
+    "dress_baroque_17c": {
+      "hash": "a26f0184c68eee06"
+    },
+    "dress_edwardian": {
+      "hash": "cdaf9370355433b2"
+    },
+    "dress_far_future": {
+      "hash": "c9e7c91313ce958c"
+    },
+    "dress_georgian_18c": {
+      "hash": "5fcadd825e527244"
+    },
+    "dress_medieval": {
+      "hash": "7c40ace4de5afbbd"
+    },
+    "dress_near_future": {
+      "hash": "29bfbdf954c7824a"
+    },
+    "dress_renaissance": {
+      "hash": "31485cce4ab8ee3d"
+    },
+    "dress_victorian": {
+      "hash": "b1e94f497c4f4f98"
+    },
     "duotone": {
       "hash": "01a7c7bccf862a66"
     },
+    "edwardian": {
+      "hash": "b3122a6194df33a7"
+    },
     "faded_film": {
       "hash": "8779230aaa6432f7"
+    },
+    "far_future": {
+      "hash": "f5ed050b827329a6"
     },
     "film_grain": {
       "hash": "c6d7ab8459b25b3d"
@@ -79,6 +199,9 @@
     "fluorescent_overhead": {
       "hash": "7ad6242eb738396d"
     },
+    "georgian_18c": {
+      "hash": "4963ac5955700518"
+    },
     "glitch_artifact": {
       "hash": "02df6a8b02cd9d4d"
     },
@@ -86,7 +209,7 @@
       "hash": "c71dd5a300093aee"
     },
     "gobo_projection": {
-      "hash": "4b1a69df84d3cd8a"
+      "hash": "ae3c15af8749425f"
     },
     "god_rays": {
       "hash": "2269b16e1dcc8ac2"
@@ -103,26 +226,50 @@
     "hard_noon_sun": {
       "hash": "cf5b55bfe24d5c4b"
     },
+    "heroic": {
+      "hash": "639669fde3b18ddc"
+    },
     "high_key": {
       "hash": "4e6df742f15dc278"
     },
     "high_saturation": {
       "hash": "911c2e2b1521afc1"
     },
+    "hopeful": {
+      "hash": "d25d104a2cc14f8b"
+    },
+    "intimate": {
+      "hash": "cfa8d70b541d1285"
+    },
     "inverted_negative": {
-      "hash": "66ee49548adf9f0b"
+      "hash": "7ea3925f68910d34"
+    },
+    "joyful": {
+      "hash": "feead09f1ca4052f"
     },
     "jpeg_artifacts": {
       "hash": "4c5b829841f1cc76"
     },
     "kodachrome": {
-      "hash": "c8e70b1adfa77135"
+      "hash": "6711e14ce729bee9"
     },
     "lens_flare": {
       "hash": "fed0edccc25f32bf"
     },
+    "light_leak": {
+      "hash": "77978bd8f2b9b413"
+    },
+    "lonely": {
+      "hash": "6e5fa83c88b56e8e"
+    },
     "matte_flat": {
-      "hash": "053274f6e2df85b6"
+      "hash": "f2b2aa7bdf47ccb8"
+    },
+    "medieval": {
+      "hash": "f145ada840e92bf3"
+    },
+    "melancholic": {
+      "hash": "0fc13f8900b7ec14"
     },
     "moire": {
       "hash": "ed2b82a80d8c3218"
@@ -139,17 +286,32 @@
     "muted_earth": {
       "hash": "84a07c284571b207"
     },
+    "mysterious": {
+      "hash": "e07a4db99f02eddd"
+    },
+    "near_future": {
+      "hash": "8d8face056a35584"
+    },
     "neon_noir": {
       "hash": "eeb4c3c487646760"
     },
+    "nostalgic": {
+      "hash": "9e5f39549133b68d"
+    },
+    "oppressive": {
+      "hash": "c7c67197bff3017a"
+    },
     "orthochromatic": {
-      "hash": "fce10e5bf5ad47d8"
+      "hash": "5e41765c320738ec"
+    },
+    "over_denoised": {
+      "hash": "739b3c7b2bfd44fa"
     },
     "overcast_soft": {
       "hash": "ee1e45d50143c099"
     },
     "oversharpened": {
-      "hash": "7b5e860cac4834e3"
+      "hash": "b8790941c62f22fa"
     },
     "paper_texture": {
       "hash": "518452ad09c8af79"
@@ -158,7 +320,7 @@
       "hash": "42fb5e6b851b8128"
     },
     "portra_soft_negative": {
-      "hash": "8a1372f61879cb1e"
+      "hash": "fe23eb6a967a82b0"
     },
     "posterized": {
       "hash": "e55fd8637974ea92"
@@ -169,11 +331,20 @@
     "rembrandt_lighting": {
       "hash": "5402e50efa5be5a8"
     },
+    "renaissance": {
+      "hash": "d2e2d593b9facf9f"
+    },
+    "reverent": {
+      "hash": "41fe6987857f79c0"
+    },
     "rim_lighting": {
-      "hash": "47422965af6cefce"
+      "hash": "7e136f8566ba9cae"
     },
     "rolling_shutter_skew": {
       "hash": "bc44da8db7f30096"
+    },
+    "romantic": {
+      "hash": "e6085e9ab0045449"
     },
     "scan_lines": {
       "hash": "069b2d950cef9db1"
@@ -187,8 +358,14 @@
     "sepia": {
       "hash": "d3e43ef0af5ae1bd"
     },
+    "serene": {
+      "hash": "00371055b4c18534"
+    },
     "shallow_depth_of_field": {
       "hash": "531866564896b662"
+    },
+    "sinister": {
+      "hash": "bf9af8d55dbf7430"
     },
     "sodium_vapour": {
       "hash": "4be92c69baaf7481"
@@ -212,7 +389,16 @@
       "hash": "bf5b10763fdeea0b"
     },
     "teal_orange": {
-      "hash": "4e41628240354bfd"
+      "hash": "f97aca367ee5d5be"
+    },
+    "tense": {
+      "hash": "53f4380de055829f"
+    },
+    "uncanny": {
+      "hash": "cc415ae2f2f965c0"
+    },
+    "underlighting": {
+      "hash": "14683f555e9ae0b0"
     },
     "underwater_caustics": {
       "hash": "2ace84d0f40d2539"
@@ -226,11 +412,17 @@
     "vhs_artifacts": {
       "hash": "a098823f38ebe9ca"
     },
+    "victorian": {
+      "hash": "e0beaab482182429"
+    },
     "vignette": {
       "hash": "cb617b53553f435b"
     },
     "warm_amber": {
       "hash": "b368c74e7147f09d"
+    },
+    "whimsical": {
+      "hash": "5aafc8677f98318d"
     }
   },
   "tiles": {

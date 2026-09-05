@@ -568,10 +568,55 @@
     line-height: 1.35;
 }
 
+/*
+ * Rows with a thumbnail. Gated on `.with-art` rather than on
+ * `.stylebook-list`, because the artist picker is a list too and its rows
+ * carry no picture -- an unguarded rule would open a 128px empty column
+ * in front of 962 artists.
+ *
+ * `align-items: start` rather than the bare row's `baseline`: a 128px
+ * image has no baseline to align a name against, so the text would sit at
+ * the bottom of the thumbnail.
+ */
+.stylebook-list.with-art .stylebook-row {
+    grid-template-columns: 128px minmax(140px, 210px) 1fr;
+    align-items: start;
+    /* Measured, not guessed: 128px of art + 7px padding + 1px border top
+       and bottom. An under-guess makes the scrollbar jump as
+       content-visibility measures each row for real on scroll. */
+    contain-intrinsic-size: auto 144px;
+}
+
+/* `position: relative` so the lettered fallback glyph, which is
+   `inset: 0`, has this box to fill. The sprite's background-image, size
+   and position are set inline by applySprite, so they are deliberately
+   not declared here -- only the box and the colour behind a glyph. */
+.stylebook-row-art {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--comfy-input-bg, #131313);
+}
+
 @media (max-width: 720px) {
     .stylebook-row {
         grid-template-columns: 1fr;
         gap: 2px;
+    }
+
+    .stylebook-list.with-art .stylebook-row {
+        grid-template-columns: 96px 1fr;
+        gap: 10px;
+    }
+
+    /* The name and the descriptor stack beside a smaller thumbnail rather
+       than under it, so the picture keeps its own column. */
+    .stylebook-list.with-art .stylebook-row-art {
+        width: 96px;
+        height: 96px;
+        grid-row: span 2;
     }
 }
 

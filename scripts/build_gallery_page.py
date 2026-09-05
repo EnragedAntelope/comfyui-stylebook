@@ -34,6 +34,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+# Sibling scripts are importable when this file is run directly, but not
+# when something imports it by path -- tests/test_previews.py does both.
+if str(Path(__file__).resolve().parent) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+# One list of the three public pages, so the gallery and the two reference
+# pages cannot drift into linking to different sets of each other.
+from build_reference_pages import _nav  # noqa: E402
 
 # A maintainer's own local user_styles.json must never reach a published
 # page. Set before `data` is imported, since data/user_data.py reads it
@@ -141,6 +149,8 @@ body {
 }
 a { color: var(--accent); }
 header { padding: 28px 20px 12px; max-width: 1180px; margin: 0 auto; }
+nav { margin-top: 10px; font-size: 14px; }
+nav .here { color: var(--muted); font-weight: 600; }
 h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -0.01em; }
 .lede { margin: 0 0 4px; color: var(--muted); max-width: 62ch; }
 .controls {
@@ -255,6 +265,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px 40px; color: var(--m
   <p class="lede">The pack also ships __ARTIST_COUNT__ artists with written
   descriptors, and modifiers for lighting, colour, era, period dress,
   finish and mood.</p>
+  <nav>__NAV__</nav>
 </header>
 
 <div class="controls"><div class="controls-inner">
@@ -498,6 +509,7 @@ def generate() -> str:
         .replace("__STYLE_COUNT__", str(len(payload["styles"])))
         .replace("__ARTIST_COUNT__", str(payload["artistCount"]))
         .replace("__ASSET_PREFIX__", ASSET_PREFIX)
+        .replace("__NAV__", _nav("gallery"))
     )
 
 
