@@ -877,6 +877,17 @@ applies.
 "sudden, jarring, explosive, rapid" gives a model nothing to draw. This
 was confined to one category and is now guarded by a review script.
 
+**A colour named as a noun or a quantity is drawn as a shape** (0.16.0,
+measured on modifier tiles). "Pale pink and mint and butter yellow"
+rendered as three colour *blocks*, one over the head; "a single saturated
+signal colour" rendered a teal square where the face should be; "a hard
+split between warm and cool" rendered a literal orange/cyan split. The fix
+each time was to describe what the grade does to the colours already in
+frame — "soft powdery tints across the whole palette", "every warm tone
+printing darker than the eye sees" — rather than to list target hues.
+Styles can still name a palette (a pattachitra's vermilion and yellow); the failure is a *modifier*, applied over someone else's
+picture, asserting colours as things.
+
 ## Styles that set the scene
 
 Most styles change *how* your subject is drawn. A minority also decide
@@ -1233,6 +1244,33 @@ somebody the pack already ships. Styles named only for a work, a studio
 or a movement (Cowboy Bebop, Evangelion, Studio Ghibli, Superflat) carry
 no `namesake` by design: no person is named on the tile, so nothing is
 promised.
+
+### Franchise names live in the label, not the prose (0.16.0)
+
+A style's `label` and `aliases` never reach the text encoder — only
+`prose` and `tags` do — so a franchise name costs nothing there and makes
+the style findable. In the prose it is a different matter: it summons the
+franchise's *characters*. First renders of the 0.16.0 additions drew
+Spider-Man for "Spider-Verse", Hobbes for "Calvin and Hobbes" and Hellboy
+standing in a black slab for "Hellboy". Rewritten to describe the look
+(and, where it helps, the creator — "Bill Watterson's Sunday-strip
+style"), the subject came back as the subject.
+
+The exception is a franchise whose look *is* its character design — The
+Simpsons, South Park, the Muppets, LEGO, Funko Pop. Strip the name and
+nothing distinguishes the look, so those keep it and accept that the tile
+shows a house-style character. Dragon Ball is the honest limit: its tile
+draws Goku whether the prose names the franchise, the creator or neither,
+because "angular spiky silhouettes, compact muscular proportions" *is*
+Goku. It ships because that is also what people pick it for; the user's
+own subject steers harder than the category's placeholder one.
+
+Three candidates were dropped rather than shipped weak (Attack on Titan,
+Jujutsu Kaisen, Hellboy — each failed three wordings) and one because it
+duplicated a shipped style (Pokémon → Kodomo Manga, now an alias there;
+Korean Minhwa, caught after rendering: `minhwa` already shipped under
+"Minhwa Folk Painting" — an absence check must also search ids and prose).
+The creators have artist records, which carry the look without a tile.
 
 ## Adding a style
 

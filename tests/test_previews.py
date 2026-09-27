@@ -157,5 +157,33 @@ class ManifestCompatibilityTests(unittest.TestCase):
         )
 
 
+class PruneTests(unittest.TestCase):
+    """`--prune` must clear a dropped style from the manifest, not only disk.
+
+    Nothing else removes a manifest entry, so a style dropped before
+    commit stayed an "orphan tile" in every later `--check`.
+    """
+
+    def test_prune_drops_manifest_entries_of_removed_styles(self):
+        import tempfile
+        from unittest import mock
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            manifest = tmp / "manifest.json"
+            manifest.write_text(json.dumps({
+                "version": build_previews.MANIFEST_VERSION, "model": "m",
+                "tiles": {"kept": {"hash": "a"}, "gone": {"hash": "b"}},
+                "modifier_tiles": {"gone": {"hash": "c"}},
+            }), encoding="utf-8")
+            with mock.patch.object(build_previews, "MANIFEST", manifest), \
+                    mock.patch.object(build_previews, "SRC_DIR", tmp / "src"):
+                build_previews.prune_sources({"kept": {}})
+            data = json.loads(manifest.read_text(encoding="utf-8"))
+        self.assertEqual(set(data["tiles"]), {"kept"})
+        # Modifier tiles are keyed separately and left alone.
+        self.assertIn("gone", data["modifier_tiles"])
+
+
 if __name__ == "__main__":
     unittest.main()

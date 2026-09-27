@@ -773,6 +773,17 @@ ART_MOVEMENTS_DATA: dict[str, dict] = {
         "preview": "art_movements#69",
         "blocks": [],
     },
+    "pop_surrealism": {
+        "id": "pop_surrealism",
+        "label": "Pop Surrealism",
+        "category": "art_movements",
+        "aliases": ["lowbrow", "lowbrow art", "big-eyed pop surrealism"],
+        "tags": "pop surrealism, meticulous glossy oil painting, old-master portrait turned uncanny, porcelain-smooth modelling, large glistening doe eyes, candy-coloured pastel palette with eerie undertones, sweet-yet-macabre stillness, soft even light",
+        "prose": "Painted as pop surrealism: a meticulous glossy oil painting in the manner of an old-master portrait turned uncanny, porcelain-smooth modelling, large glistening doe eyes, a candy-coloured pastel palette with eerie undertones and a sweet-yet-macabre stillness under soft even light.",
+        "negative": "loose brushwork, photorealism, gritty texture, abstract expression, muted earth palette",
+        "preview": "art_movements#70",
+        "blocks": [],
+    },
 }
 
 ART_MOVEMENTS_STYLES = ART_MOVEMENTS_DATA

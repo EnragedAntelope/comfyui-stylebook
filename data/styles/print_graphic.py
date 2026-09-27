@@ -668,6 +668,17 @@ PRINT_GRAPHIC_STYLES: dict[str, dict] = {
         "preview": "print_graphic#60",
         "blocks": [],
     },
+    "topographic_contour": {
+        "id": "topographic_contour",
+        "label": "Topographic Contour",
+        "category": "print_graphic",
+        "aliases": ["contour line art", "topo map style", "elevation lines"],
+        "tags": "topographic contour line illustration, form described entirely by evenly spaced flowing lines, lines bunching tight where the surface steepens, fine uniform-weight linework, muted cream and sepia cartographic palette, soft elevation tint bands, clean graphic minimalism",
+        "prose": "Drawn as topographic contour lines: the form described entirely by evenly spaced flowing lines that bunch tight where the surface steepens and spread wide across the flats, fine uniform-weight linework in a muted cream and sepia cartographic palette with soft elevation tint bands.",
+        "negative": "solid shading, photograph, painterly brushwork, text labels, saturated neon",
+        "preview": "print_graphic#61",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = PRINT_GRAPHIC_STYLES
