@@ -41,7 +41,7 @@
       "hash": "51975955b65a8b5b"
     },
     "awe": {
-      "hash": "61954d18cd040ee8"
+      "hash": "73f93a330cec36a0"
     },
     "backlit_silhouette": {
       "hash": "6adc375a342a717b"
@@ -257,7 +257,7 @@
       "hash": "fed0edccc25f32bf"
     },
     "light_leak": {
-      "hash": "77978bd8f2b9b413"
+      "hash": "4cec39f898d30c11"
     },
     "lonely": {
       "hash": "6e5fa83c88b56e8e"
@@ -290,7 +290,7 @@
       "hash": "e07a4db99f02eddd"
     },
     "near_future": {
-      "hash": "8d8face056a35584"
+      "hash": "6c4f807319189a02"
     },
     "neon_noir": {
       "hash": "eeb4c3c487646760"
@@ -302,7 +302,7 @@
       "hash": "c7c67197bff3017a"
     },
     "orthochromatic": {
-      "hash": "5e41765c320738ec"
+      "hash": "05b46958d726d632"
     },
     "over_denoised": {
       "hash": "739b3c7b2bfd44fa"
@@ -317,7 +317,7 @@
       "hash": "518452ad09c8af79"
     },
     "pastel_wash": {
-      "hash": "42fb5e6b851b8128"
+      "hash": "84af297f5cf08ca2"
     },
     "portra_soft_negative": {
       "hash": "fe23eb6a967a82b0"
@@ -392,7 +392,7 @@
       "hash": "f97aca367ee5d5be"
     },
     "tense": {
-      "hash": "53f4380de055829f"
+      "hash": "68461d5f809455ac"
     },
     "uncanny": {
       "hash": "cc415ae2f2f965c0"
@@ -513,6 +513,9 @@
     "arcade_cabinet_screen": {
       "hash": "b4dc282a9d6a5b48"
     },
+    "arcane_fortiche": {
+      "hash": "fb64a7edb1713823"
+    },
     "architectural": {
       "hash": "9d5e1416448018ee"
     },
@@ -557,6 +560,9 @@
     },
     "automotive_paint": {
       "hash": "db506c69a7d74ccb"
+    },
+    "balloon_twist_sculpture": {
+      "hash": "4dadd712dfda379c"
     },
     "ballpoint_pen": {
       "hash": "83c387a84a8cd6f0"
@@ -657,11 +663,17 @@
     "cabinet_card": {
       "hash": "a792cbd739c93bc7"
     },
+    "calarts_tv_cartoon": {
+      "hash": "4c5b978146c6354f"
+    },
     "calligraphy_hand_lettering": {
       "hash": "a20812dcfafd8fe0"
     },
     "calotype_talbotype": {
       "hash": "4ecf801528f4a524"
+    },
+    "calvin_hobbes_watterson": {
+      "hash": "4985c9c4a881880e"
     },
     "camaieu": {
       "hash": "699cfce30ae6aae8"
@@ -684,6 +696,9 @@
     "carved_jade": {
       "hash": "87ee1829e1309a34"
     },
+    "carved_wood_figure": {
+      "hash": "7b1c286b4b72e892"
+    },
     "casein_painting": {
       "hash": "63cc5ef150a19111"
     },
@@ -704,6 +719,9 @@
     },
     "cereal_box": {
       "hash": "a5a91e1b15baab3b"
+    },
+    "chainsaw_man": {
+      "hash": "2a03596ecbe59ab0"
     },
     "chalkboard_drawing": {
       "hash": "13f0fae969100dec"
@@ -740,6 +758,9 @@
     },
     "clamp_ornate": {
       "hash": "5ceb8de3e9c5cce7"
+    },
+    "classic_disney_animation": {
+      "hash": "b87be5c24f7a9d8f"
     },
     "clay_render": {
       "hash": "c01bc5ce407205a1"
@@ -873,6 +894,9 @@
     "delftware_blue": {
       "hash": "f55301f74c7e6694"
     },
+    "demon_slayer_ufotable": {
+      "hash": "94e652dd81822399"
+    },
     "demoscene": {
       "hash": "c37c3bd6a87aa4af"
     },
@@ -920,6 +944,9 @@
     },
     "double_exposure": {
       "hash": "6e9b75e3dac3438f"
+    },
+    "dragon_ball_toriyama": {
+      "hash": "ec9f3d7538d29c3a"
     },
     "drone_fpv_flythrough": {
       "hash": "3f13a9701893c014"
@@ -1080,6 +1107,9 @@
     "fumetti": {
       "hash": "4b45a6f7b593de7b"
     },
+    "funko_pop": {
+      "hash": "3259e3aec9e7f84b"
+    },
     "furniture_design_render": {
       "hash": "b0153032d8a8da07"
     },
@@ -1160,6 +1190,9 @@
     },
     "gravure_rotogravure": {
       "hash": "09e9472536e3f47a"
+    },
+    "grindhouse": {
+      "hash": "0ee6e8d3010458b8"
     },
     "grisaille": {
       "hash": "1b12a260965e0b0f"
@@ -1344,6 +1377,9 @@
     "leather_tooling": {
       "hash": "05b33e78b680a86b"
     },
+    "lego_brick_build": {
+      "hash": "69e55ee179826e8e"
+    },
     "lens_flare": {
       "hash": "1d47f40f3d5bebe6"
     },
@@ -1388,6 +1424,9 @@
     },
     "long_exposure": {
       "hash": "753968a961e17806"
+    },
+    "looney_tunes": {
+      "hash": "023d5f7c10c81a98"
     },
     "low_poly": {
       "hash": "ec5f109daae37862"
@@ -1437,6 +1476,9 @@
     "map_collage": {
       "hash": "d41b3a097a3033fe"
     },
+    "marble_statue": {
+      "hash": "9e65f87476fecf00"
+    },
     "marbling_ebru": {
       "hash": "b88ee5d6a4a42fe1"
     },
@@ -1445,6 +1487,9 @@
     },
     "marquetry_inlay": {
       "hash": "a37fab4d3dcb05d8"
+    },
+    "marvel_comics": {
+      "hash": "5ad627fca1d9215b"
     },
     "mask_making_papier_mache": {
       "hash": "37112a32de2b99e4"
@@ -1523,6 +1568,9 @@
     },
     "mughal_miniature": {
       "hash": "9ba1c3ac0c91216c"
+    },
+    "muppets": {
+      "hash": "28cbfb1dfbfca6e8"
     },
     "muralism": {
       "hash": "86f64cb783836b21"
@@ -1683,6 +1731,12 @@
     "patinated_bronze": {
       "hash": "52fc511be05de5d9"
     },
+    "pattachitra": {
+      "hash": "8b861ef1beaa579e"
+    },
+    "peanuts_schulz": {
+      "hash": "f988b73f0c4226a3"
+    },
     "pen_and_wash": {
       "hash": "4b28f1e9c2c34214"
     },
@@ -1734,6 +1788,9 @@
     "pinhole": {
       "hash": "b140ade3f9b5bd9f"
     },
+    "pixar_3d_animation": {
+      "hash": "e4642aaba68f6e81"
+    },
     "pixel_art": {
       "hash": "01f095da9ed3fec9"
     },
@@ -1748,6 +1805,9 @@
     },
     "plotter_pen": {
       "hash": "0b1d24bcf7f267c7"
+    },
+    "plush_toy": {
+      "hash": "5dfd733a41ea42af"
     },
     "pochoir": {
       "hash": "f2e7c5da857d56f1"
@@ -1776,8 +1836,14 @@
     "pop_art": {
       "hash": "c179d87a69536158"
     },
+    "pop_surrealism": {
+      "hash": "5592d58c77d47f19"
+    },
     "pop_up_book_spread": {
       "hash": "706a275cc137d00b"
+    },
+    "porcelain_figurine": {
+      "hash": "5b98d68cbf7e57a4"
     },
     "portrait": {
       "hash": "550ed2ebc539fda4"
@@ -2052,11 +2118,17 @@
     "sosaku_hanga": {
       "hash": "e04e131a1ad1b837"
     },
+    "south_park": {
+      "hash": "9b3dbc6f656f9717"
+    },
     "soviet_montage": {
       "hash": "48430972ab2d29fc"
     },
     "spaghetti_western": {
       "hash": "48a03f1aaed7af5e"
+    },
+    "spider_verse": {
+      "hash": "77be2bc72b3a28f1"
     },
     "spike_lee": {
       "hash": "1f78b37f8df2b9d0"
@@ -2111,6 +2183,9 @@
     },
     "sunday_funnies": {
       "hash": "c5ebe6b4371208b0"
+    },
+    "super8_home_movie": {
+      "hash": "95a04d3ab53fe38f"
     },
     "superflat": {
       "hash": "ef813a1e7cc718c1"
@@ -2193,6 +2268,9 @@
     "thangka": {
       "hash": "a683bcba4c9d2815"
     },
+    "the_simpsons": {
+      "hash": "bffd862a555efea3"
+    },
     "thermal_imaging": {
       "hash": "a7df0c34b7d33d82"
     },
@@ -2225,6 +2303,9 @@
     },
     "tonalism": {
       "hash": "b9f3e2e39781e253"
+    },
+    "topographic_contour": {
+      "hash": "fee4f6687386973d"
     },
     "trading_card_foil_holo": {
       "hash": "385a5d51e71e462b"
@@ -2335,7 +2416,7 @@
       "hash": "3b8b386ce708de2c"
     },
     "watercolor": {
-      "hash": "fbc1e90d032ca82e"
+      "hash": "0e90316ea6556340"
     },
     "wax_seal_on_letter": {
       "hash": "51addc73621e80ec"

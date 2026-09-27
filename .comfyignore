@@ -50,3 +50,8 @@ node_modules/
 # style gallery draws its thumbnails from, so a registry install without
 # them would open an empty gallery. They total about 4 MB and keep the
 # pack working fully offline, with no download on first use.
+
+# Registry listing art: referenced by URL from pyproject [tool.comfy],
+# never read by the pack itself.
+/docs/images/icon.jpg
+/docs/images/banner.jpg

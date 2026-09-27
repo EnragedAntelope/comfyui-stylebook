@@ -372,6 +372,40 @@ STYLE_SUBJECT = {
                            "straight on, filling the whole frame edge to "
                            "edge, a headline above an illustration and two "
                            "columns of small text",
+    # The subject is rendered AS a figure: a mountain-and-bird motif turned
+    # into a statue or a toy shows the material but not the look people
+    # pick these for. "Fully clothed" is load-bearing for the marble
+    # statue: without it the classical prior renders a nude. A balloon dog
+    # is the form the craft is known by.
+    "funko_pop": "a single figure of a person, standing, front-facing, "
+                 "centred",
+    "lego_brick_build": "a single figure of a person, standing, "
+                        "front-facing, centred",
+    "muppets": "a single character, front-facing, waist-up, centred",
+    "marble_statue": "a single standing figure of a fully clothed person, "
+                     "front-facing, centred",
+    "porcelain_figurine": "a single standing figure of a fully clothed "
+                          "person, front-facing, centred",
+    "carved_wood_figure": "a single standing figure of a fully clothed "
+                          "person, front-facing, centred",
+    "plush_toy": "a single figure of a person, seated, front-facing, centred",
+    "balloon_twist_sculpture": "a small dog, standing, three-quarter view",
+    # Character animation looks: the category's "rendered figure on a
+    # ground plane" came back as a faceless mannequin.
+    "pixar_3d_animation": "a fully clothed person standing, front-facing, "
+                          "centred, waist-up",
+    "arcane_fortiche": "a fully clothed person standing, front-facing, "
+                       "centred, waist-up",
+    # Heavy-grain, halftone and wash looks cropped the head off at waist-up.
+    "watercolor": "a fully clothed person standing, head and shoulders "
+                  "fully in frame, front-facing, centred",
+    "spider_verse": "a fully clothed person standing, head and shoulders "
+                    "fully in frame, front-facing, centred",
+    "grindhouse": "a fully clothed person standing in a plain interior, "
+                  "head and shoulders fully in frame, front-facing, centred",
+    "super8_home_movie": "a fully clothed person standing in a plain "
+                         "interior, head and shoulders fully in frame, "
+                         "front-facing, centred",
 }
 
 # Applied on top of each style's own negative, never instead of it. The
@@ -791,6 +825,16 @@ def prune_sources(styles: dict) -> int:
     why ``ls previews/src | wc -l`` is not a completeness check -- the
     count agreed with the style count while eighteen tiles were missing.
     """
+    # The manifest entry goes too: nothing else ever removes one, so a
+    # dropped style stayed an "orphan tile" in every --check forever.
+    manifest = load_manifest()
+    gone = [sid for sid in manifest["tiles"] if sid not in styles]
+    if gone:
+        for sid in gone:
+            del manifest["tiles"][sid]
+        save_manifest(manifest)
+        print(f"Dropped {len(gone)} manifest entr{'y' if len(gone) == 1 else 'ies'} "
+              f"for removed styles: {', '.join(sorted(gone))}")
     if not SRC_DIR.is_dir():
         print("No previews/src directory; nothing to prune.")
         return 0

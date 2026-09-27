@@ -1,12 +1,13 @@
 [project]
 name = "comfyui-stylebook"
-version = "0.15.0"
-description = "650+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list and a matching negative prompt. Plus 950+ artists with descriptors that work even when your model does not know the name, and modifiers for lighting, colour, era, period dress, finish and mood. Offline, zero dependencies."
+version = "0.16.0"
+description = "650+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list and a matching negative prompt. Plus 1000+ artists with descriptors that work even when your model does not know the name, and previewed modifiers for lighting, colour, era, period dress, finish and mood. Offline, zero dependencies."
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10"
-keywords = ["comfyui", "comfyui-nodes", "comfyui-custom-nodes", "prompt-engineering", "art-styles", "stable-diffusion", "flux", "sdxl", "text-to-image", "style", "artist", "modifier", "gallery", "preview"]
+keywords = ["comfyui", "comfyui-nodes", "comfyui-custom-nodes", "prompt-engineering", "art-styles", "stable-diffusion", "flux", "sdxl", "text-to-image", "style", "artist", "modifier", "gallery", "preview", "anime", "animation", "illustration"]
 dependencies = []
+classifiers = ["Operating System :: OS Independent"]
 
 [[project.authors]]
 name = "EnragedAntelope"
@@ -18,6 +19,8 @@ Repository = "https://github.com/EnragedAntelope/comfyui-stylebook"
 [tool.comfy]
 PublisherId = "enragedantelope"
 DisplayName = "Stylebook"
+Icon = "https://raw.githubusercontent.com/EnragedAntelope/comfyui-stylebook/main/docs/images/icon.jpg"
+Banner = "https://raw.githubusercontent.com/EnragedAntelope/comfyui-stylebook/main/docs/images/banner.jpg"
 requires-comfyui = ">=0.25.0"
 
 [tool.ruff.lint.per-file-ignores]

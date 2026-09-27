@@ -744,6 +744,28 @@ OBJECT_ARTIFACT_STYLES: dict[str, dict] = {
         "preview": "object_artifact#67",
         "blocks": [],
     },
+    "funko_pop": {
+        "id": "funko_pop",
+        "label": "Funko Pop",
+        "category": "object_artifact",
+        "aliases": ["funko style", "vinyl collectible figure", "designer vinyl toy", "bobblehead figure"],
+        "tags": "funko pop vinyl figure, oversized squarish head on a small blocky body, solid black button eyes, details simplified to a few sculpted forms, smooth matte vinyl surface with a soft sheen, bright solid colour, clean studio product lighting",
+        "prose": "Made into a Funko Pop vinyl figure: an oversized squarish head on a small blocky body, solid black button eyes, details simplified to a few sculpted forms, a smooth matte vinyl surface with a soft sheen, bright solid colour and clean studio product lighting.",
+        "negative": "realistic proportions, photograph of a person, detailed anatomy, painterly texture, hand-drawn",
+        "preview": "object_artifact#68",
+        "blocks": [],
+    },
+    "lego_brick_build": {
+        "id": "lego_brick_build",
+        "label": "LEGO Brick Build",
+        "category": "object_artifact",
+        "aliases": ["lego style", "brick-built", "toy brick model", "lego minifigure"],
+        "tags": "lego brick build, assembled from interlocking glossy plastic toy bricks, round studs on every top surface, stepped blocky edges, bright primary colour, crisp product lighting, toy photography",
+        "prose": "Built from LEGO bricks: the whole form assembled from interlocking glossy plastic toy bricks with round studs on every top surface, stepped blocky edges, bright primary colour and crisp product lighting like toy photography.",
+        "negative": "smooth sculpted surface, realistic texture, organic curves, painterly finish, hand-drawn",
+        "preview": "object_artifact#69",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = OBJECT_ARTIFACT_STYLES

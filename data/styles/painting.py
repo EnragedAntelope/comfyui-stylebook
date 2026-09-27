@@ -609,6 +609,17 @@ PAINTING_STYLES: dict[str, dict] = {
         "preview": "painting#55",
         "blocks": [],
     },
+    "pattachitra": {
+        "id": "pattachitra",
+        "label": "Pattachitra",
+        "category": "painting",
+        "aliases": ["patachitra", "odisha scroll painting", "bengal pattachitra"],
+        "tags": "pattachitra cloth painting, fine black ink outlines, flat natural mineral colour in vermilion yellow white and black, stylised elongated eyes and profiles, dense floral patterning, matte chalk-primed cloth surface, flat perspective",
+        "prose": "Painted as Odisha pattachitra: fine black ink outlines around flat natural mineral colour in vermilion, yellow, white and black, stylised elongated eyes and profiles, dense floral patterning filling the ground and the matte chalk-primed surface of treated cloth.",
+        "negative": "realistic shading, western perspective, photorealism, soft gradients, 3D render",
+        "preview": "painting#57",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = PAINTING_STYLES
