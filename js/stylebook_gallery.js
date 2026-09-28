@@ -645,7 +645,11 @@ class StylebookPicker {
     }
     requestAnimationFrame(() => {
       try {
-        if (this.searchInput) this.searchInput.focus();
+        // Selected, so a restored query is visible yet replaced by the first keystroke.
+        if (this.searchInput) {
+          this.searchInput.focus();
+          this.searchInput.select();
+        }
       } catch (_) { /* ignore */ }
     });
     // The dialog is on screen before the corpus is, so opening feels
@@ -753,6 +757,9 @@ class StylebookPicker {
     search.spellcheck = false;
     search.autocomplete = "off";
     search.setAttribute("aria-label", this.config.searchPlaceholder);
+    // The query survives close() so a reopened picker keeps its filter;
+    // the fresh input has to show it or the grid is narrowed under a blank box.
+    search.value = this.query;
     // Debounced. A grid rebuild is cheap now that the item list is
     // memoised, but a fast typist still generated one full pass per
     // keystroke; coalescing them keeps the caret responsive on a laptop.

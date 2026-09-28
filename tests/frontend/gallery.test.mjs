@@ -189,6 +189,31 @@ test("StylebookStyle: picker opens, search narrows results, Escape closes and re
   assert.equal(document.querySelector(".stylebook-overlay"), null, "Escape did not close the dialog");
 });
 
+test("reopening keeps the query visible in the search box, not just in the grid", async () => {
+  // The picker remembers its filter across close/reopen, but build()
+  // made a fresh, empty input: the grid stayed narrowed under a blank box.
+  const node = makeNode("StylebookStyle");
+  await getExtension().nodeCreated(node);
+  const button = findWidget(node, "Open style gallery");
+  button.callback();
+  await settle();
+
+  const search = document.querySelector(".stylebook-search");
+  search.value = "Cyanotype";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  await settle(150);
+  document.querySelector(".stylebook-overlay")
+    .dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+  button.callback();
+  await settle();
+  const reopened = document.querySelector(".stylebook-search");
+  assert.equal(reopened.value, "Cyanotype", "the reopened search box should show the remembered query");
+  assert.equal(document.querySelectorAll(".stylebook-tile").length, 1, "and the grid should match it");
+  assert.equal(reopened.selectionStart, 0, "the restored query should be selected");
+  assert.equal(reopened.selectionEnd, "Cyanotype".length, "so the first keystroke replaces it");
+});
+
 // --- 6b. Tab stays inside the dialog ---------------------------------------
 
 test("Tab wraps at both ends instead of walking onto the canvas behind", async () => {

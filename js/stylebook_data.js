@@ -21,8 +21,8 @@ export const ARTIST_COUNT = 1000;
 // first. The gallery's "New" tab means CURRENT_VERSION; the
 // newest-first sort ranks by position in RELEASES rather than
 // parsing version strings in JavaScript.
-export const CURRENT_VERSION = "0.16.0";
-export const RELEASES = ["0.1.0", "0.3.0", "0.4.0", "0.4.1", "0.5.0", "0.5.1", "0.6.0", "0.7.0", "0.8.0", "0.9.0", "0.10.0", "0.11.0", "0.12.0", "0.13.0", "0.14.0", "0.15.0", "0.16.0"];
+export const CURRENT_VERSION = "0.16.1";
+export const RELEASES = ["0.1.0", "0.3.0", "0.4.0", "0.4.1", "0.5.0", "0.5.1", "0.6.0", "0.7.0", "0.8.0", "0.9.0", "0.10.0", "0.11.0", "0.12.0", "0.13.0", "0.14.0", "0.15.0", "0.16.0", "0.16.1"];
 
 // The axis-to-modifier map gates the Modifier node's dropdown as
 // soon as the node exists, before any dialog is opened, so unlike
