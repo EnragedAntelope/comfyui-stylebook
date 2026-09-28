@@ -14,8 +14,8 @@ saved workflow or dropdown order depends on it.
 
 from __future__ import annotations
 
-#: Every release that has shipped content, oldest first. The gallery uses
-#: this order rather than parsing version strings in JavaScript.
+#: Every release, oldest first, including ones that added no entries. The
+#: gallery uses this order rather than parsing version strings in JavaScript.
 RELEASES: tuple[str, ...] = (
     "0.1.0",
     "0.3.0",
@@ -34,6 +34,7 @@ RELEASES: tuple[str, ...] = (
     "0.14.0",
     "0.15.0",
     "0.16.0",
+    "0.16.1",
 )
 
 #: Entry id -> the release it first shipped in.

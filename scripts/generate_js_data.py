@@ -42,7 +42,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import sys
 from pathlib import Path
 
@@ -124,6 +123,18 @@ def _preview_sprites() -> dict:
     return {"model": raw.get("model", ""), "categories": out}
 
 
+def new_release() -> str:
+    """The release the "New" tab shows: the newest one that added entries.
+
+    Not the pyproject version -- a fix-only release stamps nothing, and
+    naming it would empty the tab the moment it shipped.
+    """
+    from data.versions import ADDED_IN, RELEASES
+
+    used = {v for stamps in ADDED_IN.values() for v in stamps.values()}
+    return next((v for v in reversed(RELEASES) if v in used), "")
+
+
 def generate() -> tuple[str, str]:
     from data.artists import (
         ARTIST_CATEGORIES, ARTIST_CATEGORY_LABELS, ARTISTS,
@@ -133,15 +144,6 @@ def generate() -> tuple[str, str]:
     from data.ordering import label_sort_key
     from data.styles import CATEGORIES, CATEGORY_LABELS, STYLES
     from data.versions import ADDED_IN, RELEASES
-
-    # The build's own version, read the same way the publish workflow reads
-    # it. tomllib would be tidier but arrived in 3.11 and the pack floor is
-    # 3.10, which CI actually runs.
-    match = re.search(
-        r'(?m)^version\s*=\s*"([^"]+)"',
-        (ROOT / "pyproject.toml").read_text(encoding="utf-8"),
-    )
-    version = match.group(1) if match else ""
 
     styles_by_category: dict[str, dict[str, list]] = {}
     for category in CATEGORIES:
@@ -217,11 +219,11 @@ def generate() -> tuple[str, str]:
         f"export const STYLE_COUNT = {len(STYLES)};",
         f"export const ARTIST_COUNT = {len(ARTISTS)};",
         "",
-        "// The release this build is, and every release before it, oldest",
-        "// first. The gallery's \"New\" tab means CURRENT_VERSION; the",
+        "// The newest release that added entries, and every release, oldest",
+        "// first. The gallery's \"New\" tab means NEW_RELEASE; the",
         "// newest-first sort ranks by position in RELEASES rather than",
         "// parsing version strings in JavaScript.",
-        f"export const CURRENT_VERSION = {_js(version)};",
+        f"export const NEW_RELEASE = {_js(new_release())};",
         f"export const RELEASES = {_js(list(RELEASES))};",
         "",
         "// The axis-to-modifier map gates the Modifier node's dropdown as",

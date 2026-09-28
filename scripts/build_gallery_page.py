@@ -27,7 +27,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import sys
 from pathlib import Path
 
@@ -68,34 +67,20 @@ ASSET_PREFIX = "../../js/previews/"
 
 
 
-def _current_version() -> str:
-    """This build's version, read out of pyproject.toml.
-
-    A regex rather than tomllib, which arrived in 3.11 while the pack floor
-    is 3.10 -- and CI actually runs 3.10.
-    """
-    match = re.search(
-        r'(?m)^version\s*=\s*"([^"]+)"',
-        (ROOT / "pyproject.toml").read_text(encoding="utf-8"),
-    )
-    return match.group(1) if match else ""
-
-
 def _payload() -> dict:
-    from generate_js_data import _preview_sprites  # noqa: E402
+    from generate_js_data import _preview_sprites, new_release  # noqa: E402
 
     from data.artists import ARTISTS
     from data.ordering import label_sort_key
     from data.styles import CATEGORIES, CATEGORY_LABELS, STYLES
     from data.versions import ADDED_IN, RELEASES
 
-    version = _current_version()
     styles = sorted(STYLES.values(), key=lambda rec: label_sort_key(rec["label"]))
     return {
         "categoryLabels": {c: CATEGORY_LABELS[c] for c in CATEGORIES},
         "categories": list(CATEGORIES),
         "artistCount": len(ARTISTS),
-        "version": version,
+        "newRelease": new_release(),
         "releases": list(RELEASES),
         "sprites": _preview_sprites(),
         "styles": [
@@ -300,7 +285,7 @@ const countEl = document.getElementById("count");
 /* Rank by position in the release list rather than by comparing version
    strings: "0.10.0" sorts before "0.9.0" as text. */
 const RANK = new Map((DATA.releases || []).map((v, i) => [v, i]));
-const isNew = s => Boolean(DATA.version) && s.added === DATA.version;
+const isNew = s => Boolean(DATA.newRelease) && s.added === DATA.newRelease;
 const sheet = document.getElementById("sheet");
 
 /* The manifest stores the checkpoint exactly as ComfyUI names it, which
@@ -316,7 +301,7 @@ catSel.append(new Option("All categories", ""));
    a filter that is always there and sometimes empty teaches you to
    ignore it. */
 if (DATA.styles.some(isNew)) {
-  catSel.append(new Option("New in " + DATA.version, "__new__"));
+  catSel.append(new Option("New in " + DATA.newRelease, "__new__"));
 }
 for (const c of DATA.categories) catSel.append(new Option(DATA.categoryLabels[c] || c, c));
 
@@ -406,7 +391,7 @@ function render() {
       n.className = "newbadge";
       n.textContent = "new";
       art.append(n);
-      tips.push("New in " + DATA.version + ".");
+      tips.push("New in " + DATA.newRelease + ".");
     }
     if (s.namesake) tips.push("Named for " + s.namesake + ".");
     if (tips.length) tile.title = tips.join(" ");

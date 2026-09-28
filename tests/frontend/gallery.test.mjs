@@ -189,6 +189,31 @@ test("StylebookStyle: picker opens, search narrows results, Escape closes and re
   assert.equal(document.querySelector(".stylebook-overlay"), null, "Escape did not close the dialog");
 });
 
+test("reopening keeps the query visible in the search box, not just in the grid", async () => {
+  // The picker remembers its filter across close/reopen, but build()
+  // made a fresh, empty input: the grid stayed narrowed under a blank box.
+  const node = makeNode("StylebookStyle");
+  await getExtension().nodeCreated(node);
+  const button = findWidget(node, "Open style gallery");
+  button.callback();
+  await settle();
+
+  const search = document.querySelector(".stylebook-search");
+  search.value = "Cyanotype";
+  search.dispatchEvent(new window.Event("input", { bubbles: true }));
+  await settle(150);
+  document.querySelector(".stylebook-overlay")
+    .dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+  button.callback();
+  await settle();
+  const reopened = document.querySelector(".stylebook-search");
+  assert.equal(reopened.value, "Cyanotype", "the reopened search box should show the remembered query");
+  assert.equal(document.querySelectorAll(".stylebook-tile").length, 1, "and the grid should match it");
+  assert.equal(reopened.selectionStart, 0, "the restored query should be selected");
+  assert.equal(reopened.selectionEnd, "Cyanotype".length, "so the first keystroke replaces it");
+});
+
 // --- 6b. Tab stays inside the dialog ---------------------------------------
 
 test("Tab wraps at both ends instead of walking onto the canvas behind", async () => {
@@ -376,17 +401,17 @@ const clickTab = (overlay, name) => {
  * to contain.
  */
 async function newStyleLabels() {
-  const { CURRENT_VERSION } = await import("../../js/stylebook_data.js");
+  const { NEW_RELEASE } = await import("../../js/stylebook_data.js");
   const { STYLE_DATA_BY_CATEGORY } = JSON.parse(
     readFileSync(new URL("../../js/stylebook_data.json", import.meta.url), "utf8")
   );
   const labels = new Set();
   for (const data of Object.values(STYLE_DATA_BY_CATEGORY)) {
     data.labels.forEach((label, i) => {
-      if (data.added[i] === CURRENT_VERSION) labels.add(label);
+      if (data.added[i] === NEW_RELEASE) labels.add(label);
     });
   }
-  return { CURRENT_VERSION, labels };
+  return { NEW_RELEASE, labels };
 }
 
 test("the All tab lists every style alphabetically, not grouped by category", async () => {
@@ -661,8 +686,8 @@ test("the artist reference gets no category chip -- its rows already carry a des
 
 test("the New tab holds exactly this release's styles, or is absent when there are none", async () => {
   const overlay = await openStyleGallery();
-  const { CURRENT_VERSION, labels: expected } = await newStyleLabels();
-  const name = "New in " + CURRENT_VERSION;
+  const { NEW_RELEASE, labels: expected } = await newStyleLabels();
+  const name = "New in " + NEW_RELEASE;
 
   if (expected.size === 0) {
     assert.equal(findTab(overlay, name), undefined,
@@ -681,17 +706,17 @@ test("the New tab holds exactly this release's styles, or is absent when there a
 
 test("every tile in the New tab carries the ribbon, and older tiles do not", async () => {
   const overlay = await openStyleGallery();
-  const { CURRENT_VERSION, labels: expected } = await newStyleLabels();
+  const { NEW_RELEASE, labels: expected } = await newStyleLabels();
 
   if (expected.size === 0) {
-    assert.equal(findTab(overlay, "New in " + CURRENT_VERSION), undefined,
+    assert.equal(findTab(overlay, "New in " + NEW_RELEASE), undefined,
       "no new styles, so no New tab and nothing to ribbon");
     assert.equal(document.querySelectorAll(".stylebook-tile-new").length, 0,
       "no tile may claim to be new when the release added no styles");
     return;
   }
 
-  clickTab(overlay, "New in " + CURRENT_VERSION);
+  clickTab(overlay, "New in " + NEW_RELEASE);
   const tiles = document.querySelectorAll(".stylebook-tile");
   assert.ok(tiles.length > 0);
   for (const tile of tiles) {

@@ -64,8 +64,8 @@ saved workflow or dropdown order depends on it.
 
 from __future__ import annotations
 
-#: Every release that has shipped content, oldest first. The gallery uses
-#: this order rather than parsing version strings in JavaScript.
+#: Every release, oldest first, including ones that added no entries. The
+#: gallery uses this order rather than parsing version strings in JavaScript.
 RELEASES: tuple[str, ...] = (
 '''
 
@@ -244,7 +244,8 @@ def main() -> int:
                     new += 1
         for kind in list(added):
             added[kind] = {k: v for k, v in added[kind].items() if k in set(shipped[kind])}
-        if new and version not in releases:
+        # Even with nothing new: the current version must be a known release.
+        if version not in releases:
             releases.append(version)
         TARGET.write_text(render(releases, added), encoding="utf-8", newline="\n")
         print(f"Stamped {new} new entr{'y' if new == 1 else 'ies'} as {version}.")
