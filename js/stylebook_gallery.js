@@ -8,7 +8,7 @@ import {
   CATEGORIES,
   CATEGORY_LABELS,
   MODIFIER_AXIS_LABELS,
-  CURRENT_VERSION,
+  NEW_RELEASE,
   MODIFIER_AXES,
   MODIFIER_LABELS_BY_AXIS,
   RELEASES,
@@ -222,7 +222,7 @@ function groupName(key) {
   if (key === GROUP_YOURS) return "Yours";
   // Named for the release, not just "New": a user who skipped a version
   // needs to know which one they are looking at.
-  if (key === GROUP_NEW) return "New in " + CURRENT_VERSION;
+  if (key === GROUP_NEW) return "New in " + NEW_RELEASE;
   if (CATEGORY_LABELS && CATEGORY_LABELS[key]) return CATEGORY_LABELS[key];
   if (ARTIST_CATEGORY_LABELS && ARTIST_CATEGORY_LABELS[key]) {
     return ARTIST_CATEGORY_LABELS[key];
@@ -587,7 +587,7 @@ function matches(item, query) {
 
 /** True when *item* was added by the release this build is. */
 function isNew(item) {
-  return Boolean(CURRENT_VERSION) && item.added === CURRENT_VERSION;
+  return Boolean(NEW_RELEASE) && item.added === NEW_RELEASE;
 }
 
 /**
@@ -1224,7 +1224,7 @@ class StylebookPicker {
     // who, so the connection is visible here rather than only to whoever
     // thinks to search the Artist reference for the same name.
     if (item.namesake) titleLines.push("Named for " + item.namesake + ".");
-    if (isNew(item)) titleLines.push("New in " + CURRENT_VERSION + ".");
+    if (isNew(item)) titleLines.push("New in " + NEW_RELEASE + ".");
     tile.title = titleLines.join("\n");
     if (position) tile.classList.add("selected");
 

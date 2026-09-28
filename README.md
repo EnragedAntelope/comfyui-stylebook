@@ -73,7 +73,8 @@ something you landed on without setting up a `user_styles.json`.
 
 Six hundred tiles is a lot to rescan when a release lands, so the gallery
 knows when each entry arrived. Every picker has a **New in x.y.z** tab
-holding exactly what this release added, a **new** ribbon on those tiles,
+holding what the latest release to add entries brought in (a fix-only
+release keeps showing the one before it), a **new** ribbon on those tiles,
 and a sort control that switches between **A-Z** and **Newest first**.
 The tab only appears where that release actually added something, so an
 empty one never trains you to ignore it. Your sort choice is remembered

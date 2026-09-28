@@ -17,11 +17,11 @@ export const CATEGORY_LABELS = {"photography": "Photography", "illustration": "I
 export const STYLE_COUNT = 696;
 export const ARTIST_COUNT = 1000;
 
-// The release this build is, and every release before it, oldest
-// first. The gallery's "New" tab means CURRENT_VERSION; the
+// The newest release that added entries, and every release, oldest
+// first. The gallery's "New" tab means NEW_RELEASE; the
 // newest-first sort ranks by position in RELEASES rather than
 // parsing version strings in JavaScript.
-export const CURRENT_VERSION = "0.16.1";
+export const NEW_RELEASE = "0.16.0";
 export const RELEASES = ["0.1.0", "0.3.0", "0.4.0", "0.4.1", "0.5.0", "0.5.1", "0.6.0", "0.7.0", "0.8.0", "0.9.0", "0.10.0", "0.11.0", "0.12.0", "0.13.0", "0.14.0", "0.15.0", "0.16.0", "0.16.1"];
 
 // The axis-to-modifier map gates the Modifier node's dropdown as

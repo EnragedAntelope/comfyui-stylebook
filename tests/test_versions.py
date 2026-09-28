@@ -73,18 +73,21 @@ class ReleaseStampTests(unittest.TestCase):
         self.assertEqual(as_tuples, sorted(as_tuples))
 
     def test_this_version_is_a_known_release(self):
-        """A release that adds nothing still has to be listed once it is
-        the current one, or the "New" tab would name a version the rank
-        table has never heard of."""
+        """A release that adds nothing is still listed once it is the
+        current one, the same list `--from-history` rebuilds."""
         version = _pyproject_version()
         self.assertTrue(version, "no version in pyproject.toml")
         self.assertIn(version, RELEASES)
 
-    def test_the_generated_frontend_agrees_with_pyproject(self):
+    def test_the_new_tab_names_the_newest_release_that_added_entries(self):
+        """Not the pyproject version: a fix-only release stamps nothing, and
+        naming it would empty the "New" tab the day it shipped."""
+        used = {v for kind in ADDED_IN for v in ADDED_IN[kind].values()}
+        newest = max(used, key=RELEASES.index)
         generated = (ROOT / "js" / "stylebook_data.js").read_text(encoding="utf-8")
-        match = re.search(r'CURRENT_VERSION = "([^"]+)"', generated)
-        self.assertIsNotNone(match, "CURRENT_VERSION missing from the generated data")
-        self.assertEqual(match.group(1), _pyproject_version())
+        match = re.search(r'NEW_RELEASE = "([^"]+)"', generated)
+        self.assertIsNotNone(match, "NEW_RELEASE missing from the generated data")
+        self.assertEqual(match.group(1), newest)
 
 
 class LazyCorpusTests(unittest.TestCase):

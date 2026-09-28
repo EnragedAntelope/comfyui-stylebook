@@ -522,6 +522,11 @@ there and never appear under "New".
 The gallery reads it for two things: the **New in x.y.z** tab, and the
 **Newest first** sort. Both rank on position in `RELEASES` rather than
 comparing version strings, because "0.10.0" sorts before "0.9.0" as text.
+The tab names the newest release that stamped any entry
+(`generate_js_data.new_release`, shared by the public page), not the
+pyproject version: a fix-only release like 0.16.1 stamps nothing, and
+naming it would empty the tab the day it shipped. `RELEASES` still lists
+every version, including ones that added nothing.
 It is presentation data only — nothing here reaches a prompt, and no seed,
 saved workflow or dropdown order depends on it.
 
