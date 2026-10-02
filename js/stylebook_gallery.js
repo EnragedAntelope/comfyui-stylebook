@@ -464,7 +464,7 @@ function withHaystack(item) {
     item.group ? groupName(item.group) : "",
     item.detail || "",
     (item.aliases || []).join(" "),
-  ].join(" ").toLowerCase();
+  ].join("\u0000").toLowerCase();
   return item;
 }
 

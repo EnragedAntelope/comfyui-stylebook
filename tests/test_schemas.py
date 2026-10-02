@@ -126,5 +126,68 @@ class WidgetOrderDerivationTests(unittest.TestCase):
                 self.assertEqual(self._derive(node), expected)
 
 
+
+
+class NodeExecuteSmokeTests(unittest.TestCase):
+    """Every node's execute() must run end to end.
+
+    Nothing called execute() before, so a fallback import list missing
+    filter_pool / filter_artist_pool raised NameError in any context that
+    takes the non-relative import path, and no test noticed.
+    """
+
+    def _run(self, node, **kwargs):
+        from types import SimpleNamespace
+        from unittest import mock
+        with mock.patch.object(node, "hidden",
+                               SimpleNamespace(unique_id=None), create=True):
+            return node.execute(**kwargs)
+
+    def _args(self, output):
+        return getattr(output, "args", None)
+
+    def test_style_executes(self):
+        out = self._run(StylebookStyle, user_prompt="a cat")
+        self.assertTrue(self._args(out)[0])
+        picked = self._run(StylebookStyle, user_prompt="a cat",
+                           mode=opt.MODE_PICK, style="Cyanotype")
+        self.assertIn("cat", self._args(picked)[0].lower())
+
+    def test_artist_executes(self):
+        out = self._run(StylebookArtist)
+        self.assertTrue(self._args(out)[0])
+        picked = self._run(StylebookArtist, mode=opt.MODE_PICK,
+                           artist="Ansel Adams")
+        self.assertIn("Ansel Adams", self._args(picked)[0])
+
+    def test_modifier_executes(self):
+        out = self._run(StylebookModifier, axis="lighting",
+                        mode=opt.MODE_PICK, modifier="Golden Hour")
+        self.assertTrue(self._args(out)[0])
+
+    def test_blend_executes(self):
+        out = self._run(StylebookBlend)
+        self.assertIsNotNone(self._args(out))
+
+    def test_sheet_executes(self):
+        out = self._run(StylebookSheet, user_prompt="a cat", count=3)
+        self.assertEqual(len(self._args(out)[0]), 3)
+
+
+class NoAlwaysRerunTests(unittest.TestCase):
+    """No node may define fingerprint_inputs.
+
+    Returning NaN made every node uncacheable, and because ComfyUI folds
+    each ancestor's is_changed value into a node's cache signature, every
+    downstream node (the sampler included) re-ran on every queue even with
+    nothing changed. Seed and cycle changes still invalidate on their own,
+    since they are plain inputs.
+    """
+
+    def test_no_node_overrides_fingerprint_inputs(self):
+        for node in NODES:
+            self.assertNotIn("fingerprint_inputs", vars(node), node.__name__)
+
+
 if __name__ == "__main__":
     unittest.main()

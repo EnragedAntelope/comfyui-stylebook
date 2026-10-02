@@ -784,6 +784,17 @@ ART_MOVEMENTS_DATA: dict[str, dict] = {
         "preview": "art_movements#70",
         "blocks": [],
     },
+    "academic_art": {
+        "id": "academic_art",
+        "label": "Academic Art",
+        "category": "art_movements",
+        "aliases": ["Salon painting", "academicism", "Beaux-Arts painting", "French academic"],
+        "tags": "academic painting, polished invisible brushwork, idealised smooth modelling, precise anatomy, balanced pyramidal composition, warm chiaroscuro, glazed luminous tones, high finish",
+        "prose": "An academic salon painting: polished, invisible brushwork, idealised smooth modelling with precise anatomy, a balanced pyramidal composition under warm chiaroscuro, luminous glazed tones and a highly finished surface.",
+        "negative": "visible brushstrokes, rough sketchiness, flat colour, distorted proportions, impressionist blur",
+        "preview": "art_movements#71",
+        "blocks": [],
+    },
 }
 
 ART_MOVEMENTS_STYLES = ART_MOVEMENTS_DATA

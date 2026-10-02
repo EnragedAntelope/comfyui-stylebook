@@ -212,6 +212,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "rim-lit: a strong backlight that reads only where a surface turns away from the lens toward it, brightest on those planes and fading to nothing wherever a surface comes back round toward the camera, so the light gathers and thins unevenly as the form turns and everything turned to the lens falls deep into shadow.",
         "negative": "flat frontal lighting, fill flash, even ambient light, uniform outline glow, constant-width edge, cutout sticker glow",
     },
+    "safelight_red": {
+        "label": "Safelight Red",
+        "axis": "lighting",
+        "aliases": ["red safelight glow", "deep red wash", "photo-lab red"],
+        "tags": "safelight lighting, every surface lit by dim deep-red light, shadows sinking toward black, highlights glowing dull crimson, soft slow falloff, low-intensity glow",
+        "prose": "lit by a dim safelight: every surface bathed in a low deep-red glow, shadows sinking toward black, highlights glowing a dull crimson and the falloff soft and slow.",
+        "negative": "white light, daylight balance, mixed colour casts, bright even exposure",
+    },
     "sodium_vapour": {
         "label": "Sodium Vapour",
         "axis": "lighting",
@@ -860,6 +868,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "finished as a halftone: every tone built from visible dots of varying size, the rosette pattern showing plainly and ink spreading a little at each edge.",
         "negative": "smooth gradient, continuous tone, digital cleanliness",
     },
+    "heat_haze": {
+        "label": "Heat Haze",
+        "axis": "finish",
+        "aliases": ["heat shimmer", "mirage wobble", "thermal distortion"],
+        "tags": "heat haze, slow rippling wobble bending every straight line, fine detail shimmering and smearing, translucent liquid-like distortion, contrast softening toward the far parts of the frame, faint warm glow over every surface",
+        "prose": "finished with heat haze: a slow rippling wobble bending every straight line, fine detail shimmering and smearing as if seen through rising warm air, contrast softening toward the far parts of the frame.",
+        "negative": "rigid straight lines, crisp stable detail, cold clear air, perfectly sharp focus",
+    },
     "jpeg_artifacts": {
         "label": "JPEG Artifacts",
         "axis": "finish",
@@ -932,6 +948,14 @@ MODIFIERS: dict[str, dict] = {
         "prose": "finished on heavy textured paper: the tooth of the stock breaking every mark, fibres catching pigment unevenly and the sheet cockling slightly.",
         "negative": "smooth digital surface, glossy, screen-native, flat",
     },
+    "pixelated": {
+        "label": "Pixelated",
+        "axis": "finish",
+        "aliases": ["mosaic pixelation", "low resolution blocks", "big pixels"],
+        "tags": "pixelated finish, the whole image reduced to large square colour blocks, hard stair-stepped edges, coarse resolution, flat colour inside each block, detail collapsing into chunky mosaic cells",
+        "prose": "finished pixelated: the whole image reduced to large square blocks of flat colour, edges stair-stepping, fine detail collapsing into a coarse mosaic of chunky cells.",
+        "negative": "smooth gradients, fine detail, anti-aliased curves, high resolution",
+    },
     "posterized": {
         "label": "Posterized",
         "axis": "finish",
@@ -939,6 +963,22 @@ MODIFIERS: dict[str, dict] = {
         "tags": "posterisation, tone reduced to a handful of flat bands, hard edges between levels, flat stepped bands, graphic simplification",
         "prose": "finished posterised: tone collapsed into a few flat bands with hard edges between them and every level a single flat step.",
         "negative": "smooth gradient, continuous tone, subtle shading",
+    },
+    "prism_refraction": {
+        "label": "Prism Refraction",
+        "axis": "finish",
+        "aliases": ["prism split", "rainbow refraction", "spectral fringing"],
+        "tags": "refraction finish, offset ghost copies of the image stacked sideways, rainbow spectrum fringes along every bright edge, colour channels split apart, faceted overlapping reflections, soft spectral light",
+        "prose": "finished with refraction: offset ghost copies of the picture stacked sideways, rainbow spectrum fringes along every bright edge, colour channels split apart and facets of soft spectral light overlapping.",
+        "negative": "single clean image, accurate colour edges, neutral highlights, sharp registration",
+    },
+    "reeded_glass": {
+        "label": "Reeded Glass",
+        "axis": "finish",
+        "aliases": ["fluted glass distortion", "ribbed glass", "vertical ribbing"],
+        "tags": "reeded distortion, the image sliced into narrow vertical strips, each strip refracting and shifting its detail sideways, soft smeared vertical streaks, repeating columns of stretched colour, blurred but legible shapes",
+        "prose": "finished through reeded distortion: the image sliced into narrow vertical strips, each one refracting and shifting its detail sideways, colour smearing into repeating columns of soft stretched streaks while the shapes stay legible.",
+        "negative": "continuous clear image, sharp detail, straight undistorted lines, uniform focus",
     },
     "rolling_shutter_skew": {
         "label": "Rolling Shutter Skew",
@@ -979,6 +1019,14 @@ MODIFIERS: dict[str, dict] = {
         "tags": "diffusion filter, highlights blooming softly outward, contrast gently reduced, fine detail retained under a soft veil, halation around light sources",
         "prose": "finished through a diffusion filter: highlights blooming gently outward and contrast easing, detail still present beneath a soft veil.",
         "negative": "clinical sharpness, harsh contrast, crisp edges",
+    },
+    "star_filter": {
+        "label": "Star Filter",
+        "axis": "finish",
+        "aliases": ["cross screen", "starburst highlights", "diffraction spikes"],
+        "tags": "star filter effect, thin rays streaming from every bright highlight, four and six pointed spikes, soft glow gathering at the ray centres, sparkling point highlights, crisp glints",
+        "prose": "finished with a star filter: thin rays streaming from every bright point of light in four or six spikes, a soft glow gathering at each ray's centre and sparkling glints across the highlights.",
+        "negative": "round soft highlights, plain bokeh, dull highlights, matte surfaces",
     },
     "swirl_bokeh": {
         "label": "Swirl Bokeh",

@@ -1,6 +1,6 @@
 # Stylebook
 
-**650+ visual styles for ComfyUI, every one with a rendered preview you can
+**700+ visual styles for ComfyUI, every one with a rendered preview you can
 browse before you commit.**
 
 Stop guessing whether "wet plate collodion" or "risograph" will do what you
@@ -29,7 +29,7 @@ process because the subject leads the prompt and the style trails it.
 <br clear="right">
 
 Every style ships four things: a written description, a keyword list, a
-matching negative prompt, and a preview image. 1000+ artists ship a written
+matching negative prompt, and a preview image. 1050+ artists ship a written
 descriptor each, so the look still lands when the name means nothing to
 your model. No dependencies, no downloads, no network calls, no API keys.
 
@@ -91,8 +91,8 @@ an artist it does not have.
 | Node | What it does |
 |---|---|
 | **Style** | The medium. Pick from the gallery, draw a seeded Random from a filtered pool, or Cycle a whole category by index. Exclusive: a second Style node replaces the first. |
-| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 1000+ artists by name, movement, category, or by what their work actually looks like. |
-| **Modifier** | Tilts one axis: lighting, colour grade, era, period dress, finish or mood. 130+ modifiers, every one with a description you can browse *and* a rendered thumbnail beside it, so you can see Bleach Bypass rather than read about it. One per axis. **Era** tilts how the image is rendered — palette, light, surface, finish — and puts nothing new in the frame, so it is safe on any subject; **Period Dress** is the axis that adds the period wardrobe. Pair them, or use Era alone. |
+| **Artist** | Layers one artist. Chain up to five; an artist already in the chain is skipped with a warning rather than doubled. Pick, Random or Cycle, same as Style. Search 1050+ artists by name, movement, category, or by what their work actually looks like. |
+| **Modifier** | Tilts one axis: lighting, colour grade, era, period dress, finish or mood. 140+ modifiers, every one with a description you can browse *and* a rendered thumbnail beside it, so you can see Bleach Bypass rather than read about it. One per axis. **Era** tilts how the image is rendered — palette, light, surface, finish — and puts nothing new in the frame, so it is safe on any subject; **Period Dress** is the axis that adds the period wardrobe. Pair them, or use Era alone. |
 | **Blend** | Mixes two styles at a ratio that genuinely shifts the balance, not just the endpoints. |
 | **Sheet** | One subject rendered across many styles as a batch. Choose them yourself from the gallery, or leave the list empty and let a seeded draw fill it. |
 
@@ -219,6 +219,8 @@ index and wraps at the end, which is how you sweep a category
 systematically, but an index is a position in an alphabetical list, so
 adding entries shifts what any given index returns. Use Cycle to explore
 and Random to reproduce.
+With Auto-advance on, each queued run takes the next entry, so raising
+Batch count renders a sweep from a single click.
 
 **Stylebook Sheet** emits one prompt per style as a real list, so a
 batched sampler renders the whole contact sheet in a single run. Its

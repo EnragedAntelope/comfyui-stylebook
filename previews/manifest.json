@@ -226,6 +226,9 @@
     "hard_noon_sun": {
       "hash": "cf5b55bfe24d5c4b"
     },
+    "heat_haze": {
+      "hash": "9f512b1331d19e06"
+    },
     "heroic": {
       "hash": "639669fde3b18ddc"
     },
@@ -319,6 +322,9 @@
     "pastel_wash": {
       "hash": "84af297f5cf08ca2"
     },
+    "pixelated": {
+      "hash": "41468da786ae5d4f"
+    },
     "portra_soft_negative": {
       "hash": "fe23eb6a967a82b0"
     },
@@ -327,6 +333,12 @@
     },
     "practical_glow": {
       "hash": "fe6d87d155e833fc"
+    },
+    "prism_refraction": {
+      "hash": "17ba82c222ae1890"
+    },
+    "reeded_glass": {
+      "hash": "6f6ae701cf33499f"
     },
     "rembrandt_lighting": {
       "hash": "5402e50efa5be5a8"
@@ -345,6 +357,9 @@
     },
     "romantic": {
       "hash": "e6085e9ab0045449"
+    },
+    "safelight_red": {
+      "hash": "cbaa847f24a65c28"
     },
     "scan_lines": {
       "hash": "069b2d950cef9db1"
@@ -381,6 +396,9 @@
     },
     "stage_spotlight": {
       "hash": "65a931ce80e1a261"
+    },
+    "star_filter": {
+      "hash": "e03decb1330e716b"
     },
     "studio_softbox": {
       "hash": "7849bdbf7e1934c9"
@@ -443,6 +461,9 @@
     },
     "abstract_expressionism": {
       "hash": "8b8b5ed811d0c39d"
+    },
+    "academic_art": {
+      "hash": "75c5604e78832f9f"
     },
     "acrylic": {
       "hash": "99f7614516df0f51"
@@ -561,6 +582,9 @@
     "automotive_paint": {
       "hash": "db506c69a7d74ccb"
     },
+    "azulejo_tile_panel": {
+      "hash": "ea11af403136474c"
+    },
     "balloon_twist_sculpture": {
       "hash": "4dadd712dfda379c"
     },
@@ -572,6 +596,9 @@
     },
     "baroque": {
       "hash": "9184038c7faa5621"
+    },
+    "bas_relief_stone_carving": {
+      "hash": "355863fa68a43ee6"
     },
     "basketry_weaving": {
       "hash": "2dc9f3aa051ecccf"
@@ -590,6 +617,9 @@
     },
     "bl_visual_novel": {
       "hash": "94c693bac28b385d"
+    },
+    "black_velvet_painting": {
+      "hash": "6742278e7e193f9d"
     },
     "blacklight_poster": {
       "hash": "4ec0ca57f5c6f846"
@@ -744,8 +774,14 @@
     "childrens_book": {
       "hash": "70c225509d956a5e"
     },
+    "childs_crayon_drawing": {
+      "hash": "776f7f14d7e10448"
+    },
     "chromolithograph": {
       "hash": "5c8819fc24255639"
+    },
+    "chronophotography": {
+      "hash": "c81df7ba150852a8"
     },
     "cibachrome": {
       "hash": "7fb41d96b462c60f"
@@ -824,6 +860,9 @@
     },
     "corporate_memphis": {
       "hash": "a82ad2321ca76380"
+    },
+    "courtroom_sketch": {
+      "hash": "da01b1fd577b8698"
     },
     "cowboy_bebop": {
       "hash": "67893c8bddd31aab"
@@ -924,6 +963,9 @@
     "diner_menu": {
       "hash": "d0dffe2fbe8f3ee5"
     },
+    "direct_on_film_animation": {
+      "hash": "fc4ce40fef72d356"
+    },
     "displacement_mapping": {
       "hash": "69aa5f06a240bae5"
     },
@@ -968,6 +1010,9 @@
     },
     "egg_tempera": {
       "hash": "514d5bea2e612f27"
+    },
+    "egyptian_tomb_painting": {
+      "hash": "59c2922384f94aa2"
     },
     "emakimono": {
       "hash": "1c8f8a55c8ec7fe9"
@@ -1038,6 +1083,9 @@
     "figure_drawing": {
       "hash": "ee46899be803cb3e"
     },
+    "fileteado_porteno": {
+      "hash": "d80821dbf57c2fe8"
+    },
     "film_negative_strip": {
       "hash": "08454ef8e1995a81"
     },
@@ -1055,6 +1103,9 @@
     },
     "fine_art_nude": {
       "hash": "3914a1e7b2da0722"
+    },
+    "finger_painting": {
+      "hash": "35ca3f35b99cf615"
     },
     "flexography_package": {
       "hash": "ecdff7358c1c47f2"
@@ -1191,6 +1242,9 @@
     "gravure_rotogravure": {
       "hash": "09e9472536e3f47a"
     },
+    "greek_black_figure": {
+      "hash": "885ec99b54aba618"
+    },
     "grindhouse": {
       "hash": "0ee6e8d3010458b8"
     },
@@ -1254,6 +1308,9 @@
     "ice_sculpture": {
       "hash": "973db3a4e896d076"
     },
+    "ikat_weave": {
+      "hash": "db06e3c1c279c61e"
+    },
     "ikebana": {
       "hash": "358d4875e13d714a"
     },
@@ -1286,6 +1343,9 @@
     },
     "intimism": {
       "hash": "d022c7b314a8247e"
+    },
+    "inuit_stonecut_print": {
+      "hash": "900e0c6c556e8797"
     },
     "iris_shot": {
       "hash": "ebdf83f4a5cdae0e"
@@ -1371,6 +1431,9 @@
     "latch_hook": {
       "hash": "d71a81d98d5f8de5"
     },
+    "latte_art": {
+      "hash": "77a63eab9c5429e6"
+    },
     "leather_burning_pyrography": {
       "hash": "223a642337cdffd8"
     },
@@ -1412,6 +1475,9 @@
     },
     "linocut_reduction": {
       "hash": "3c9b90c2b8ff83a6"
+    },
+    "lith_print": {
+      "hash": "9e387a9f911e520b"
     },
     "litho_crayon_tusche": {
       "hash": "fe5a346bae766e4d"
@@ -1566,6 +1632,9 @@
     "motion_graphics_3d": {
       "hash": "e53a043b0ee9387e"
     },
+    "ms_paint": {
+      "hash": "5d2b3059ee83e44e"
+    },
     "mughal_miniature": {
       "hash": "9ba1c3ac0c91216c"
     },
@@ -1611,11 +1680,17 @@
     "netsuke_carving": {
       "hash": "4caaebdf69637a0c"
     },
+    "neural_style_transfer": {
+      "hash": "44201c520fd98df1"
+    },
     "newspaper_comic": {
       "hash": "a69d2ae77ad80336"
     },
     "newspaper_halftone": {
       "hash": "7f0970e2c098e3fc"
+    },
+    "nianhua_new_year_print": {
+      "hash": "6acc1e9bef333321"
     },
     "night": {
       "hash": "79a0c3cefec38f42"
@@ -1637,6 +1712,9 @@
     },
     "northern_renaissance": {
       "hash": "457ea7379f014e72"
+    },
+    "northwest_coast_formline": {
+      "hash": "5c8b68826dd58fea"
     },
     "npr_render": {
       "hash": "37e45e923a107f05"
@@ -1677,6 +1755,9 @@
     "otome_game": {
       "hash": "8e5e7c7d643be13f"
     },
+    "otomi_tenango_embroidery": {
+      "hash": "f2e10822e3bea311"
+    },
     "otoyomegatari_mori": {
       "hash": "e50b35d949282287"
     },
@@ -1691,6 +1772,21 @@
     },
     "pad_printing": {
       "hash": "8bb87c8fe036f239"
+    },
+    "paint_by_number": {
+      "hash": "8b537a8c0683d9d4"
+    },
+    "paint_on_glass_animation": {
+      "hash": "8c1d39a3960ee77e"
+    },
+    "pakistani_truck_art": {
+      "hash": "bb8d6165096e113f"
+    },
+    "palekh_lacquer_miniature": {
+      "hash": "687fdaea34c11c72"
+    },
+    "paleolithic_cave_painting": {
+      "hash": "aaed7165324ee496"
     },
     "palette_knife": {
       "hash": "6a76285fdabfd008"
@@ -1743,6 +1839,9 @@
     "penny_dreadful": {
       "hash": "2ee765d8d9a6ce4f"
     },
+    "perler_bead_art": {
+      "hash": "dcf191e504997238"
+    },
     "persian_carpet_knotting": {
       "hash": "4f0a3ffe95fa72f3"
     },
@@ -1754,6 +1853,9 @@
     },
     "photobashing": {
       "hash": "c8a2590f170a0858"
+    },
+    "photochrom": {
+      "hash": "ce829e5e156935a8"
     },
     "photocopied_zine": {
       "hash": "93df29ee63875c13"
@@ -1787,6 +1889,12 @@
     },
     "pinhole": {
       "hash": "b140ade3f9b5bd9f"
+    },
+    "pinscreen_animation": {
+      "hash": "811651d5ac588357"
+    },
+    "pinstriping": {
+      "hash": "7d9ee718bfcc97bd"
     },
     "pixar_3d_animation": {
       "hash": "e4642aaba68f6e81"
@@ -1868,6 +1976,9 @@
     },
     "preraphaelite": {
       "hash": "37c449e250a05fae"
+    },
+    "prerendered_cgi_1990s": {
+      "hash": "be9fe81b87e36141"
     },
     "press_flash": {
       "hash": "c326c9c4a9292a7d"
@@ -1974,8 +2085,14 @@
     "salt_print": {
       "hash": "ed6f394eb81aeef2"
     },
+    "sand_animation": {
+      "hash": "cbc12f138811c9e0"
+    },
     "sand_painting": {
       "hash": "4acbe0eed26099a5"
+    },
+    "sand_sculpture": {
+      "hash": "6862944450a75e2d"
     },
     "sanguine_red_chalk": {
       "hash": "2a4e75cf71a63a7a"
@@ -2172,6 +2289,9 @@
     "street_art_paste_up": {
       "hash": "d49d47fc021e52de"
     },
+    "string_art": {
+      "hash": "d97ca5376212d8ab"
+    },
     "studio_packshot": {
       "hash": "50dd88a91795f9d3"
     },
@@ -2216,6 +2336,9 @@
     },
     "talavera_ceramic": {
       "hash": "7d33dbb8b9eafb0b"
+    },
+    "tanjore_painting": {
+      "hash": "72386719a767ad23"
     },
     "tapa_barkcloth": {
       "hash": "8e819fe09bdb7dd2"
@@ -2297,6 +2420,9 @@
     },
     "tintype_ferrotype": {
       "hash": "69c77bbf94c6fd76"
+    },
+    "toile_de_jouy": {
+      "hash": "74999bd34e3b2480"
     },
     "tokusatsu_henshin_hero": {
       "hash": "81677c3dc81958dc"

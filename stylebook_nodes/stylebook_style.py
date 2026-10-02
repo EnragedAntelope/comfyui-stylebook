@@ -20,8 +20,8 @@ except ImportError:  # pragma: no cover - standalone/test context
     from stylebook_nodes import schema_options as opt
     from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
-        cycle_style_id, dump_chain, filter_modifiers, get_blocked_axes,
-        parse_chain, random_style_id, readout_detail, render_negative,
+        cycle_style_id, dump_chain, filter_modifiers, filter_pool,
+        get_blocked_axes, parse_chain, random_style_id, readout_detail, render_negative,
         render_prompt, resolve_meta, resolved_summary,
     )
 
@@ -267,11 +267,6 @@ if _COMFY_AVAILABLE:
                 ],
                 hidden=[io.Hidden.unique_id],
             )
-
-        @classmethod
-        def fingerprint_inputs(cls, **kwargs) -> float:
-            # Always re-execute: seed advances via control_after_generate.
-            return float("nan")
 
         @classmethod
         def execute(

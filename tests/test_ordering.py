@@ -94,6 +94,7 @@ class StyleOptionOrderTests(unittest.TestCase):
             "16-Bit Pixel Art",
             "35mm Slide Mount",
             "90s Cel Anime",
+            "1990s Pre-Rendered CGI",
         ])
 
     def test_accented_style_sits_where_a_reader_expects(self):

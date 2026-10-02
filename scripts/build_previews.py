@@ -406,6 +406,32 @@ STYLE_SUBJECT = {
     "super8_home_movie": "a fully clothed person standing in a plain "
                          "interior, head and shoulders fully in frame, "
                          "front-facing, centred",
+    # 0.17.0. Each needs the subject the category default cannot show: a profile
+    # tradition wants profile figures, a motion study wants motion, an
+    # ornament tradition wants a panel to ornament.
+    "chronophotography": "a fully clothed person walking in profile across the frame",
+    "egyptian_tomb_painting": "two fully clothed figures in strict profile standing side by side, one larger than the other",
+    "greek_black_figure": "two striding figures in profile, a band of repeating ornament above them",
+    "paleolithic_cave_painting": "a herd of three large four-legged animals in mid-stride, drawn in profile",
+    "tanjore_painting": "a serene seated figure framed by an ornate arch",
+    "pakistani_truck_art": "a smiling portrait at the centre of a crowded ornamental panel",
+    "fileteado_porteno": "a decorative scrollwork panel framing a small central flower",
+    "pinstriping": "a symmetrical scroll flourish with a small centred emblem",
+    # The category subject (a person seated by a window) rendered the
+    # velvet tile headless; naming head and shoulders is the measured fix.
+    "black_velvet_painting": "the head and shoulders of a fully clothed person, "
+                             "looking straight at the camera",
+    # Second pass after contact-sheet review: headless or cropped figures, or
+    # a tile that showed the apparatus instead of the picture.
+    "photochrom": "a wide view across a calm lake toward distant snow-capped mountains",
+    "lith_print": "the head and shoulders of a fully clothed person, looking straight at the camera",
+    "courtroom_sketch": "the head and shoulders of a fully clothed person, looking straight at the camera",
+    "paint_by_number": "a bouquet of flowers in a vase",
+    "pinscreen_animation": "the head and shoulders of a fully clothed person, looking straight at the camera",
+    "paint_on_glass_animation": "the head and shoulders of a fully clothed person, looking straight at the camera",
+    "sand_animation": "a swirling picture of a bird above rolling hills",
+    "direct_on_film_animation": "the head and shoulders of a fully clothed person, looking straight at the camera",
+    "neural_style_transfer": "a photograph of a harbour with moored boats",
 }
 
 # Applied on top of each style's own negative, never instead of it. The
@@ -1205,7 +1231,7 @@ def main() -> int:
                              "Use when one tile came out wrong.")
     parser.add_argument("--modifiers", action="store_true",
                         help="With --build, render the modifier tiles "
-                             "(lighting, colour grade, finish) as well as "
+                             "(all six axes) as well as "
                              "the styles.")
     parser.add_argument("--modifier", metavar="ID", action="append", default=[],
                         help="Render just this modifier id. Repeatable. "

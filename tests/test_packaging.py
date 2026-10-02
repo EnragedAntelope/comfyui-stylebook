@@ -163,3 +163,36 @@ class PackagedContentTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PreCommitParityTests(unittest.TestCase):
+    """scripts/pre_commit_check.py says it runs what CI runs. It had quietly
+    dropped one check (the reference pages), and the README tells contributors
+    to rely on it, so a PR could pass locally and fail in CI."""
+
+    def test_every_python_ci_step_is_in_pre_commit_check(self):
+        import importlib.util
+        import re
+
+        spec = importlib.util.spec_from_file_location(
+            "pre_commit_check", ROOT / "scripts" / "pre_commit_check.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        local = {
+            " ".join(str(part) for part in command).replace(
+                module.sys.executable, "python"
+            ).replace(" -v", "")
+            for _, command in module.CHECKS
+        }
+
+        ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+        steps = [
+            line.split("run:", 1)[1].strip()
+            for line in ci.splitlines()
+            if re.match(r"\s+run: python ", line)
+        ]
+        self.assertTrue(steps, "found no python steps in ci.yml")
+        for step in steps:
+            normalised = step.replace(" -v", "")
+            self.assertIn(normalised, local, f"CI runs '{step}' but pre_commit_check does not")

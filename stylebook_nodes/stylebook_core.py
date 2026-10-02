@@ -4,9 +4,10 @@ Pure functions with no ComfyUI dependency, so they can be unit-tested
 without a ComfyUI install. The node classes wrap these with V3
 ``io.ComfyNode`` schemas.
 
-The chain protocol is a plain JSON string so any string socket can
-connect to any other. Every node outputs both ``prompt`` and
-``style_chain``, so the result can be tapped off any node in the chain.
+The chain protocol is a JSON string carried on its own ``STYLEBOOK_CHAIN``
+socket type (not STRING, so a prompt cannot be wired into a chain input by
+mistake). Every node outputs both ``prompt`` and ``style_chain``, so the
+result can be tapped off any node in the chain.
 """
 
 from __future__ import annotations
