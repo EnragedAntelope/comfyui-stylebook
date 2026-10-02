@@ -2,11 +2,11 @@
 
 Five nodes:
 
-* ``StylebookStyle`` - the exclusive medium axis, across 12 categories.
+* ``StylebookStyle`` - the exclusive medium axis, across every category.
 * ``StylebookArtist`` - additive and chainable. Stack several to blend
   influences.
 * ``StylebookModifier`` - one modifier per axis (lighting, color_grade,
-  era, finish, mood).
+  era, period_dress, finish, mood).
 * ``StylebookBlend`` - blend two styles at a ratio.
 * ``StylebookSheet`` - one subject rendered across many styles as a batch.
 

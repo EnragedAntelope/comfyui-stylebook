@@ -39,7 +39,7 @@ node_modules/
 # docs/gallery IS excluded. It is the public web gallery, generated for
 # GitHub Pages, and it is nearly 400 KB of duplicated style text that a
 # ComfyUI install has no use for -- the in-app picker reads the same data
-# from js/stylebook_data.js.
+# from js/stylebook_data.json.
 /docs/gallery/
 
 # docs/reference is excluded for the same reason: generated web-only

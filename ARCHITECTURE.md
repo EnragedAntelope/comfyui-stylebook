@@ -600,7 +600,7 @@ part worth spending the truncation budget on.
 
 Alongside the readout, `node_support.send_resolved_event` sends a
 `stylebook.resolved` PromptServer event: `{node_id, prompt, style, artist,
-modifier, axis}`, with `prompt` full and untruncated. `js/stylebook_readout.js`
+modifier, axis, cycle_pool_size}`, with `prompt` full and untruncated. `js/stylebook_readout.js`
 listens for it and adds two context-menu items:
 
 - **Copy resolved prompt**, on all five nodes: the clipboard gets `prompt`
@@ -616,6 +616,29 @@ A listener is registered per node instance and unsubscribed from
 Skipping that is a real, if slow, memory leak: every node ever created
 would keep a live `api` listener forever, even after being deleted from
 the graph.
+
+### Caching, and why no node defines `fingerprint_inputs`
+
+Nodes used to return `NaN` from `fingerprint_inputs` to force a re-run. That
+is not local: ComfyUI folds every ancestor's is-changed value into a node's
+cache signature, so one always-changed node made every descendant -- the
+sampler included -- re-execute on every queue, with nothing changed. With the
+override gone a node caches on its inputs like any other. A seed or
+`cycle_index` change is an input change, so Random and Cycle still invalidate
+exactly when they should. The trade-off is that after a browser reload a cached
+node sends no event, so its readout and "Copy resolved prompt" stay blank until
+one of its inputs changes. `tests/test_schemas.py` pins the absence.
+
+### Cycle auto-advance hangs off `afterQueued`
+
+`js/stylebook_cycle.js` advances `cycle_index` from the widget's `afterQueued`
+hook, not from `stylebook.resolved`. The frontend serialises every item of a
+Batch count before any of them executes, so an execution event arrives after
+the whole batch is already queued; advancing there queued the same index N
+times and then jumped by N. `afterQueued` fires once per queued item. The
+event only supplies `cycle_pool_size` to wrap at; before the first run the pool
+size is unknown and the index just counts up, which is safe because the backend
+takes the index modulo the pool.
 
 ## `WIDGET_ORDER`: one source of truth
 

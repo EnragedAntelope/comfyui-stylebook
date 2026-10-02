@@ -14,16 +14,16 @@ try:
     from . import schema_options as opt
     from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
-        parse_chain, render_negative, render_prompt, resolve_meta,
-        sheet_style_ids,
+        filter_modifiers, get_blocked_axes, parse_chain, render_negative,
+        render_prompt, resolve_meta, sheet_style_ids,
     )
 except ImportError:  # pragma: no cover - standalone/test context
     from data.styles import STYLES, resolve_style_name
     from stylebook_nodes import schema_options as opt
     from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
-        parse_chain, render_negative, render_prompt, resolve_meta,
-        sheet_style_ids,
+        filter_modifiers, get_blocked_axes, parse_chain, render_negative,
+        render_prompt, resolve_meta, sheet_style_ids,
     )
 
 try:
@@ -148,20 +148,37 @@ def _render_sheet(
     prompts: list[str] = []
     negatives: list[str] = []
     labels: list[str] = []
+    # modifier label -> the sheet styles that dropped it, so the readout gets
+    # one line per modifier rather than one per (style, modifier) pair.
+    dropped_by: dict[str, list[str]] = {}
     for style_id in ids:
         record = STYLES.get(style_id)
         if record is None:
             continue
+        kept, dropped = filter_modifiers(
+            list(base.get("modifiers", [])), get_blocked_axes(record)
+        )
+        for mod in dropped:
+            dropped_by.setdefault(mod.get("label", "?"), []).append(
+                record["label"]
+            )
         chain = {
             "_meta": dict(base.get("_meta", {})),
             "style": record,
-            "modifiers": list(base.get("modifiers", [])),
+            "modifiers": kept,
             "artists": list(base.get("artists", [])),
         }
         meta = resolve_meta(chain)
         prompts.append(render_prompt(chain, meta, subject))
         negatives.append(render_negative(chain))
         labels.append(record["label"])
+
+    for modifier, styles in dropped_by.items():
+        warnings.append(
+            f"Sheet: {len(styles)} of the styles already fix the axis of the "
+            f"'{modifier}' modifier ({', '.join(styles)}), so it was left off "
+            f"those entries."
+        )
 
     return prompts, negatives, labels, warnings
 
@@ -271,10 +288,6 @@ if _COMFY_AVAILABLE:
                 ],
                 hidden=[io.Hidden.unique_id],
             )
-
-        @classmethod
-        def fingerprint_inputs(cls, **kwargs) -> float:
-            return float("nan")
 
         @classmethod
         def execute(

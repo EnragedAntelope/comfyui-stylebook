@@ -15,7 +15,7 @@
       "name": "style",
       "type": "combo",
       "value": "None",
-      "optionCount": 697
+      "optionCount": 733
     },
     {
       "name": "category",
@@ -112,7 +112,7 @@
       "name": "artist",
       "type": "combo",
       "value": "None",
-      "optionCount": 1001
+      "optionCount": 1062
     },
     {
       "name": "category",
@@ -217,6 +217,7 @@
         "Practical Glow",
         "Rembrandt Lighting",
         "Rim Lighting",
+        "Safelight Red",
         "Sodium Vapour",
         "Split Lighting",
         "Stage Spotlight",
@@ -297,6 +298,7 @@
         "Glossy Lacquer",
         "Halation",
         "Halftone Dots",
+        "Heat Haze",
         "JPEG Artifacts",
         "Lens Flare",
         "Light Leak",
@@ -306,12 +308,16 @@
         "Over-Denoised",
         "Oversharpened Halo",
         "Paper Texture",
+        "Pixelated",
         "Posterized",
+        "Prism Refraction",
+        "Reeded Glass",
         "Rolling Shutter Skew",
         "Scan Lines",
         "Sensor Noise",
         "Shallow Depth of Field",
         "Soft Diffusion",
+        "Star Filter",
         "Swirl Bokeh",
         "VHS Tape Artifacts",
         "Vignette",

@@ -539,7 +539,7 @@
     },
     {
       "id": 18,
-      "type": "ShowText|pysssss",
+      "type": "PreviewAny",
       "pos": [
         1270,
         287
@@ -553,21 +553,24 @@
       "mode": 0,
       "inputs": [
         {
-          "name": "text",
-          "type": "STRING",
+          "localized_name": "source",
+          "name": "source",
+          "type": "*",
           "link": 23
         }
       ],
       "outputs": [
         {
+          "localized_name": "STRING",
           "name": "STRING",
           "type": "STRING",
-          "links": [],
-          "slot_index": 0
+          "links": []
         }
       ],
       "properties": {
-        "Node name for S&R": "ShowText|pysssss"
+        "cnr_id": "comfy-core",
+        "ver": "0.38.0",
+        "Node name for S&R": "PreviewAny"
       },
       "widgets_values": [],
       "title": "Preview: Stylebook prompt"

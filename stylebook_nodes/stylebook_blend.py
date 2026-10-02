@@ -10,15 +10,17 @@ try:
     from . import schema_options as opt
     from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
-        _split_items, dump_chain, parse_chain, readout_detail,
-        render_negative, render_prompt, resolve_meta, resolved_summary,
+        _split_items, dump_chain, filter_modifiers, get_blocked_axes,
+        parse_chain, readout_detail, render_negative, render_prompt,
+        resolve_meta, resolved_summary,
     )
 except ImportError:  # pragma: no cover - standalone/test context
     from stylebook_nodes import schema_options as opt
     from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
-        _split_items, dump_chain, parse_chain, readout_detail,
-        render_negative, render_prompt, resolve_meta, resolved_summary,
+        _split_items, dump_chain, filter_modifiers, get_blocked_axes,
+        parse_chain, readout_detail, render_negative, render_prompt,
+        resolve_meta, resolved_summary,
     )
 
 try:
@@ -165,6 +167,19 @@ def build_blend_chain(
         occupied.add(axis)
         merged.append(mod)
 
+    # The style may have changed (B's, or a blend that blocks the axes both
+    # sides block), so a modifier A carried can now sit on a fixed axis.
+    # Style does this for its own chain; a blend has to as well.
+    chain_a["modifiers"], dropped = filter_modifiers(
+        merged, get_blocked_axes(chain_a["style"])
+    )
+    for mod in dropped:
+        warnings.append(
+            f"Blend: '{chain_a['style'].get('label', '?')}' already fixes the "
+            f"{mod.get('axis', '?')} axis, so the '{mod.get('label', '?')}' "
+            f"modifier was dropped."
+        )
+
     return chain_a, warnings
 
 
@@ -230,10 +245,6 @@ if _COMFY_AVAILABLE:
                 ],
                 hidden=[io.Hidden.unique_id],
             )
-
-        @classmethod
-        def fingerprint_inputs(cls, **kwargs) -> float:
-            return float("nan")
 
         @classmethod
         def execute(

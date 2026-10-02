@@ -1392,6 +1392,67 @@ class SheetTests(unittest.TestCase):
             self.assertIn("Monet", prompt)
 
 
+class BlockedAxesAcrossNodesTests(unittest.TestCase):
+    """A style that fixes an axis drops a modifier on it. The Style node
+    always did; Sheet and Blend let the modifier through silently, so the
+    README's promise that the node tells you was only true for one of three."""
+
+    def _graded_chain(self):
+        chain, _ = pick_modifier("", "color_grade", "Teal & Orange")
+        return dump_chain(chain)
+
+    def test_sheet_drops_a_modifier_on_a_blocked_axis_and_says_so(self):
+        blocking = next(s for s in STYLES.values()
+                        if "color_grade" in s.get("blocks", []))
+        free = next(s for s in STYLES.values()
+                    if "color_grade" not in s.get("blocks", []))
+        prompts, _, labels, warnings = draw_sheet(
+            "a cat", 2, chain_json=self._graded_chain(),
+            styles=f"{blocking['label']}, {free['label']}",
+        )
+        self.assertEqual(labels, [blocking["label"], free["label"]])
+        self.assertNotIn("teal and orange", prompts[0].lower())
+        self.assertIn("teal and orange", prompts[1].lower())
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("Teal & Orange", warnings[0])
+        self.assertIn(blocking["label"], warnings[0])
+
+    def test_sheet_with_no_blocked_axis_stays_silent(self):
+        free = [s["label"] for s in STYLES.values()
+                if "color_grade" not in s.get("blocks", [])][:2]
+        _, _, _, warnings = draw_sheet(
+            "a cat", 2, chain_json=self._graded_chain(), styles=", ".join(free),
+        )
+        self.assertEqual(warnings, [])
+
+    def test_blend_drops_a_modifier_the_blended_style_blocks(self):
+        blocking = next(s for s in STYLES.values()
+                        if "color_grade" in s.get("blocks", []))
+        free = next(s for s in STYLES.values()
+                    if "color_grade" not in s.get("blocks", []))
+        chain_a = dump_chain({"_meta": {}, "style": free, "artists": [],
+                              "modifiers": [get_modifier("Teal & Orange")]})
+        chain_b = dump_chain({"_meta": {}, "style": blocking, "artists": [],
+                              "modifiers": []})
+        result, warnings = build_blend_chain(chain_a, chain_b, 1.0)
+        self.assertEqual(result["modifiers"], [])
+        self.assertTrue(any("Teal & Orange" in w for w in warnings))
+
+
+class ModifierCycleOrderTests(unittest.TestCase):
+    def test_cycle_walks_an_axis_in_dropdown_order(self):
+        """The tooltip says index 0 is the first on the axis, so cycling must
+        follow the dropdown (data) order: era reads chronologically."""
+        for axis in MODIFIERS_BY_AXIS:
+            expected = opt.modifier_options(axis)[1:]
+            seen = [
+                pick_modifier("", axis, opt.OFF, mode=opt.MODE_CYCLE,
+                              cycle_index=i)[0]["modifiers"][0]["label"]
+                for i in range(len(expected))
+            ]
+            self.assertEqual(seen, expected, axis)
+
+
 class SheetStyleListTests(unittest.TestCase):
     """The explicit style list, which is what the seeded draw is for when
     you have not chosen. Choosing beats drawing, so it wins outright."""

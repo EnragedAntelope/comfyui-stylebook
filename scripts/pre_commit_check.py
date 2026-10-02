@@ -24,6 +24,7 @@ CHECKS: list[tuple[str, list[str]]] = [
     ("Frontend test fixtures", [sys.executable, "scripts/dump_frontend_fixtures.py", "--check"]),
     ("Preview manifest", [sys.executable, "scripts/build_previews.py", "--check"]),
     ("Public gallery page", [sys.executable, "scripts/build_gallery_page.py", "--check"]),
+    ("Reference pages", [sys.executable, "scripts/build_reference_pages.py", "--check"]),
 ]
 
 

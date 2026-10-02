@@ -50,7 +50,10 @@ def apply_modifier(
     chain = parse_chain(chain_json)
     warnings: list[str] = []
 
-    axis_ids = sorted(MODIFIERS_BY_AXIS.get(axis, []))
+    # Data order, not sorted: Cycle's tooltip says index 0 is the first entry
+    # in the dropdown, and era is chronological there. stable_choice scores
+    # each id on its own, so Random does not care about the order.
+    axis_ids = list(MODIFIERS_BY_AXIS.get(axis, []))
 
     record = None
     if mode == opt.MODE_RANDOM:
@@ -199,10 +202,6 @@ if _COMFY_AVAILABLE:
                 ],
                 hidden=[io.Hidden.unique_id],
             )
-
-        @classmethod
-        def fingerprint_inputs(cls, **kwargs) -> float:
-            return float("nan")
 
         @classmethod
         def execute(
