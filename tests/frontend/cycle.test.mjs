@@ -10,7 +10,7 @@
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
 import { installDom } from "./dom.mjs";
-import { makeNode } from "./fake_node.mjs";
+import { makeGraphTree, makeNode } from "./fake_node.mjs";
 import { api, __dispatch } from "./stubs/api.js";
 import { widgetsByName } from "../../js/stylebook_shared.js";
 
@@ -165,6 +165,17 @@ test("a numeric node id matches the event's string id", async () => {
   widgets["mode"].value = "Cycle";
   await ext.nodeCreated(node);
   __dispatch(EVENT_NAME, { node_id: "7", cycle_pool_size: 2 });
+  widgets["cycle_index"].afterQueued();
+  widgets["cycle_index"].afterQueued();
+  assert.equal(widgets["cycle_index"].value, 0, "pool of 2 wraps after two steps");
+});
+
+test("a node inside a subgraph takes its pool size from its execution id", async () => {
+  const ext = app.__getExtension("stylebook.cycle");
+  const tree = makeGraphTree(["12"]);
+  const { node, widgets } = await cycleNode(ext);
+  tree.place(node, tree.subgraphs["12"]);
+  __dispatch(EVENT_NAME, { node_id: `12:${node.id}`, cycle_pool_size: 2 });
   widgets["cycle_index"].afterQueued();
   widgets["cycle_index"].afterQueued();
   assert.equal(widgets["cycle_index"].value, 0, "pool of 2 wraps after two steps");

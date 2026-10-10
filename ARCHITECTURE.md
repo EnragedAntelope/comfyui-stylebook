@@ -617,6 +617,16 @@ Skipping that is a real, if slow, memory leak: every node ever created
 would keep a live `api` listener forever, even after being deleted from
 the graph.
 
+The event's `node_id` is the **execution id**, not `node.id`: inside a
+subgraph it is a colon path (`12:5` is node 5 inside subgraph node 12), so a
+plain id comparison never matched there and Copy, Pin and the Cycle pool size
+were dead inside subgraphs before 0.17.1. Both listeners route through
+`isEventForNode` in `js/stylebook_shared.js`, which walks the path from the
+root graph the way the frontend's own `getNodeByExecutionId` does
+(`getNodeById`, then the host's `.subgraph`) and checks it lands on this
+node's graph, so a same-numbered node in another graph is never matched.
+Instances of one subgraph share their inner nodes, so the last run wins.
+
 ### Caching, and why no node defines `fingerprint_inputs`
 
 Nodes used to return `NaN` from `fingerprint_inputs` to force a re-run. That

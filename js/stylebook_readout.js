@@ -1,6 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 import {
+  isEventForNode,
   isStylebookNode,
   makeWarn,
   setWidgetValue,
@@ -155,7 +156,7 @@ function addMenuItems(node, options) {
 function setupReadoutNode(node) {
   const handler = (event) => {
     const detail = event && event.detail;
-    if (!detail || String(detail.node_id) !== String(node.id)) return;
+    if (!detail || !isEventForNode(detail.node_id, node)) return;
     node.__sbResolved = detail;
   };
   api.addEventListener(EVENT_NAME, handler);

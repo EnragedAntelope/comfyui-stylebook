@@ -7,7 +7,7 @@
 import { test, before, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { installDom, resetDom } from "./dom.mjs";
-import { makeNode } from "./fake_node.mjs";
+import { makeGraphTree, makeNode } from "./fake_node.mjs";
 
 installDom();
 
@@ -106,6 +106,44 @@ test("an event matching this node's id enables Copy and Pin", async () => {
   assert.equal(copy.content, "Copy resolved prompt");
   assert.equal(pin.disabled, false);
   assert.equal(pin.content, "Pin this pick");
+});
+
+// --- subgraph execution ids ("12:5") ----------------------------------------
+
+function copyEnabled(node) {
+  return !find(menuFor(node), "Copy resolved prompt").disabled;
+}
+
+test("a node inside a subgraph is reached by its execution id", async () => {
+  const tree = makeGraphTree(["12"]);
+  const node = tree.place(await setUp("StylebookStyle", "5"), tree.subgraphs["12"]);
+  apiStub.__dispatch("stylebook.resolved", { node_id: "12:5", prompt: "...", style: "Cyanotype" });
+  assert.equal(copyEnabled(node), true, "the inner node never matched its execution id");
+});
+
+test("an execution id reaches only the node at that path, not a same-numbered node elsewhere", async () => {
+  const tree = makeGraphTree(["12", "14"]);
+  const otherSubgraph = tree.place(await setUp("StylebookStyle", "5"), tree.subgraphs["14"]);
+  const topLevel = tree.place(await setUp("StylebookStyle", "5"), tree.root);
+  apiStub.__dispatch("stylebook.resolved", { node_id: "12:5", prompt: "...", style: "Cyanotype" });
+  assert.equal(copyEnabled(otherSubgraph), false, "node 5 in subgraph 14 took subgraph 12's event");
+  assert.equal(copyEnabled(topLevel), false, "top-level node 5 took subgraph 12's event");
+});
+
+test("a node inside a subgraph ignores a top-level node's plain id", async () => {
+  const tree = makeGraphTree(["12"]);
+  const inner = tree.place(await setUp("StylebookStyle", "5"), tree.subgraphs["12"]);
+  const topLevel = tree.place(await setUp("StylebookStyle", "5"), tree.root);
+  apiStub.__dispatch("stylebook.resolved", { node_id: "5", prompt: "...", style: "Cyanotype" });
+  assert.equal(copyEnabled(topLevel), true);
+  assert.equal(copyEnabled(inner), false, "the inner node took the top-level node's event");
+});
+
+test("an execution id through a host that is not a subgraph matches nothing", async () => {
+  const tree = makeGraphTree(["12"]);
+  const node = tree.place(await setUp("StylebookStyle", "5"), tree.subgraphs["12"]);
+  apiStub.__dispatch("stylebook.resolved", { node_id: "99:5", prompt: "...", style: "Cyanotype" });
+  assert.equal(copyEnabled(node), false);
 });
 
 // --- Copy puts the full untruncated prompt on the clipboard -----------------
