@@ -36,6 +36,7 @@ RELEASES: tuple[str, ...] = (
     "0.16.0",
     "0.16.1",
     "0.17.0",
+    "0.17.1",
 )
 
 #: Entry id -> the release it first shipped in.

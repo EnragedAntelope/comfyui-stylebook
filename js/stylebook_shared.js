@@ -37,6 +37,33 @@ export function isStylebookNode(node) {
   return Boolean(type) && String(type).startsWith("Stylebook");
 }
 
+/**
+ * True when a backend event's node_id names *node*. The backend sends the
+ * execution id, which for a node inside a subgraph is a colon path ("12:5":
+ * subgraph node 12 in the root graph, then node 5 inside it), so comparing
+ * it with node.id never matches there. Walk the path from the root graph the
+ * way the frontend's own getNodeByExecutionId does and compare graphs, so a
+ * same-numbered node in another graph is not taken for this one. Every
+ * instance of one subgraph shares its inner nodes, so the last run wins.
+ */
+export function isEventForNode(executionId, node) {
+  if (executionId === undefined || executionId === null || !node) return false;
+  const path = String(executionId).split(":");
+  const localId = path.pop();
+  if (localId !== String(node.id)) return false;
+  const graph = node.graph;
+  // A frontend without subgraphs has no rootGraph: plain ids are all there is.
+  const root = graph && graph.rootGraph;
+  if (!root) return path.length === 0;
+  let current = root;
+  for (const id of path) {
+    const host = typeof current.getNodeById === "function" ? current.getNodeById(id) : null;
+    if (!host || !host.subgraph) return false;
+    current = host.subgraph;
+  }
+  return current === graph;
+}
+
 /** {name: widget} for a node's current widgets, skipping unnamed ones. */
 export function widgetsByName(node) {
   const map = {};

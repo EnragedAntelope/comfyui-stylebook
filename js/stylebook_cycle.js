@@ -1,6 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 import {
+  isEventForNode,
   isStylebookNode,
   makeWarn,
   setWidgetValue,
@@ -97,7 +98,7 @@ function setupCycleNode(node) {
   let poolSize = 0;
   const handler = (e) => {
     const detail = e && e.detail;
-    if (!detail || String(detail.node_id) !== String(node.id)) return;
+    if (!detail || !isEventForNode(detail.node_id, node)) return;
     const reported = Number(detail.cycle_pool_size);
     if (Number.isFinite(reported) && reported > 0) poolSize = reported;
   };

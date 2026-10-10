@@ -71,6 +71,40 @@ export function makeNode(comfyClass, id = "1") {
   return node;
 }
 
+/**
+ * A root graph whose nodes *hostIds* are subgraph hosts, so a test can place
+ * a node at an execution id like "12:5". Each graph answers getNodeById and
+ * rootGraph the way the frontend's LGraph and Subgraph do (frontend 1.51.9).
+ */
+export function makeGraphTree(hostIds) {
+  const makeGraph = (root) => {
+    const nodes = {};
+    const graph = {
+      getLink: () => null,
+      links: {},
+      nodes,
+      getNodeById: (id) => nodes[String(id)] ?? null,
+    };
+    graph.rootGraph = root || graph;
+    return graph;
+  };
+  const root = makeGraph();
+  const subgraphs = {};
+  for (const id of hostIds) {
+    subgraphs[id] = makeGraph(root);
+    root.nodes[id] = { id, subgraph: subgraphs[id] };
+  }
+  return {
+    root,
+    subgraphs,
+    place(node, graph) {
+      node.graph = graph;
+      graph.nodes[String(node.id)] = node;
+      return node;
+    },
+  };
+}
+
 export function widgetByName(node, name) {
   return node.widgets.find((widget) => widget.name === name);
 }
