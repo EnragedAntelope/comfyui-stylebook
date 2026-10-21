@@ -660,7 +660,7 @@ OBJECT_ARTIFACT_STYLES: dict[str, dict] = {
         "id": "tin_litho_toy",
         "label": "Tin Litho Toy",
         "category": "object_artifact",
-        "aliases": ["lithographed tin", "clockwork tin toy", "pressed metal toy"],
+        "aliases": ["lithographed tin", "clockwork tin toy", "pressed metal toy", "metal diorama"],
         "tags": "lithographed tin toy, bright flat colour printed directly onto pressed sheet metal that bends and catches highlights along every formed curve, slightly misregistered colour plates offset from the black key line, folded tabs and crimped seams visible at the joins, scratched and chipped print showing bare silver metal beneath, naive bold cartoon shapes",
         "prose": "Made as a lithographed tin toy: bright flat colour printed straight onto pressed sheet metal that bends and catches a highlight along every formed curve, the colour plates slightly misregistered against the black key line, folded tabs and crimped seams showing at the joins and the print scratched through to bare silver metal at the worn edges.",
         "negative": "moulded plastic, smooth matte finish, perfect colour registration, photographic realism, soft rounded organic form",
