@@ -15,7 +15,7 @@
       "name": "style",
       "type": "combo",
       "value": "None",
-      "optionCount": 733
+      "optionCount": 735
     },
     {
       "name": "category",
@@ -112,7 +112,7 @@
       "name": "artist",
       "type": "combo",
       "value": "None",
-      "optionCount": 1062
+      "optionCount": 1084
     },
     {
       "name": "category",

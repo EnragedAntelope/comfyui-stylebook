@@ -1092,6 +1092,28 @@ CRAFT_MATERIAL_STYLES: dict[str, dict] = {
         "blocks": ["color_grade"],
         "depicts": "a cup of coffee seen from above",
     },
+    "split_geode": {
+        "id": "split_geode",
+        "label": "Split Geode",
+        "category": "craft_material",
+        "aliases": ["geode sculpture", "crystal-filled stone", "amethyst geode"],
+        "tags": "lifelike stone statue of the subject, full recognisable form, rough grey mineral crust surface, patches of the surface broken away, banded agate layers at the broken edges, faceted amethyst crystal points glittering inside the figure, sparkling refracted light, sculpture photography",
+        "prose": "Sculpted as a lifelike stone statue of the subject, its full form clearly recognisable: a rough grey mineral crust for its surface, patches broken away to show banded agate layers and faceted amethyst crystal points glittering inside the figure itself.",
+        "negative": "plain round rock, egg-shaped stone, flat colour, soft fabric, organic skin, painted surface, smooth plastic",
+        "preview": "craft_material#101",
+        "blocks": [],
+    },
+    "circuit_board_sculpture": {
+        "id": "circuit_board_sculpture",
+        "label": "Circuit Board Sculpture",
+        "category": "craft_material",
+        "aliases": ["PCB art", "cybernetic circuitry", "circuit craft"],
+        "tags": "circuit board sculpture, form built from translucent printed circuit board layers, fine copper traces flowing along every contour, tiny surface-mount components, glistening solder joints, glowing fibre-optic strands, soft LED glow from within, macro detail",
+        "prose": "Built as a circuit board sculpture: the form assembled from translucent printed circuit board layers, fine copper traces flowing along every contour, tiny surface-mount components and glistening solder joints, fibre-optic strands and a soft LED glow lighting it from within.",
+        "negative": "organic skin, soft fur, painted canvas, rough stone, flat illustration",
+        "preview": "craft_material#102",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = CRAFT_MATERIAL_STYLES
