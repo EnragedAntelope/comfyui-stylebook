@@ -5,6 +5,7 @@ Visual styles for ComfyUI, every one with a rendered preview you can browse befo
 **Deep references:**
 - `ARCHITECTURE.md` (chain protocol, layout, design rationale — read before engine changes)
 - `docs/custom-styles.md` (field reference for `user_styles.json`)
+- Before publishing or investigating Manager visibility, read [Registry release checks](docs/registry-release-checks.md).
 
 ## Current state
 
