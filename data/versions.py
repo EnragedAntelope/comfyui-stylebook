@@ -38,6 +38,7 @@ RELEASES: tuple[str, ...] = (
     "0.17.0",
     "0.17.1",
     "0.18.0",
+    "0.19.0",
 )
 
 #: Entry id -> the release it first shipped in.
@@ -374,6 +375,7 @@ ADDED_IN: dict[str, dict[str, str]] = {
         "land_art": "0.9.0",
         "latch_hook": "0.8.0",
         "latte_art": "0.17.0",
+        "layered_papercut": "0.19.0",
         "leather_burning_pyrography": "0.1.0",
         "leather_tooling": "0.1.0",
         "lego_brick_build": "0.16.0",

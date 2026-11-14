@@ -173,6 +173,12 @@ class NodeExecuteSmokeTests(unittest.TestCase):
         out = self._run(StylebookSheet, user_prompt="a cat", count=3)
         self.assertEqual(len(self._args(out)[0]), 3)
 
+    def test_empty_sheet_raises_a_named_error(self):
+        # An empty list output crashes the next node with a bare IndexError.
+        with self.assertRaisesRegex(ValueError, "no style matches"):
+            self._run(StylebookSheet, user_prompt="a cat",
+                      tag_filter="zzqq-no-such-term")
+
 
 class NoAlwaysRerunTests(unittest.TestCase):
     """No node may define fingerprint_inputs.

@@ -30,7 +30,8 @@ from stylebook_nodes import schema_options as opt  # noqa: E402
 from stylebook_nodes.stylebook_artist import add_artist  # noqa: E402
 from stylebook_nodes.stylebook_blend import blend_styles, build_blend_chain  # noqa: E402
 from stylebook_nodes.stylebook_core import (  # noqa: E402
-    EMPTY_CHAIN, build_artist_clause, cycle_style_id, dump_chain, filter_modifiers,
+    ARTIST_MAX, EMPTY_CHAIN, build_artist_clause, cycle_style_id, dump_chain,
+    filter_modifiers,
     filter_pool, get_blocked_axes, merge_chain, parse_chain, random_style_id,
     readout_detail, render_negative, render_prompt, render_style_prose,
     render_style_tags, resolve_meta, resolved_summary, sheet_style_ids,
@@ -458,6 +459,25 @@ class ParseChainTests(unittest.TestCase):
         self.assertEqual(chain["_meta"], {})
         self.assertEqual(chain["modifiers"], [])
         self.assertEqual(chain["artists"], [])
+
+    def test_malformed_records_render_instead_of_raising(self):
+        bad = [
+            '{"style":"cyanotype"}',
+            '{"style":["x"]}',
+            '{"modifiers":["golden hour"]}',
+            '{"artists":["Ansel Adams"]}',
+            '{"style":{"id":"x","label":"X","tags":5,"prose":7}}',
+            '{"style":{"id":"x","label":"X","negative":["a"]}}',
+            '{"style":{"id":"x","label":"X","blocks":[{}]}}',
+        ]
+        for raw in bad:
+            with self.subTest(raw):
+                chain = parse_chain(raw)
+                meta = resolve_meta(chain)
+                render_prompt(chain, meta, "a cat")
+                render_negative(chain)
+                resolved_summary(chain)
+                get_blocked_axes(chain.get("style"))
 
     def test_roundtrip(self):
         chain = parse_chain(EMPTY_CHAIN)
@@ -1247,6 +1267,26 @@ class BlendTests(unittest.TestCase):
          "prose": "A prose.", "negative": "na", "blocks": []}
     B = {"id": "b", "label": "B", "tags": "b1, b2, b3, b4",
          "prose": "B prose.", "negative": "nb", "blocks": []}
+
+    def test_strength_fields_follow_the_leading_style(self):
+        a = dict(self.A, strength_tail="A tail", emphasis="a emph")
+        b = dict(self.B, strength_tail="B tail", emphasis="b emph")
+        self.assertEqual(blend_styles(a, b, 0.9)["strength_tail"], "B tail")
+        self.assertEqual(blend_styles(a, b, 0.9)["emphasis"], "b emph")
+        self.assertEqual(blend_styles(a, b, 0.1)["strength_tail"], "A tail")
+
+    def test_blend_keeps_the_artist_cap(self):
+        def chain(style, offset):
+            return dump_chain({
+                "_meta": {}, "style": style, "modifiers": [],
+                "artists": [{"label": f"P{offset + i}", "descriptor": "d"}
+                            for i in range(ARTIST_MAX)],
+            })
+        out, warnings = build_blend_chain(chain(self.A, 0), chain(self.B, 10), 0.5)
+        self.assertEqual(len(out["artists"]), ARTIST_MAX)
+        self.assertEqual([a["label"] for a in out["artists"]],
+                         [f"P{i}" for i in range(ARTIST_MAX)])
+        self.assertEqual(sum("maximum" in w for w in warnings), 1)
 
     def test_ratio_changes_the_output_between_the_endpoints(self):
         """Regression: the ratio slider used to be inert, producing an
