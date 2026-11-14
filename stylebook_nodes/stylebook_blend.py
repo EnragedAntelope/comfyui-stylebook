@@ -10,7 +10,7 @@ try:
     from . import schema_options as opt
     from .node_support import report, send_resolved_event, show_readout
     from .stylebook_core import (
-        _split_items, dump_chain, filter_modifiers, get_blocked_axes,
+        ARTIST_MAX, _split_items, dump_chain, filter_modifiers, get_blocked_axes,
         parse_chain, readout_detail, render_negative, render_prompt,
         resolve_meta, resolved_summary,
     )
@@ -18,7 +18,7 @@ except ImportError:  # pragma: no cover - standalone/test context
     from stylebook_nodes import schema_options as opt
     from stylebook_nodes.node_support import report, send_resolved_event, show_readout
     from stylebook_nodes.stylebook_core import (
-        _split_items, dump_chain, filter_modifiers, get_blocked_axes,
+        ARTIST_MAX, _split_items, dump_chain, filter_modifiers, get_blocked_axes,
         parse_chain, readout_detail, render_negative, render_prompt,
         resolve_meta, resolved_summary,
     )
@@ -91,6 +91,10 @@ def blend_styles(style_a: dict, style_b: dict, ratio: float) -> dict:
             merged_tags.append(item)
 
     blended = dict(style_a)
+    # "strong" reads these, and they belong to whichever style leads.
+    lead_rec = style_b if ratio >= 0.5 else style_a
+    for field in ("emphasis", "strength_tail"):
+        blended[field] = lead_rec.get(field, "")
     blended["id"] = f"blend_{style_a.get('id', 'a')}_{style_b.get('id', 'b')}"
     blended["label"] = f"{a_label} x {b_label}"
     blended["tags"] = ", ".join(merged_tags)
@@ -148,9 +152,21 @@ def build_blend_chain(
 
     # Artists and modifiers from the B branch would otherwise be lost.
     # The comment said "and modifiers" for a while before the code did.
+    # ARTIST_MAX holds across a blend too; A's artists keep their places.
+    artists = chain_a.setdefault("artists", [])
+    over_cap: list[str] = []
     for artist in chain_b.get("artists", []):
-        if artist not in chain_a.get("artists", []):
-            chain_a.setdefault("artists", []).append(artist)
+        if artist in artists:
+            continue
+        if len(artists) >= ARTIST_MAX:
+            over_cap.append(artist.get("label", "?"))
+            continue
+        artists.append(artist)
+    if over_cap:
+        warnings.append(
+            f"Blend: the chain holds the maximum of {ARTIST_MAX} artists, so "
+            f"B's {', '.join(repr(label) for label in over_cap)} were dropped."
+        )
 
     # One modifier per axis still holds across a blend, and the A branch
     # is the primary chain, so an axis A already occupies stays with A.

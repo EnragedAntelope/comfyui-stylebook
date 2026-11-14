@@ -3665,7 +3665,7 @@
     },
     "craft_material": {
       "atlas": "craft_material.webp",
-      "rev": "a6c11597",
+      "rev": "561a8ca2",
       "tiles": {
         "adinkra_stamped": {
           "x": 0,
@@ -3925,350 +3925,356 @@
           "w": 256,
           "h": 256
         },
-        "leather_burning_pyrography": {
+        "layered_papercut": {
           "x": 2560,
           "y": 768,
           "w": 256,
           "h": 256
         },
-        "leather_tooling": {
+        "leather_burning_pyrography": {
           "x": 0,
+          "y": 1024,
+          "w": 256,
+          "h": 256
+        },
+        "leather_tooling": {
+          "x": 256,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "macrame": {
-          "x": 256,
+          "x": 512,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "marble_statue": {
-          "x": 512,
+          "x": 768,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "marbling_ebru": {
-          "x": 768,
+          "x": 1024,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "marquetry_inlay": {
-          "x": 1024,
+          "x": 1280,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "mask_making_papier_mache": {
-          "x": 1280,
+          "x": 1536,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "metal_embossing_repousse": {
-          "x": 1536,
+          "x": 1792,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "millefiori": {
-          "x": 1792,
+          "x": 2048,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "mola_applique": {
-          "x": 2048,
+          "x": 2304,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "mosaic": {
-          "x": 2304,
+          "x": 2560,
           "y": 1024,
           "w": 256,
           "h": 256
         },
         "muppets": {
-          "x": 2560,
-          "y": 1024,
+          "x": 0,
+          "y": 1280,
           "w": 256,
           "h": 256
         },
         "ndebele_wall_painting": {
-          "x": 0,
+          "x": 256,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "needle_felted": {
-          "x": 256,
+          "x": 512,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "needlepoint": {
-          "x": 512,
+          "x": 768,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "netsuke_carving": {
-          "x": 768,
+          "x": 1024,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "origami": {
-          "x": 1024,
+          "x": 1280,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "otomi_tenango_embroidery": {
-          "x": 1280,
+          "x": 1536,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "papel_picado": {
-          "x": 1536,
+          "x": 1792,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "paper_quilling": {
-          "x": 1792,
+          "x": 2048,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "papercraft": {
-          "x": 2048,
+          "x": 2304,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "papercutting_scherenschnitte": {
-          "x": 2304,
+          "x": 2560,
           "y": 1280,
           "w": 256,
           "h": 256
         },
         "patinated_bronze": {
-          "x": 2560,
-          "y": 1280,
+          "x": 0,
+          "y": 1536,
           "w": 256,
           "h": 256
         },
         "perler_bead_art": {
-          "x": 0,
+          "x": 256,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "persian_carpet_knotting": {
-          "x": 256,
+          "x": 512,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "pietra_dura": {
-          "x": 512,
+          "x": 768,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "plush_toy": {
-          "x": 768,
+          "x": 1024,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "polymer_clay_sculpting": {
-          "x": 1024,
+          "x": 1280,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "porcelain_figurine": {
-          "x": 1280,
+          "x": 1536,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "puppet_making_marionette": {
-          "x": 1536,
+          "x": 1792,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "pysanky_egg": {
-          "x": 1792,
+          "x": 2048,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "quilted": {
-          "x": 2048,
+          "x": 2304,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "raku_ceramic": {
-          "x": 2304,
+          "x": 2560,
           "y": 1536,
           "w": 256,
           "h": 256
         },
         "rangoli": {
-          "x": 2560,
-          "y": 1536,
+          "x": 0,
+          "y": 1792,
           "w": 256,
           "h": 256
         },
         "resin_casting": {
-          "x": 0,
+          "x": 256,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "rosemaling": {
-          "x": 256,
+          "x": 512,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "royal_icing": {
-          "x": 512,
+          "x": 768,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "sand_sculpture": {
-          "x": 768,
+          "x": 1024,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "sashiko": {
-          "x": 1024,
+          "x": 1280,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "scrimshaw": {
-          "x": 1280,
+          "x": 1536,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "sgraffito_pottery": {
-          "x": 1536,
+          "x": 1792,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "shou_sugi_ban": {
-          "x": 1792,
+          "x": 2048,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "soap_carving": {
-          "x": 2048,
+          "x": 2304,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "split_geode": {
-          "x": 2304,
+          "x": 2560,
           "y": 1792,
           "w": 256,
           "h": 256
         },
         "stained_glass": {
-          "x": 2560,
-          "y": 1792,
+          "x": 0,
+          "y": 2048,
           "w": 256,
           "h": 256
         },
         "string_art": {
-          "x": 0,
+          "x": 256,
           "y": 2048,
           "w": 256,
           "h": 256
         },
         "sumi_e_ink_painting": {
-          "x": 256,
-          "y": 2048,
-          "w": 256,
-          "h": 256
-        },
-        "suzani_embroidery": {
           "x": 512,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "talavera_ceramic": {
+        "suzani_embroidery": {
           "x": 768,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "tapa_barkcloth": {
+        "talavera_ceramic": {
           "x": 1024,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "terrarium_miniature_garden": {
+        "tapa_barkcloth": {
           "x": 1280,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "terrazzo": {
+        "terrarium_miniature_garden": {
           "x": 1536,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "tie_dye_shibori": {
+        "terrazzo": {
           "x": 1792,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "wayang_kulit": {
+        "tie_dye_shibori": {
           "x": 2048,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "wire_sculpture": {
+        "wayang_kulit": {
           "x": 2304,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "wire_wrapping_jewelry": {
+        "wire_sculpture": {
           "x": 2560,
           "y": 2048,
           "w": 256,
           "h": 256
         },
-        "wood_turning": {
+        "wire_wrapping_jewelry": {
           "x": 0,
           "y": 2304,
           "w": 256,
           "h": 256
         },
-        "woven_tapestry": {
+        "wood_turning": {
           "x": 256,
+          "y": 2304,
+          "w": 256,
+          "h": 256
+        },
+        "woven_tapestry": {
+          "x": 512,
           "y": 2304,
           "w": 256,
           "h": 256

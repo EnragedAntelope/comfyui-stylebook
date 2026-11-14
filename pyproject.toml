@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-stylebook"
-version = "0.18.0"
+version = "0.19.0"
 description = "700+ visual styles for ComfyUI, every one with a rendered preview you can browse before you commit. Each ships a written description, a keyword list and a matching negative prompt. Plus 1050+ artists with descriptors that work even when your model does not know the name, and previewed modifiers for lighting, colour, era, period dress, finish and mood. Offline, zero dependencies."
 license = { text = "MIT" }
 readme = "README.md"
@@ -25,3 +25,7 @@ requires-comfyui = ">=0.25.0"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ["E402"]
+
+[tool.ruff.lint]
+# Explicit, so a ruff upgrade cannot widen the rule set on its own.
+select = ["E4", "E7", "E9", "F"]

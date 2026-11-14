@@ -310,8 +310,11 @@ if _COMFY_AVAILABLE:
                 seed=seed,
             )
             report(warnings)
-            summary = (f"{len(prompts)} styles: " + ", ".join(labels)
-                       if prompts else "no styles matched the filter")
+            if not prompts:
+                # An empty list output makes ComfyUI index [-1] into it for the
+                # next node, which dies with a bare IndexError naming nothing.
+                raise ValueError(" ".join(warnings) or "Sheet: no styles to emit.")
+            summary = f"{len(prompts)} styles: " + ", ".join(labels)
             show_readout(cls.hidden.unique_id, summary, warnings=warnings)
             # One prompt per line: currently the only way to read every
             # entry without wiring a preview node onto a list output, and

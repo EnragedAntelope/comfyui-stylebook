@@ -1114,6 +1114,17 @@ CRAFT_MATERIAL_STYLES: dict[str, dict] = {
         "preview": "craft_material#102",
         "blocks": [],
     },
+    "layered_papercut": {
+        "id": "layered_papercut",
+        "label": "Layered Papercut",
+        "category": "craft_material",
+        "aliases": ["layered paper art", "multi-layer papercut", "stacked paper art", "paper cut light box"],
+        "tags": "layered papercut, cropped tight with the layers filling the image to every edge, background included in the cut layers, stacked sheets of coloured card, each layer one flat colour, clean knife-cut edges, soft shadow in the gap between layers, tones stepping from deep at the front to pale at the back, matte paper grain",
+        "prose": "Built as a layered papercut, cropped tight with the layers filling the image to every edge: every part of the picture, background included, cut from stacked sheets of coloured card, each layer one flat colour with a clean knife-cut edge, set one behind another so a soft shadow falls in the gap between them, tones stepping from deep at the front to pale at the back, matte paper grain.",
+        "negative": "single flat sheet, folded paper, painted gradient, glossy surface, photograph, border, mat, cut-out window, blank margin, white background, isolated object, empty backdrop",
+        "preview": "craft_material#103",
+        "blocks": [],
+    },
 }
 
 EXPORT_STYLES = CRAFT_MATERIAL_STYLES

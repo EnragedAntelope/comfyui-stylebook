@@ -86,7 +86,33 @@ def parse_chain(raw: str) -> dict[str, Any]:
         chain["modifiers"] = []
     if not isinstance(chain["artists"], list):
         chain["artists"] = []
+    # The same hand-edited-workflow argument one level down: a record that
+    # is not an object, or a text field that is not text, used to raise
+    # AttributeError deep inside rendering instead of being skipped.
+    chain["style"] = _clean_record(chain["style"])
+    chain["modifiers"] = [r for r in map(_clean_record, chain["modifiers"]) if r]
+    chain["artists"] = [r for r in map(_clean_record, chain["artists"]) if r]
     return chain
+
+
+#: Record fields the renderer treats as text.
+_TEXT_FIELDS = ("id", "label", "tags", "prose", "negative", "emphasis",
+                "strength_tail", "descriptor", "axis")
+
+
+def _clean_record(record: Any) -> dict | None:
+    """Return *record* with mistyped fields dropped, or None if not an object."""
+    if not isinstance(record, dict):
+        return None
+    for field in _TEXT_FIELDS:
+        if field in record and not isinstance(record[field], str):
+            del record[field]
+    if "blocks" in record:
+        blocks = record["blocks"]
+        record["blocks"] = (
+            [b for b in blocks if isinstance(b, str)] if isinstance(blocks, list) else []
+        )
+    return record
 
 
 def dump_chain(chain: dict[str, Any]) -> str:
