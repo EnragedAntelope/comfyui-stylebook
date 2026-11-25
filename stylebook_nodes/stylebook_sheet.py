@@ -319,7 +319,9 @@ if _COMFY_AVAILABLE:
             # One prompt per line: currently the only way to read every
             # entry without wiring a preview node onto a list output, and
             # exactly what "Copy resolved prompt" puts on the clipboard.
-            # No style/artist/modifier: Sheet resolves N styles, not one,
-            # so it has no Pin menu item -- see js/stylebook_readout.js.
-            send_resolved_event(cls.hidden.unique_id, "\n".join(prompts))
+            # `styles` is what Pin writes into the styles box, freezing a
+            # seeded draw that a later release would otherwise shift.
+            send_resolved_event(
+                cls.hidden.unique_id, "\n".join(prompts), styles="\n".join(labels)
+            )
             return io.NodeOutput(prompts, negatives, labels)

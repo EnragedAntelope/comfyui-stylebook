@@ -23,9 +23,11 @@ import {
  * something good on Random, want to keep it) that stops short of a
  * save/preset file: it writes the resolved label straight into this
  * node's own pick widget and flips `mode` to Pick, which is enough for a
- * single-choice node like these three. It has no target on Blend (a
- * blended style is a synthetic composite, not one named pick) or Sheet
- * (N styles, not one), so those two get Copy only.
+ * single-choice node like these three. On Sheet it writes the drawn
+ * list into the `styles` box, which freezes a seeded sheet: the seed alone
+ * drifts by one entry whenever a release adds a style that outscores one.
+ * Blend has no target (a blended style is a synthetic composite, not one
+ * named pick), so it gets Copy only.
  */
 
 const EXT_NAME = "stylebook.readout";
@@ -38,6 +40,7 @@ const PIN_TARGETS = {
   StylebookStyle: { widget: "style", field: "style" },
   StylebookArtist: { widget: "artist", field: "artist" },
   StylebookModifier: { widget: "modifier", field: "modifier" },
+  StylebookSheet: { widget: "styles", field: "styles" },
 };
 
 /**

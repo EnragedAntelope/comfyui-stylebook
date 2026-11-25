@@ -65,7 +65,9 @@ final rendered prompt. Right-click a node for two more: **Copy resolved
 prompt** puts the full, untruncated text on your clipboard, and **Pin this
 pick** (Style, Artist and Modifier) writes a Random or Cycle result into
 that node's own picker and switches it to Pick — the fast way to keep
-something you landed on without setting up a `user_styles.json`.
+something you landed on without setting up a `user_styles.json`. On Sheet,
+Pin writes the drawn styles into the styles box, so you can drop or reorder
+entries, and a later release adding styles cannot reshuffle the sheet.
 
 ![The style gallery](docs/images/style-gallery.png)
 

@@ -600,16 +600,18 @@ part worth spending the truncation budget on.
 
 Alongside the readout, `node_support.send_resolved_event` sends a
 `stylebook.resolved` PromptServer event: `{node_id, prompt, style, artist,
-modifier, axis, cycle_pool_size}`, with `prompt` full and untruncated. `js/stylebook_readout.js`
+modifier, axis, styles, cycle_pool_size}`, with `prompt` full and untruncated. `js/stylebook_readout.js`
 listens for it and adds two context-menu items:
 
 - **Copy resolved prompt**, on all five nodes: the clipboard gets `prompt`
   from the event, not the capped node-face text.
-- **Pin this pick**, on Style/Artist/Modifier only: writes the resolved
+- **Pin this pick**, on Style/Artist/Modifier/Sheet: writes the resolved
   label into that node's own pick widget (plus `axis` on Modifier) and
-  flips `mode` to Pick. Blend's style is a synthetic merged composite and
-  Sheet resolves N styles, so neither has a single pick to pin — both
-  still get Copy, just not Pin.
+  flips `mode` to Pick. On Sheet it writes `styles`, the drawn labels one
+  per line, into the styles box. That is not redundant with the seed:
+  `stable_sample` lets a new release displace one pick, and the box can be
+  edited. Blend's style is a synthetic merged composite with no widget to
+  write back to, so it gets Copy, not Pin.
 
 A listener is registered per node instance and unsubscribed from
 `node.onRemoved` (chained the same way `getExtraMenuOptions` is, below).
