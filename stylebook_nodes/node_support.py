@@ -73,6 +73,7 @@ def send_resolved_event(
     artist: str | None = None,
     modifier: str | None = None,
     axis: str | None = None,
+    styles: str | None = None,
     cycle_pool_size: int | None = None,
 ) -> None:
     """Tell the frontend what this node resolved, for Copy and Pin.
@@ -82,8 +83,9 @@ def send_resolved_event(
     a copy button that copies a "..." is not the point of one. ``style``/
     ``artist``/``modifier``/``axis`` are this node's own pick, whichever of
     them apply, and are what "Pin this pick" writes back into this node's
-    own widgets; Blend and Sheet never set any of the four, since neither
-    has a single pick a Pin menu item could write back to a widget.
+    own widgets. ``styles`` is Sheet's drawn list, one label per line, which
+    Pin writes into its ``styles`` box. Blend sets none of them: a blended
+    style is a synthetic composite with no widget to write back to.
 
     Same never-break-a-render contract as show_readout.
     """
@@ -97,6 +99,7 @@ def send_resolved_event(
             "artist": artist,
             "modifier": modifier,
             "axis": axis,
+            "styles": styles,
             "cycle_pool_size": cycle_pool_size,
         })
     except Exception as error:  # noqa: BLE001 - never break a render over this

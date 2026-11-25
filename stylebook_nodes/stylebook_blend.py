@@ -131,27 +131,24 @@ def build_blend_chain(
 
     if style_a is None and style_b is None:
         warnings.append("Blend: neither input carries a style. Passing through.")
-        return chain_a, warnings
-    if style_b is None:
+    elif style_b is None:
         warnings.append(
-            "Blend: nothing connected to style B, so there is nothing to "
-            "blend with. Passing style A through unchanged."
+            "Blend: style B carries no style, so there is nothing to "
+            "blend with. Passing style A through."
         )
-        return chain_a, warnings
-    if style_a is None:
+    elif style_a is None:
         warnings.append("Blend: no style on the A input. Using style B alone.")
         chain_a["style"] = style_b
-        return chain_a, warnings
-
-    if ratio <= 0.001:
+    elif ratio <= 0.001:
         chain_a["style"] = style_a
     elif ratio >= 0.999:
         chain_a["style"] = style_b
     else:
         chain_a["style"] = blend_styles(style_a, style_b, ratio)
 
-    # Artists and modifiers from the B branch would otherwise be lost.
-    # The comment said "and modifiers" for a while before the code did.
+    # Artists and modifiers from the B branch would otherwise be lost, and
+    # that holds when one side has no style too: an Artist-only chain wired
+    # into B used to vanish behind a pass-through.
     # ARTIST_MAX holds across a blend too; A's artists keep their places.
     artists = chain_a.setdefault("artists", [])
     over_cap: list[str] = []

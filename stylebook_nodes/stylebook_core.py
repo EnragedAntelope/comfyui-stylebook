@@ -82,6 +82,9 @@ def parse_chain(raw: str) -> dict[str, Any]:
     chain.setdefault("artists", [])
     if not isinstance(chain["_meta"], dict):
         chain["_meta"] = {}
+    # Every node calls .strip() on this; resolve_meta guards only _META_FIELDS.
+    if not isinstance(chain["_meta"].get("user_prompt", ""), str):
+        del chain["_meta"]["user_prompt"]
     if not isinstance(chain["modifiers"], list):
         chain["modifiers"] = []
     if not isinstance(chain["artists"], list):
@@ -716,14 +719,9 @@ def random_style_id(
     category: str | None = None,
     tag_filter: str = "",
     style_map: dict[str, dict] | None = None,
-    exclude: list[str] | None = None,
 ) -> str | None:
     """Pick a style id for *seed* from the filtered pool."""
-    ids = filter_pool(category, tag_filter, style_map)
-    if exclude:
-        skip = set(exclude)
-        ids = [sid for sid in ids if sid not in skip]
-    return stable_choice(seed, ids)
+    return stable_choice(seed, filter_pool(category, tag_filter, style_map))
 
 
 def cycle_style_id(

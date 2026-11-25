@@ -77,7 +77,13 @@ function setupCycleNode(node) {
   node.getExtraMenuOptions = function (ctx, options) {
     const result = options || [];
     if (typeof originalMenu === "function") {
-      originalMenu.call(node, ctx, result);
+      // Same guard as stylebook_readout.js: one failing handler must not
+      // take this toggle, or the rest of the menu, down with it.
+      try {
+        originalMenu.call(node, ctx, result);
+      } catch (err) {
+        warn(`an upstream menu handler failed: ${err}`);
+      }
     }
     if (!hasCycleWidget(node)) return result;
     const on = autoAdvanceOn(node);

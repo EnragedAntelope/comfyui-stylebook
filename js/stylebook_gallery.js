@@ -157,7 +157,7 @@ function loadBulkData() {
 let userData = { styles: [], artists: [], modifiers: [] };
 let userDataVersion = 0;
 
-// Artist category tabs. The list used to be flat, which made 590 entries
+// Artist category tabs. The list used to be flat, which made every entry
 // searchable but not browsable: with no way to say "show me the
 // photographers", the only route in was already knowing a name.
 const ARTIST_GROUPS = [GROUP_ALL].concat(ARTIST_CATEGORY_ORDER || []);
@@ -343,27 +343,6 @@ function showWidget(widget) {
 
 function setVisible(widget, visible) {
   (visible ? showWidget : hideWidget)(widget);
-}
-
-/**
- * Grey a widget out in place rather than removing it.
- *
- * Hiding a widget shifts everything below it, so a control can move out
- * from under the cursor between one click and the next. On the small
- * nodes, where a toggle swaps which of two widgets applies, disabling
- * keeps the node exactly the same height and nothing ever moves.
- *
- * `disabled` is honoured by current frontends; the label prefix is a
- * visible fallback for any build that ignores it, so the state is never
- * conveyed by nothing at all.
- */
-function setEnabled(widget, enabled) {
-  if (!widget) return;
-  widget.disabled = !enabled;
-  if (widget.options) widget.options.disabled = !enabled;
-  if (widget.__sbLabel === undefined) widget.__sbLabel = widget.label ?? null;
-  const base = widget.__sbLabel ?? widget.name;
-  widget.label = enabled ? widget.__sbLabel ?? undefined : base + " (off)";
 }
 
 /**

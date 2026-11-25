@@ -479,6 +479,13 @@ class ParseChainTests(unittest.TestCase):
                 resolved_summary(chain)
                 get_blocked_axes(chain.get("style"))
 
+    def test_mistyped_user_prompt_is_dropped(self):
+        chain = parse_chain('{"_meta":{"user_prompt":5,"format":"tags"}}')
+        self.assertNotIn("user_prompt", chain["_meta"])
+        self.assertEqual(chain["_meta"]["format"], "tags")
+        chain = parse_chain('{"_meta":{"user_prompt":"a cat"}}')
+        self.assertEqual(chain["_meta"]["user_prompt"], "a cat")
+
     def test_roundtrip(self):
         chain = parse_chain(EMPTY_CHAIN)
         chain["_meta"]["format"] = "tags"
@@ -1287,6 +1294,20 @@ class BlendTests(unittest.TestCase):
         self.assertEqual([a["label"] for a in out["artists"]],
                          [f"P{i}" for i in range(ARTIST_MAX)])
         self.assertEqual(sum("maximum" in w for w in warnings), 1)
+
+    def test_b_artists_and_modifiers_survive_a_missing_style(self):
+        """Regression: a styleless side used to short-circuit past the merge."""
+        extras = {"_meta": {}, "artists": [{"label": "P", "descriptor": "d"}],
+                  "modifiers": [{"label": "M", "axis": "lighting"}]}
+        for a_style, b_style in ((self.A, None), (None, self.B), (None, None)):
+            with self.subTest(a=bool(a_style), b=bool(b_style)):
+                a = dump_chain({"_meta": {}, "style": a_style,
+                                "modifiers": [], "artists": []})
+                b = dump_chain(dict(extras, style=b_style))
+                out, _ = build_blend_chain(a, b, 0.5)
+                self.assertEqual(out["style"], a_style or b_style)
+                self.assertEqual([x["label"] for x in out["artists"]], ["P"])
+                self.assertEqual([x["label"] for x in out["modifiers"]], ["M"])
 
     def test_ratio_changes_the_output_between_the_endpoints(self):
         """Regression: the ratio slider used to be inert, producing an

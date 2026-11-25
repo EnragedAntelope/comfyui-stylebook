@@ -46,7 +46,7 @@ function find(options, contentStart) {
 // --- Copy present everywhere, Pin only where there is a real pick ----------
 
 const ALL_NODES = ["StylebookStyle", "StylebookArtist", "StylebookModifier", "StylebookSheet", "StylebookBlend"];
-const PIN_NODES = new Set(["StylebookStyle", "StylebookArtist", "StylebookModifier"]);
+const PIN_NODES = new Set(["StylebookStyle", "StylebookArtist", "StylebookModifier", "StylebookSheet"]);
 
 for (const comfyClass of ALL_NODES) {
   test(`${comfyClass}: Copy resolved prompt is always present`, async () => {
@@ -199,6 +199,21 @@ test("StylebookModifier: Pin this pick sets axis before writing the modifier val
   assert.equal(axis.value, "lighting");
   assert.equal(modifier.value, "Blue Hour");
   assert.equal(mode.value, "Pick");
+});
+
+test("StylebookSheet: Pin this pick writes the drawn styles into the styles box", async () => {
+  const node = await setUp("StylebookSheet", "7");
+  apiStub.__dispatch("stylebook.resolved", {
+    node_id: "7",
+    prompt: "one\ntwo",
+    styles: "Cyanotype\nLigne Claire",
+  });
+
+  const pin = find(menuFor(node), "Pin this pick");
+  pin.callback();
+
+  const styles = node.widgets.find((w) => w.name === "styles");
+  assert.equal(styles.value, "Cyanotype\nLigne Claire");
 });
 
 // --- onRemoved unsubscribes, closing the listener leak ----------------------
