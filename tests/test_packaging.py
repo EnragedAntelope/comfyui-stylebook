@@ -98,9 +98,8 @@ class PackagedContentTests(unittest.TestCase):
         "pyproject.toml",
         "README.md",
         "LICENSE",
-        # Named in the README; a dead link on the registry page is worse
-        # than the bytes.
-        "ARCHITECTURE.md",
+        # Linked relatively from the README; a dead link on the registry
+        # page is worse than the bytes.
         "docs/custom-styles.md",
         "docs/images/style-gallery.png",
         # The data layer and the frontend that reads it.
@@ -128,6 +127,10 @@ class PackagedContentTests(unittest.TestCase):
         "user_styles.example.json",
         "AGENTS.md",
         "CLAUDE.md",
+        # Contributor and maintainer docs whose prose matched registry scan
+        # patterns; the README links ARCHITECTURE.md by URL instead.
+        "ARCHITECTURE.md",
+        "docs/registry-release-checks.md",
         ".github/workflows/ci.yml",
         # Read only by a script that is itself excluded.
         "previews/manifest.json",

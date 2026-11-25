@@ -322,7 +322,7 @@ an issue for any of it:
 - **A descriptor is wrong or unfair.** These are one-line summaries of
   real people's work and some of them will be clumsy. Tell us.
 
-Pull requests are welcome too. `ARCHITECTURE.md` covers the layout, the
+Pull requests are welcome too. [`ARCHITECTURE.md`](https://github.com/EnragedAntelope/comfyui-stylebook/blob/main/ARCHITECTURE.md) covers the layout, the
 chain protocol and how to add a style. Run
 `python scripts/pre_commit_check.py` before opening one.
 

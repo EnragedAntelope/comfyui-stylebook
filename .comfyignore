@@ -19,11 +19,17 @@ node_modules/
 
 # Repository scaffolding. None of it is read at runtime and none of it is
 # linked from the README, so it is pure weight in a registry install.
-# ARCHITECTURE.md and docs/custom-styles.md are NOT here: the README links
-# both, and a dead link on the registry page is worse than the bytes.
+# docs/custom-styles.md is NOT here: the README links it relatively, and a
+# dead link on the registry page is worse than the bytes. ARCHITECTURE.md
+# is, because the README links it by its GitHub URL: it is contributor
+# reading, and its prose quoting `.connect(` was a registry scan finding.
+# registry-release-checks.md is maintainer notes that quote the scanned
+# patterns themselves, so shipping it flagged the release it describes.
 /.github/
 /AGENTS.md
 /CLAUDE.md
+/ARCHITECTURE.md
+/docs/registry-release-checks.md
 /.gitattributes
 /.nojekyll
 
