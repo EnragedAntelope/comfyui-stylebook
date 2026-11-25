@@ -31,6 +31,12 @@ review. Previous clearance does not guarantee the next release avoids a flag.
 
 Review request: https://github.com/Comfy-Org/registry-backend/issues/296
 
+Since 0.20.1 the package leaves out `ARCHITECTURE.md` and this file (see
+`.comfyignore`). Their prose quoted the matched patterns and accounted for
+half of 0.19.0's findings. That is packaging hygiene, not evasion: neither
+file is read by an install, and the README links `ARCHITECTURE.md` by URL.
+The code findings remain and still need review.
+
 ## Manager metadata is a separate path
 
 Manager's stars and Last Update come from its GitHub statistics database, not
